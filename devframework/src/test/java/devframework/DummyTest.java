@@ -10,6 +10,7 @@ public class DummyTest
 	@Test
 	public void test()
 	{
-		fail("Not yet implemented");
+		fail("Test failed!");
+		//System.out.print("Test passed!");
 	}
 }
