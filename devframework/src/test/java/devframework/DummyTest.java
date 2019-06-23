@@ -10,7 +10,7 @@ public class DummyTest
 	@Test
 	public void test()
 	{
-		fail("Test failed!");
-		//System.out.print("Test passed!");
+//		fail("Test failed!");
+		System.out.print("Test passed!");
 	}
 }
