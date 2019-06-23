@@ -1,0 +1,27 @@
+
+# Travis CI Java documentation can be found in:
+# https://docs.travis-ci.com/user/languages/java/
+
+# This enables the 'defaults' to test java applications:
+language: java
+
+# We can specify a list of JDKs to be used
+# A list of available JDKs in Trusty can be seed in:
+# https://docs.travis-ci.com/user/reference/trusty/#jvm-clojure-groovy-java-scala-images
+jdk:
+ - oraclejdk8
+ - oraclejdk9
+
+# see https://blog.travis-ci.com/2014-12-17-faster-builds-with-container-based-infrastructure
+sudo: false
+
+# run maven goals
+script:
+- cd devframework
+- mvn test
+- mvn install
+
+# cache the build tool's caches
+cache:
+  directories:
+  - $HOME/.m2
