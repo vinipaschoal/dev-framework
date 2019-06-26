@@ -10,7 +10,6 @@ language: java
 # https://docs.travis-ci.com/user/reference/trusty/#jvm-clojure-groovy-java-scala-images
 jdk:
  - oraclejdk8
- - oraclejdk9
 
 # see https://blog.travis-ci.com/2014-12-17-faster-builds-with-container-based-infrastructure
 sudo: false
@@ -20,6 +19,7 @@ script:
 - cd devframework
 - mvn test
 - mvn install
+- rm -f dist/*.war && cp target/*.war dist
 
 # cache the build tool's caches
 cache:
