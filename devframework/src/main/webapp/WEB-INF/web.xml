@@ -10,8 +10,6 @@
   </servlet>
   <servlet-mapping>
   	<servlet-name>FrontControllerServlet</servlet-name>
-  	<url-pattern>/opListaClasses</url-pattern>
-  	<url-pattern>/opListaMetodos</url-pattern>
-  	<url-pattern>/opUploadFile</url-pattern>  
+  	<url-pattern>*.op</url-pattern>
   </servlet-mapping>
 </web-app>

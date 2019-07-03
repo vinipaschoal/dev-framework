@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import devframework.op.listclasses.ListClassesHandler;
+import devframework.op.uploadfile.UploadFileHandler;
+
 /**
  * Servlet principal da aplicacao.
  */
@@ -25,8 +28,8 @@ public class FrontControllerServlet extends HttpServlet {
 		
 		// inicialia o mapa de tratamento de requisicao
 		this.handlerMap = new HashMap<String, IRequestHandler>();
-		this.handlerMap.put("opListaClasses", new ListaClassesHandler());
-		this.handlerMap.put("opUploadFile", new FileUploadHandler());
+		this.handlerMap.put("uploadFile.op", new UploadFileHandler());
+		this.handlerMap.put("listClasses.op", new ListClassesHandler());		
 	}
 
 	/**
@@ -34,15 +37,17 @@ public class FrontControllerServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-		// obtem a classe que trata a requisicao
-		IRequestHandler handler = this.getHandler(request);
-		
-		// executa a requisicao
-		String paginaRetorno = handler.handleRequest(request, response);
-		
-		// redireciona para a pagina de retorno
-		if ( paginaRetorno != null )
-			request.getRequestDispatcher("/" + paginaRetorno).forward(request, response);
+		try
+		{
+			// obtem a classe que trata a requisicao
+			IRequestHandler handler = this.getHandler(request);
+			handler.handleRequest(request, response);
+		}
+		catch ( Exception e )
+		{
+			// redireciona para a pagina de erro
+			new ErrorRequestHandler(e.getMessage()).handleRequest(request, response);
+		}
 	}
 
 	/**
@@ -50,7 +55,7 @@ public class FrontControllerServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-		// TODO Auto-generated method stub
+		// redireciona para o metodo doPost()
 		doGet(request, response);
 	}
 	
@@ -66,29 +71,29 @@ public class FrontControllerServlet extends HttpServlet {
 		IRequestHandler handler = this.handlerMap.get(requisicao);
 		
 		// redireciona para a pagina de erro caso nao exista classe que trate a requisicao
-		return handler != null ? handler : new OpcaoInvalidaHandler(requisicao);
+		return handler != null ? handler : new ErrorRequestHandler("Opção inválida: " + requisicao);
 	}
 
 	
 	/**
-	 * Redireciona para a pagina de erro em caso de requisicoes invalidas.
+	 * Redireciona para a pagina de erro em caso de requisicoes invalidas ou erros no processamento da requisicao.
 	 */
-	private class OpcaoInvalidaHandler implements IRequestHandler
+	private class ErrorRequestHandler implements IRequestHandler
 	{
-		private String requisicao;
+		private String errorMsg;
 		
-		public OpcaoInvalidaHandler(String requisicao)
+		public ErrorRequestHandler(String errorMsg)
 		{
-			this.requisicao = requisicao;
+			this.errorMsg = errorMsg;
 		}
 		
-		public String handleRequest(HttpServletRequest request, HttpServletResponse response)
+		public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 		{
 			// armazena os objetos que serao utilizados na pagina de resposta
-			request.setAttribute("erro", "Opção inválida: " + requisicao);
+			request.setAttribute("erro", errorMsg);
 			
-			// retorna o nome da pagina de resposta
-			return ( "paginaErro.jsp" );
+			// redireciona para a pagina de erro
+			this.callPage("paginaErro.jsp", request, response);
 		}
 	}
 }

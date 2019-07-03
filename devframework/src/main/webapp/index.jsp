@@ -43,8 +43,7 @@
 		style="padding: 2rem 2rem !important;">
 	<div class="container">
 		<h1 class="jumbotron-heading">Lista de Classes</h1>
-		<p class="lead">Selecione o botão abaixo para cadastrar novas
-			classes java.</p>
+		<p class="lead">Selecione o botão abaixo para cadastrar novas classes java.</p>
 		<p>
 			<button type="button" class="btn btn-primary" data-toggle="modal"
 				data-target="#classModal">Adicionar Nova Classe Java</button>
@@ -85,15 +84,15 @@
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">Incluir Nova
-						Classe Java</h5>
-					<button type="button" class="close" data-dismiss="modal"
-						aria-label="Close">
+					<h5 class="modal-title" id="exampleModalLabel">Incluir Nova Classe Java</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
 				<div class="modal-body">
-					<form method="post" action="opUploadFile" enctype="multipart/form-data" id="fileUploadForm">
+				
+					<!-- FORM PARA ENVIO DE NOVAS CLASSES -->
+					<form method="post" action="uploadFile.op" enctype="multipart/form-data" id="fileUploadForm">
 						<div class="row">
 							<div class="col-md-12">
 								<div class="input-group">
@@ -134,244 +133,156 @@
 
 
 	<script>
-		$(document)
-				.ready(
-						function() {
-							var languagePtBr = {
-								"sEmptyTable" : "Nenhum registro encontrado",
-								"sInfo" : "Mostrando de _START_ até _END_ de _TOTAL_ registros",
-								"sInfoEmpty" : "Mostrando 0 até 0 de 0 registros",
-								"sInfoFiltered" : "(Filtrados de _MAX_ registros)",
-								"sInfoPostFix" : "",
-								"sInfoThousands" : ".",
-								"sLengthMenu" : "_MENU_ resultados por página",
-								"sLoadingRecords" : "Carregando...",
-								"sProcessing" : "Processando...",
-								"sZeroRecords" : "Nenhum registro encontrado",
-								"sSearch" : "Pesquisar",
-								"oPaginate" : {
-									"sNext" : "Próximo",
-									"sPrevious" : "Anterior",
-									"sFirst" : "Primeiro",
-									"sLast" : "Último"
-								},
-								"oAria" : {
-									"sSortAscending" : ": Ordenar colunas de forma ascendente",
-									"sSortDescending" : ": Ordenar colunas de forma descendente"
-								}
-							};
-
-							var $tableClass = $('#classTable').DataTable({
-								"language" : languagePtBr
-							});
-
-							listClasses();
-
-							var validExts = new Array(".class");
-							$("#uploadFile").attr("accept", validExts);
-
-							$("#uploadFile").on("change", function(event) {
-								$("#inputGroupFile01").text($(this).val());
-							});
-
-							$("#btnCancel").on(
-									"click",
-									function(event) {
-										$('#uploadFile').replaceWith(
-												$('#uploadFile').val('').clone(
-														true));
-										$("#inputGroupFile01").text(
-												"Selecione uma classe java");
-										$('#classModal').modal('hide');
-									});
-
-							$("#btnSubmit")
-									.click(
-											function(event) {
-												event.preventDefault();
-												var $form = $('#fileUploadForm');
-
-												if ($('#uploadFile').val() == "") {
-													alertBt({
-														messageText : "Selecione uma classe java, arquivo do tipo "
-																+ validExts
-																		.toString()
-																+ ".",
-														headerText : "Alerta",
-														alertType : "warning"
-													});
-													return false;
-												} else {
-													var $fileExt = $(
-															'#uploadFile')
-															.val();
-													$fileExt = $fileExt
-															.substring($fileExt
-																	.lastIndexOf('.'));
-													if (validExts
-															.indexOf($fileExt) < 0) {
-														alertBt({
-															messageText : "O arquivo selecionado é inválido. Selecione apenas arquivos do tipo "
-																	+ validExts
-																			.toString()
-																	+ ".",
-															headerText : "Alerta",
-															alertType : "warning"
-														});
-														$("#inputGroupFile01")
-																.text(
-																		"Selecione uma classe java");
-														$('#uploadFile')
-																.replaceWith(
-																		$(
-																				'#uploadFile')
-																				.val(
-																						'')
-																				.clone(
-																						true));
-														return false;
-													}
-												}
-
-												$("#btnSubmit").attr(
-														"disabled", true);
-
-												var $data = new FormData(
-														$form[0]);
-												$
-														.ajax({
-															type : "POST",
-															enctype : 'multipart/form-data',
-															url : $form
-																	.attr('action'),
-															data : $data,
-															processData : false,
-															contentType : false,
-															cache : false,
-															timeout : 600000,
-															success : function(
-																	data) {
-																console
-																		.log(data);
-																$("#btnSubmit")
-																		.attr(
-																				"disabled",
-																				false);
-
-																if (data.success) {
-																	$(
-																			'#uploadFile')
-																			.replaceWith(
-																					$(
-																							'#uploadFile')
-																							.val(
-																									'')
-																							.clone(
-																									true));
-																	$(
-																			"#inputGroupFile01")
-																			.text(
-																					"Selecione uma classe java");
-																	$(
-																			'#classModal')
-																			.modal(
-																					'hide');
-																	alertBt({
-																		messageText : "Arquivo \""
-																				+ data.classe
-																				+ "\" cadastrado com sucesso.",
-																		headerText : "Confirmação",
-																		alertType : "success"
-																	});
-																	listClasses();
-																} else {
-																	alertBt({
-																		messageText : "Classe java inválida, a classe deve ter pelo menos um método.",
-																		headerText : "Alerta",
-																		alertType : "warning"
-																	});
-																}
-
-															},
-															error : function(e) {
-																$("#btnSubmit")
-																		.attr(
-																				"disabled",
-																				false);
-																$('#uploadFile')
-																		.replaceWith(
-																				$(
-																						'#uploadFile')
-																						.val(
-																								'')
-																						.clone(
-																								true));
-																$(
-																		"#inputGroupFile01")
-																		.text(
-																				"Selecione uma classe java");
-																$('#classModal')
-																		.modal(
-																				'hide');
-																alertBt({
-																	messageText : "Ocorreu um erro.<br/><br/><b>Erro</b>: "
-																			+ e
-																			+ ".",
-																	headerText : "Erro",
-																	alertType : "danger"
-																});
-															}
-														});
-											});
-
-							function listClasses() {
-
-								$tableClass.rows().remove().draw();
-
-								$
-										.ajax({
-											type : "GET",
-											url : $('#fileUploadForm').attr(
-													'action'),
-											processData : false,
-											contentType : false,
-											cache : false,
-											timeout : 600000,
-											success : function(data) {
-												console.log(data);
-												var $classList = data.classes;
-												$
-														.each(
-																$classList,
-																function(index,
-																		value) {
-																	console
-																			.log(index
-																					+ ": "
-																					+ value);
-																	$tableClass.row
-																			.add(
-																					[
-																							(parseInt(
-																									index,
-																									10) + 1),
-																							value ])
-																			.draw(
-																					false);
-																});
-											},
-											error : function(e) {
-												alertBt({
-													messageText : "Ocorreu um erro.<br/><br/><b>Erro</b>: "
-															+ e + ".",
-													headerText : "Erro",
-													alertType : "danger"
-												});
-											}
-										});
-							}
-
-						});
-	</script>
+		$(document).ready(
+			function() {
+	        	var languagePtBr = {
+	            	    "sEmptyTable": "Nenhum registro encontrado",
+	            	    "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+	            	    "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
+	            	    "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+	            	    "sInfoPostFix": "",
+	            	    "sInfoThousands": ".",
+	            	    "sLengthMenu": "_MENU_ resultados por página",
+	            	    "sLoadingRecords": "Carregando...",
+	            	    "sProcessing": "Processando...",
+	            	    "sZeroRecords": "Nenhum registro encontrado",
+	            	    "sSearch": "Pesquisar",
+	            	    "oPaginate": {
+	            	        "sNext": "Próximo",
+	            	        "sPrevious": "Anterior",
+	            	        "sFirst": "Primeiro",
+	            	        "sLast": "Último"
+	            	    },
+	            	    "oAria": {
+	            	        "sSortAscending": ": Ordenar colunas de forma ascendente",
+	            	        "sSortDescending": ": Ordenar colunas de forma descendente"
+	            	    }
+	            	};
+	        	
+	        	var $tableClass = $('#classTable').DataTable({
+	                "language": languagePtBr
+	        	});
+	        	
+	        	listClasses();
+	        	
+	        	var validExts = new Array(".class");
+	        	$("#uploadFile").attr("accept", validExts);
+	        	
+	        	$("#uploadFile").on("change", function (event) {
+	        		$("#inputGroupFile01").text($(this).val());
+	        	});
+	        	
+	        	$("#btnCancel").on("click", function (event) {
+	        		$('#uploadFile').replaceWith($('#uploadFile').val('').clone(true));
+	        		$("#inputGroupFile01").text("Selecione uma classe java");
+	                $('#classModal').modal('hide');
+	        	});
+	        	
+	            $("#btnSubmit").click(function (event) {
+					event.preventDefault();                
+					var $form = $('#fileUploadForm');
+	                
+	                if ($('#uploadFile').val() == ""){
+	                	alertBt({
+	  	        	      messageText: "Selecione uma classe java, arquivo do tipo " + validExts.toString() + ".",
+	  	        	      headerText: "Alerta",
+	  	        	      alertType: "warning"
+	  	        	    });
+	                	return false;
+	                }else{
+	                	var $fileExt = $('#uploadFile').val();
+	                    $fileExt = $fileExt.substring($fileExt.lastIndexOf('.'));
+	                    if (validExts.indexOf($fileExt) < 0) {
+	    					alertBt({
+	    	        	      messageText: "O arquivo selecionado é inválido. Selecione apenas arquivos do tipo " + validExts.toString() + ".",
+	    	        	      headerText: "Alerta",
+	    	        	      alertType: "warning"
+	    	        	    });
+	    					$("#inputGroupFile01").text("Selecione uma classe java");
+	    					$('#uploadFile').replaceWith($('#uploadFile').val('').clone(true));
+	                      return false;
+	                    }
+	                }
+	                
+	                $("#btnSubmit").attr("disabled", true);
+	                
+	                var $data = new FormData($form[0]);
+	                $.ajax({
+	                    type: "POST",
+	                    enctype: 'multipart/form-data',
+	                    url: $form.attr('action'),
+	                    data: $data,
+	                    processData: false,
+	                    contentType: false,
+	                    cache: false,
+	                    timeout: 600000,
+	                    success: function (data) {
+	                        console.log(data);
+	                        $("#btnSubmit").attr("disabled", false);
+	                        
+	                        if (data.success){
+	                        	$('#uploadFile').replaceWith($('#uploadFile').val('').clone(true));
+	                            $("#inputGroupFile01").text("Selecione uma classe java");
+	                            $('#classModal').modal('hide');
+	                            alertBt({
+	           	        	      messageText: "Arquivo \""+ data.classe +"\" cadastrado com sucesso.",
+	           	        	      headerText: "Confirmação",
+	           	        	      alertType: "success"
+	           	        	    });
+	                            listClasses();
+	                        }else{
+	                        	alertBt({
+	             	        	      messageText: "Classe java inválida, a classe deve ter as anotações @ServiceClass e @ServiceMethod.",
+	             	        	      headerText: "Alerta",
+	             	        	      alertType: "warning"
+	             	        	    });
+	                        }
+	                        
+	                    },
+	                    error: function (e) {
+	                        $("#btnSubmit").attr("disabled", false);
+	                        $('#uploadFile').replaceWith($('#uploadFile').val('').clone(true));
+	                        $("#inputGroupFile01").text("Selecione uma classe java");
+	                        $('#classModal').modal('hide');
+	                        alertBt({
+	       	        	      messageText: "Ocorreu um erro.<br/><br/><b>Erro</b>: " + e + ".",
+	       	        	      headerText: "Erro",
+	       	        	      alertType: "danger"
+	       	        	    });
+	                    }
+	                });
+	            });
+	            
+	            function listClasses(){
+	            	
+	            	$tableClass.rows().remove().draw();
+	            	
+	            	$.ajax({
+	                    type: "GET",
+	                    url: "listClasses.op",
+	                    processData: false,
+	                    contentType: false,
+	                    cache: false,
+	                    timeout: 600000,
+	                    success: function (data) {
+	                        console.log(data);
+	                        var $classList = data.classes;
+	                        $.each($classList, function( index, value ) {
+	                       	  	console.log( index + ": " + value );
+								$tableClass.row.add([(parseInt(index, 10) + 1), value]).draw( false );
+	                       	});
+	                    },
+	                    error: function (e) {
+	                        alertBt({
+	       	        	      messageText: "Ocorreu um erro.<br/><br/><b>Erro</b>: " + e + ".",
+	       	        	      headerText: "Erro",
+	       	        	      alertType: "danger"
+	       	        	    });
+	                    }
+	                });
+	            }
+	            
+	        });
+	    </script>
 </body>
 </html>
