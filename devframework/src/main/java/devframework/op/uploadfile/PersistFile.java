@@ -86,10 +86,9 @@ public class PersistFile
     	String packageName = utils.getClassInfo(fileItem.getInputStream(), fileName).getPackageName();
     	
     	// cria os diretorios do pacote da classe no diretorio de upload
-    	String classDir = utils.getProperty("classes.dir", System.getProperty("java.io.tmpdir") + File.separator + "upload");
-
-    	for (String dir : packageName.split("."))
-    		classDir = this.createDir(classDir, dir);
+    	String classDir = utils.getProperty("upload.dir", System.getProperty("java.io.tmpdir") + "upload");
+    	String dir =  packageName.replace(".",File.separator);    	
+    	classDir = this.createDir(classDir, dir);
     	
     	// salva a classe no diretorio de upload
     	File classFile = new File(classDir + File.separator + fileName);
@@ -102,7 +101,7 @@ public class PersistFile
     	File fileDir = new File(dirPath);
     	
         if (!fileDir.exists()) 
-        	fileDir.mkdir();
+        	fileDir.mkdirs();
         	
         return dirPath;
     }
@@ -111,11 +110,20 @@ public class PersistFile
     {
     	for (final File f : folder.listFiles()) 
         {
-        	if (f.isDirectory())
-            	search(pattern, f, result);
-            
-        	if (f.isFile() && f.getName().matches(pattern))
-            	result.add(f.getName());
+        	if (f.isDirectory()) {
+        		search(pattern, f, result);
+        	}                      
+        	if (f.isFile() && f.getName().matches(pattern)) {
+        		try {
+        			Class clazz = ClassValidationService.getInstance().isClassValid(f.getPath());
+					if(clazz != null) {
+						result.add(clazz.getName());
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+        	}
+            	
         }
     }
 }
