@@ -7,169 +7,115 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.junit.rules.ExpectedException;
 
 import devframework.utils.Utils;
-import junit.framework.TestCase;
 
-public class PersistFileTest extends TestCase {
+public class PersistFileTest {
+
+	@Rule
+	public ExpectedException thrown = ExpectedException.none();
 
 	private PersistFile persistFile;
 
 	@Before
-	public void setUp() {
+	public void setUp() throws IOException {
 		persistFile = new PersistFile();
 		File diretorio = new File("/diretorio");
-		if(diretorio.exists()) {
-			try {
-				FileUtils.deleteDirectory(diretorio);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		if (diretorio.exists()) {
+			FileUtils.deleteDirectory(diretorio);
 		}
 	}
 
-	@Test(expected = FileNotFoundException.class)
-	public void testeListComUploadDirInvalido() {
+	@Test
+	public void testeListComUploadDirInvalido() throws FileNotFoundException {
 		Utils.getInstance().setProperty("upload.dir", "/aaa/bbb/");
-		try {
-			persistFile.list();
-			fail("Deveria ter lançado FileNotFoundException");
-		} catch (FileNotFoundException e) {
-
-		}
+		thrown.expect(FileNotFoundException.class);
+		persistFile.list();
 	}
 
 	@Test
-	public void testeListComUploadDirVazio() {
+	public void testeListComUploadDirVazio() throws FileNotFoundException {
 		File diretorio = new File("/diretorio");
 		diretorio.mkdir();
 		Utils.getInstance().setProperty("upload.dir", "/diretorio");
-		try {
-			List<String> arquivos = persistFile.list();
-			assertEquals(0, arquivos.size());
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+		List<String> arquivos = persistFile.list();
+		Assert.assertEquals(0, arquivos.size());
 	}
 
 	@Test
-	public void testeListComUploadDirComDoisArquivosClass() {
+	public void testeListComUploadDirComDoisArquivosClass() throws IOException {
 		File diretorio = new File("/diretorio");
 		diretorio.mkdir();
-	    try {
-			Files.copy(getClass().getClassLoader().getResourceAsStream("Agenda.class"), Paths.get("/diretorio/Agenda.class"));
-			Files.copy(getClass().getClassLoader().getResourceAsStream("Tarefa.class"), Paths.get("/diretorio/Tarefa.class"));
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}		    
+		Files.copy(getClass().getClassLoader().getResourceAsStream("Agenda.class"),
+				Paths.get("/diretorio/Agenda.class"));
+		Files.copy(getClass().getClassLoader().getResourceAsStream("Tarefa.class"),
+				Paths.get("/diretorio/Tarefa.class"));
 		Utils.getInstance().setProperty("upload.dir", "/diretorio");
-		try {
-			List<String> arquivos = persistFile.list();
-			assertEquals(2, arquivos.size());
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+		List<String> arquivos = persistFile.list();
+		Assert.assertEquals(2, arquivos.size());
 	}
-	
-	
+
 	@Test
-	public void testeListComUploadDirComUmArquivoClassEOutroGenerico() {
+	public void testeListComUploadDirComUmArquivoClassEOutroGenerico() throws IOException {
 		File diretorio = new File("/diretorio");
 		diretorio.mkdir();
-	    try {
-			Files.copy(getClass().getClassLoader().getResourceAsStream("Agenda.class"), Paths.get("/diretorio/Agenda.class"));
-			File arquivo2 = new File("/diretorio/arquivo1");
-			arquivo2.createNewFile();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}	    
+		Files.copy(getClass().getClassLoader().getResourceAsStream("Agenda.class"),
+				Paths.get("/diretorio/Agenda.class"));
+		File arquivo2 = new File("/diretorio/arquivo1");
+		arquivo2.createNewFile();
 		Utils.getInstance().setProperty("upload.dir", "/diretorio");
-		try {
-			List<String> arquivos = persistFile.list();
-			assertEquals(1, arquivos.size());
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+		List<String> arquivos = persistFile.list();
+		Assert.assertEquals(1, arquivos.size());
 	}
-	
+
 	@Test
-	public void testeListComUploadDirComDoisArquivosGenericos() {
+	public void testeListComUploadDirComDoisArquivosGenericos() throws IOException {
 		File diretorio = new File("/diretorio");
 		diretorio.mkdir();
-	    try {
-	    	File arquivo1 = new File("/diretorio/arquivo1");
-			File arquivo2 = new File("/diretorio/arquivo1");
-			arquivo1.createNewFile();
-			arquivo2.createNewFile();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}	    
+		File arquivo1 = new File("/diretorio/arquivo1");
+		File arquivo2 = new File("/diretorio/arquivo1");
+		arquivo1.createNewFile();
+		arquivo2.createNewFile();
 		Utils.getInstance().setProperty("upload.dir", "/diretorio");
-		try {
-			List<String> arquivos = persistFile.list();
-			assertEquals(0, arquivos.size());
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+		List<String> arquivos = persistFile.list();
+		Assert.assertEquals(0, arquivos.size());
 	}
-	
+
 	@Test
-	public void testeListComUploadDirComDoisDiretoriosVazios() {
+	public void testeListComUploadDirComDoisDiretoriosVazios() throws FileNotFoundException {
 		File diretorio = new File("/diretorio/subdiretorio");
 		diretorio.mkdirs();
 		Utils.getInstance().setProperty("upload.dir", "/diretorio");
-		try {
-			List<String> arquivos = persistFile.list();
-			assertEquals(0, arquivos.size());
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+		List<String> arquivos = persistFile.list();
+		Assert.assertEquals(0, arquivos.size());
 	}
-	
+
 	@Test
-	public void testeListComUploadDirComArquivoClassNoSubdiretorio() {
+	public void testeListComUploadDirComArquivoClassNoSubdiretorio() throws IOException {
 		File diretorio = new File("/diretorio/subdiretorio");
 		diretorio.mkdirs();
-	    try {
-			Files.copy(getClass().getClassLoader().getResourceAsStream("Agenda.class"), Paths.get("/diretorio/subdiretorio/Agenda.class"));
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}		    
+		Files.copy(getClass().getClassLoader().getResourceAsStream("Agenda.class"),
+				Paths.get("/diretorio/subdiretorio/Agenda.class"));
 		Utils.getInstance().setProperty("upload.dir", "/diretorio");
-		try {
-			List<String> arquivos = persistFile.list();
-			assertEquals(1, arquivos.size());
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+		List<String> arquivos = persistFile.list();
+		Assert.assertEquals(1, arquivos.size());
 	}
-	
+
 	@Test
-	public void testeListComUploadDirComClassSemAnotacaoNecessaria() {
+	public void testeListComUploadDirComClassSemAnotacaoNecessaria() throws IOException {
 		File diretorio = new File("/diretorio/subdiretorio");
 		diretorio.mkdirs();
-	    try {
-			Files.copy(getClass().getClassLoader().getResourceAsStream("Pessoa.class"), Paths.get("/diretorio/Pessoa.class"));
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}		    
+		Files.copy(getClass().getClassLoader().getResourceAsStream("Pessoa.class"),
+				Paths.get("/diretorio/Pessoa.class"));
 		Utils.getInstance().setProperty("upload.dir", "/diretorio");
-		try {
-			List<String> arquivos = persistFile.list();
-			assertEquals(0, arquivos.size());
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+		List<String> arquivos = persistFile.list();
+		Assert.assertEquals(0, arquivos.size());
 	}
-	
+
 }

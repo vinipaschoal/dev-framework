@@ -68,7 +68,6 @@ public class PersistFile {
 		if(!uploadDir.exists()) {
 			throw new FileNotFoundException("Diretório não encontrado");
 		}
-
 		// procura as classes salvas
 		List<String> classesList = new ArrayList<>();
 		search(".*\\.class", uploadDir, classesList);
