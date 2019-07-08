@@ -93,9 +93,9 @@ public class PersistFileTest {
 
 	@Test
 	public void testeListComUploadDirComDoisDiretoriosVazios() throws FileNotFoundException {
-		File diretorio = new File("/diretorio/subdiretorio");
+		File diretorio = new File(File.separator+System.getProperty("user.dir") + File.separator +"diretorio"+File.separator+"subdiretorio");
 		diretorio.mkdirs();
-		Utils.getInstance().setProperty("upload.dir", "/diretorio");
+		Utils.getInstance().setProperty("upload.dir", System.getProperty("user.dir") + File.separator +"diretorio");
 		List<String> arquivos = persistFile.list();
 		Assert.assertEquals(0, arquivos.size());
 	}
