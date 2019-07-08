@@ -149,6 +149,7 @@ public class InvokerTest {
 		path = path.substring(0,path.length()-33);
 		Object object = invoker.call(path, "devframework.domain.Agenda", "getPessoaSemRetorno", new Object[0]);
 		Assert.assertNull(object);
+		
 	}
 
 
