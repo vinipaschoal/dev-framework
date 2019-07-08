@@ -2,7 +2,6 @@ package devframework.op.uploadfile;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.nio.file.DirectoryNotEmptyException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +16,7 @@ import devframework.validation.ClassValidationService;
 
 public class PersistFile {
 	public String save(HttpServletRequest request) throws Exception {
-		Utils utils = Utils.getInstance();
+		Utils utils = Utils.getInstance(); 
 
 		// Create a factory for disk-based file items
 		DiskFileItemFactory diskFactory = new DiskFileItemFactory();
@@ -66,7 +65,7 @@ public class PersistFile {
 		// diretorio de upload
 		File uploadDir = new File(Utils.getInstance().getProperty("upload.dir", System.getProperty("java.io.tmpdir")));
 		if(!uploadDir.exists()) {
-			throw new FileNotFoundException("Diretório não encontrado");
+			throw new FileNotFoundException("Diretï¿½rio nï¿½o encontrado");
 		}
 		// procura as classes salvas
 		List<String> classesList = new ArrayList<>();
