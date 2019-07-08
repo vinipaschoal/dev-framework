@@ -142,11 +142,10 @@ public class InvokerTest {
 	@Test
 	public void testeCallcomClasseValidaEClasseVoidAnotada() throws Exception {
 	/*	File diretorio = new File("/diretorio/devframework/domain");
-		diretorio.mkdirs();
+		diretorio.mkdirs();	
 		Files.copy(getClass().getClassLoader().getResourceAsStream("Agenda.class"),
 				Paths.get("/diretorio/devframework/domain/Agenda.class"));*/
-
-		Object object = invoker.call("src/test/resources", "devframework.domain.Agenda", "getPessoaSemRetorno", new Object[0]);
+		Object object = invoker.call("src"+File.separator+"test"+File.separator+"resources", "devframework.domain.Agenda", "getPessoaSemRetorno", new Object[0]);
 		Assert.assertNull(object);
 	}
 
