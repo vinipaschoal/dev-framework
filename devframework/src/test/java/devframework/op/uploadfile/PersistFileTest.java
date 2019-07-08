@@ -103,12 +103,12 @@ public class PersistFileTest {
 
 	@Test
 	public void testeListComUploadDirComArquivoClassNoSubdiretorio() throws IOException {
-		File diretorio = new File(File.separator+"diretorio"+File.separator+"subdiretorio");
+		File diretorio = new File(File.separator+System.getProperty("user.dir") + File.separator +"diretorio"+File.separator+"subdiretorio");
 		diretorio.mkdirs();
 		Files.copy(Paths.get(System.getProperty("user.dir") + File.separator + "src" + File.separator + "test" + File.separator
 				+ "resources" + File.separator + "devframework" + File.separator + "domain" + File.separator
-				+ "Agenda.class"), Paths.get(File.separator+"diretorio"+File.separator+"Agenda.class"));
-		Utils.getInstance().setProperty("upload.dir", "/diretorio");
+				+ "Agenda.class"), Paths.get(System.getProperty("user.dir")+ File.separator +"diretorio"+File.separator+"Agenda.class"));
+		Utils.getInstance().setProperty("upload.dir", System.getProperty("user.dir") + File.separator +"diretorio");
 		List<String> arquivos = persistFile.list();
 		Assert.assertEquals(1, arquivos.size());
 	}
