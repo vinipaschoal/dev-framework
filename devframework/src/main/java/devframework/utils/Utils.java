@@ -83,4 +83,9 @@ public class Utils
 	{
 		return new ClassParser(inputStream, fileName).parse();
 	}
+	
+	public void setProperty(String prop, String defaultValue)
+	{
+		this.properties.setProperty(prop, defaultValue);
+	}
 }

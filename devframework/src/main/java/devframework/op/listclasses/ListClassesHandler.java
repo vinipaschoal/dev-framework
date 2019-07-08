@@ -1,5 +1,6 @@
 package devframework.op.listclasses;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +18,7 @@ import devframework.servlet.IJsonRequestHandler;
  */
 public class ListClassesHandler implements IJsonRequestHandler
 {
-	public JsonObject handleAsync(HttpServletRequest request)
+	public JsonObject handleAsync(HttpServletRequest request) throws FileNotFoundException
 	{
 		// Fake classes list
 		List<String> classesList = new PersistFile().list();
