@@ -145,6 +145,10 @@ public class InvokerTest {
 		diretorio.mkdirs();
 		Files.copy(getClass().getClassLoader().getResourceAsStream("Agenda.class"),
 				Paths.get("/diretorio/devframework/domain/Agenda.class"));
+		File file  = new File("/diretorio/devframework/domain/Agenda.class");
+		if(!file.exists()){
+			Thread.sleep(2000);
+		}
 		Object object = invoker.call("/diretorio", "devframework.domain.Agenda", "getPessoaSemRetorno", new Object[0]);
 		Assert.assertNull(object);
 	}
