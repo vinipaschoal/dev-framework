@@ -142,7 +142,7 @@ public class InvokerTest {
 	@Test
 	public void testeCallcomClasseValidaEClasseVoidAnotada() throws Exception {
 	
-		Object object = invoker.call(System.getProperty("user.dir")+"\\src\\test\\resources", "devframework.domain.Agenda", "getPessoaSemRetorno", new Object[0]);
+		Object object = invoker.call(System.getProperty("user.dir")+File.separator+"src"+File.separator+"test"+File.separator+"resources", "devframework.domain.Agenda", "getPessoaSemRetorno", new Object[0]);
 		Assert.assertNull(object);
 		
 	}
