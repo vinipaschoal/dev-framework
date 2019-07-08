@@ -16,7 +16,6 @@ import org.springframework.util.ClassUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
 public class InvokerTest {
 
 	@Rule
@@ -35,20 +34,12 @@ public class InvokerTest {
 
 	@Test
 	public void testeCallcomDiretorioNull() throws Exception {
-		File diretorio = new File("/diretorio/devframework/domain");
-		diretorio.mkdirs();
-		Files.copy(getClass().getClassLoader().getResourceAsStream("Agenda.class"),
-				Paths.get("/diretorio/devframework/domain/Agenda.class"));
 		thrown.expect(FileNotFoundException.class);
 		invoker.call(null, "devframework.domain.Agenda", "getNome", new Object[0]);
 	}
 
 	@Test
 	public void testeCallcomDiretorioInvalido() throws Exception {
-		File diretorio = new File("/diretorio/devframework/domain");
-		diretorio.mkdirs();
-		Files.copy(getClass().getClassLoader().getResourceAsStream("Agenda.class"),
-				Paths.get("/diretorio/devframework/domain/Agenda.class"));
 		thrown.expect(FileNotFoundException.class);
 		invoker.call("/diretorioInvalido", "devframework.domain.Agenda", "getNome", new Object[0]);
 	}
@@ -71,81 +62,59 @@ public class InvokerTest {
 
 	@Test
 	public void testeCallcomNomeMetodoNull() throws Exception {
-		File diretorio = new File("/diretorio/devframework/domain");
-		diretorio.mkdirs();
-		Files.copy(getClass().getClassLoader().getResourceAsStream("Agenda.class"),
-				Paths.get("/diretorio/devframework/domain/Agenda.class"));
 		thrown.expect(NullPointerException.class);
-		invoker.call("/diretorio", "devframework.domain.Agenda", null, new Object[0]);
+		invoker.call(System.getProperty("user.dir") + File.separator + "src" + File.separator + "test" + File.separator
+				+ "resources", "devframework.domain.Agenda", null, new Object[0]);
 	}
 
 	@Test
 	public void testeCallcomNomeMetodoInvalido() throws Exception {
-		File diretorio = new File("/diretorio/devframework/domain");
-		diretorio.mkdirs();
-		Files.copy(getClass().getClassLoader().getResourceAsStream("Agenda.class"),
-				Paths.get("/diretorio/devframework/domain/Agenda.class"));
 		thrown.expect(NoSuchMethodException.class);
-		invoker.call("/diretorio", "devframework.domain.Agenda", "getNaoExiste", new Object[0]);
+		invoker.call(System.getProperty("user.dir") + File.separator + "src" + File.separator + "test" + File.separator
+				+ "resources", "devframework.domain.Agenda", "getNaoExiste", new Object[0]);
 	}
 
 	@Test
 	public void testeCallcomClasseSemAnotacaoNaClasse() throws Exception {
-		File diretorio = new File("/diretorio/devframework/domain");
-		diretorio.mkdirs();
-		Files.copy(getClass().getClassLoader().getResourceAsStream("Pessoa.class"),
-				Paths.get("/diretorio/devframework/domain/Pessoa.class"));
-		Assert.assertNull(invoker.call("/diretorio", "devframework.domain.Pessoa", "getNome", new Object[0]));
+		Assert.assertNull(invoker.call(System.getProperty("user.dir") + File.separator + "src" + File.separator + "test"
+				+ File.separator + "resources", "devframework.domain.Pessoa", "getNome", new Object[0]));
 	}
-	
+
 	@Test
 	public void testeCallcomClasseSemAnotacaoNoMetodo() throws Exception {
-		File diretorio = new File("/diretorio/devframework/domain");
-		diretorio.mkdirs();
-		Files.copy(getClass().getClassLoader().getResourceAsStream("Agenda.class"),
-				Paths.get("/diretorio/devframework/domain/Agenda.class"));
-		Assert.assertNull(invoker.call("/diretorio", "devframework.domain.Agenda", "getPessoaSemAnotacao", new Object[0]));
+		Assert.assertNull(invoker.call(System.getProperty("user.dir") + File.separator + "src" + File.separator + "test"
+				+ File.separator + "resources", "devframework.domain.Agenda", "getPessoaSemAnotacao", new Object[0]));
 	}
-	
+
 	@Test
 	public void testeCallcomClasseValida() throws Exception {
-		File diretorio = new File("/diretorio/devframework/domain");
-		diretorio.mkdirs();
-		Files.copy(getClass().getClassLoader().getResourceAsStream("Agenda.class"),
-				Paths.get("/diretorio/devframework/domain/Agenda.class"));
-		Object object = invoker.call("/diretorio", "devframework.domain.Agenda", "getPessoa", new Object[0]);
+		Object object = invoker.call(System.getProperty("user.dir") + File.separator + "src" + File.separator + "test"
+				+ File.separator + "resources", "devframework.domain.Agenda", "getPessoa", new Object[0]);
 		Assert.assertNotNull(object);
 	}
-	
+
 	@Test
 	public void testeCallcomClasseValidaERetornoJson() throws Exception {
-		File diretorio = new File("/diretorio/devframework/domain");
-		diretorio.mkdirs();
-		Files.copy(getClass().getClassLoader().getResourceAsStream("Agenda.class"),
-				Paths.get("/diretorio/devframework/domain/Agenda.class"));
-		Object object = invoker.call("/diretorio", "devframework.domain.Agenda", "getPessoaJson", new Object[0]);
+		Object object = invoker.call(System.getProperty("user.dir") + File.separator + "src" + File.separator + "test"
+				+ File.separator + "resources", "devframework.domain.Agenda", "getPessoaJson", new Object[0]);
 		ObjectMapper mapper = new ObjectMapper();
 		String jsonString = mapper.writeValueAsString(object);
 		Assert.assertTrue(jsonString.contains("nome"));
 	}
-	
+
 	@Test
 	public void testeCallcomClasseValidaERetornoPrimitivo() throws Exception {
-		File diretorio = new File("/diretorio/devframework/domain");
-		diretorio.mkdirs();
-		Files.copy(getClass().getClassLoader().getResourceAsStream("Agenda.class"),
-				Paths.get("/diretorio/devframework/domain/Agenda.class"));
-		Object object = invoker.call("/diretorio", "devframework.domain.Agenda", "getPessoaPrimitivo", new Object[0]);
+		Object object = invoker.call(System.getProperty("user.dir") + File.separator + "src" + File.separator + "test"
+				+ File.separator + "resources", "devframework.domain.Agenda", "getPessoaPrimitivo", new Object[0]);
 		Assert.assertTrue(ClassUtils.isPrimitiveOrWrapper(object.getClass()));
 	}
-	
+
 	@Test
 	public void testeCallcomClasseValidaEClasseVoidAnotada() throws Exception {
-	
-		Object object = invoker.call(System.getProperty("user.dir")+File.separator+"src"+File.separator+"test"+File.separator+"resources", "devframework.domain.Agenda", "getPessoaSemRetorno", new Object[0]);
+		Object object = invoker.call(System.getProperty("user.dir") + File.separator + "src" + File.separator + "test"
+				+ File.separator + "resources", "devframework.domain.Agenda", "getPessoaSemRetorno", new Object[0]);
 		Assert.assertNull(object);
-		
-	}
 
+	}
 
 }

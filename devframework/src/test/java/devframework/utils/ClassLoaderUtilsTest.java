@@ -28,31 +28,16 @@ public class ClassLoaderUtilsTest {
 
 	@Test
 	public void testLoadClassUmaClasseJaCarregada() throws Exception {
-		File diretorio = new File("/diretorio/devframework/domain");
-		diretorio.mkdirs();
-		Files.copy(getClass().getClassLoader().getResourceAsStream("Agenda.class"),
-				Paths.get("/diretorio/devframework/domain/Agenda.class"));
-		ClassLoaderUtils.getInstance().loadClass("/diretorio/devframework/domain/Agenda.class");
+		ClassLoaderUtils.getInstance().loadClass(System.getProperty("user.dir") + File.separator + "src" + File.separator + "test"
+				+ File.separator + "resources"+File.separator+"devframework"+File.separator+"domain"+File.separator+"Agenda.class");
 	}
 
 	@Test
 	public void testLoadClassCarregarDuasVezesMesmaClasseJaCarregada() throws Exception {
-		File diretorio = new File("/diretorio/devframework/domain");
-		diretorio.mkdirs();
-		Files.copy(getClass().getClassLoader().getResourceAsStream("Agenda.class"),
-				Paths.get("/diretorio/devframework/domain/Agenda.class"));
-		ClassLoaderUtils.getInstance().loadClass("/diretorio/devframework/domain/Agenda.class");
-		ClassLoaderUtils.getInstance().loadClass("/diretorio/devframework/domain/Agenda.class");
-	}
-
-	@Test
-	public void testLoadClassCarregarClasseNova() throws Exception {
-		File diretorio = new File("/diretorio/devframework/domain");
-		diretorio.mkdirs();
-		Files.copy(getClass().getClassLoader().getResourceAsStream("Agenda.class"),
-				Paths.get("/diretorio/devframework/domain/Agenda.class"));
-		thrown.expect(FileNotFoundException.class);
-		ClassLoaderUtils.getInstance().loadClass("/diretorio/devframework/domain/Teste.class");
+		ClassLoaderUtils.getInstance().loadClass(System.getProperty("user.dir") + File.separator + "src" + File.separator + "test"
+				+ File.separator + "resources"+File.separator+"devframework"+File.separator+"domain"+File.separator+"Agenda.class");
+		ClassLoaderUtils.getInstance().loadClass(System.getProperty("user.dir") + File.separator + "src" + File.separator + "test"
+				+ File.separator + "resources"+File.separator+"devframework"+File.separator+"domain"+File.separator+"Agenda.class");
 	}
 
 }

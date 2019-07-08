@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -52,9 +53,12 @@ public class PersistFileTest {
 	public void testeListComUploadDirComDoisArquivosClass() throws IOException {
 		File diretorio = new File("/diretorio");
 		diretorio.mkdir();
-		Files.copy(getClass().getClassLoader().getResourceAsStream("Agenda.class"),
-				Paths.get("/diretorio/Agenda.class"));
-		Files.copy(getClass().getClassLoader().getResourceAsStream("Tarefa.class"),
+		Files.copy(Paths.get(System.getProperty("user.dir") + File.separator + "src" + File.separator + "test" + File.separator
+				+ "resources" + File.separator + "devframework" + File.separator + "domain" + File.separator
+				+ "Agenda.class"), Paths.get("/diretorio/Agenda.class"));
+		Files.copy(Paths.get(System.getProperty("user.dir") + File.separator + "src" + File.separator + "test" + File.separator
+				+ "resources" + File.separator + "devframework" + File.separator + "domain" + File.separator
+				+ "Tarefa.class"),
 				Paths.get("/diretorio/Tarefa.class"));
 		Utils.getInstance().setProperty("upload.dir", "/diretorio");
 		List<String> arquivos = persistFile.list();
@@ -65,8 +69,9 @@ public class PersistFileTest {
 	public void testeListComUploadDirComUmArquivoClassEOutroGenerico() throws IOException {
 		File diretorio = new File("/diretorio");
 		diretorio.mkdir();
-		Files.copy(getClass().getClassLoader().getResourceAsStream("Agenda.class"),
-				Paths.get("/diretorio/Agenda.class"));
+		Files.copy(Paths.get(System.getProperty("user.dir") + File.separator + "src" + File.separator + "test" + File.separator
+				+ "resources" + File.separator + "devframework" + File.separator + "domain" + File.separator
+				+ "Agenda.class"), Paths.get("/diretorio/Agenda.class"));
 		File arquivo2 = new File("/diretorio/arquivo1");
 		arquivo2.createNewFile();
 		Utils.getInstance().setProperty("upload.dir", "/diretorio");
@@ -100,8 +105,9 @@ public class PersistFileTest {
 	public void testeListComUploadDirComArquivoClassNoSubdiretorio() throws IOException {
 		File diretorio = new File("/diretorio/subdiretorio");
 		diretorio.mkdirs();
-		Files.copy(getClass().getClassLoader().getResourceAsStream("Agenda.class"),
-				Paths.get("/diretorio/subdiretorio/Agenda.class"));
+		Files.copy(Paths.get(System.getProperty("user.dir") + File.separator + "src" + File.separator + "test" + File.separator
+				+ "resources" + File.separator + "devframework" + File.separator + "domain" + File.separator
+				+ "Agenda.class"), Paths.get("/diretorio/Agenda.class"));
 		Utils.getInstance().setProperty("upload.dir", "/diretorio");
 		List<String> arquivos = persistFile.list();
 		Assert.assertEquals(1, arquivos.size());
@@ -111,8 +117,9 @@ public class PersistFileTest {
 	public void testeListComUploadDirComClassSemAnotacaoNecessaria() throws IOException {
 		File diretorio = new File("/diretorio/subdiretorio");
 		diretorio.mkdirs();
-		Files.copy(getClass().getClassLoader().getResourceAsStream("Pessoa.class"),
-				Paths.get("/diretorio/Pessoa.class"));
+		Files.copy(Paths.get(System.getProperty("user.dir") + File.separator + "src" + File.separator + "test" + File.separator
+				+ "resources" + File.separator + "devframework" + File.separator + "domain" + File.separator
+				+ "Pessoa.class"), Paths.get("/diretorio/Pessoa.class"));
 		Utils.getInstance().setProperty("upload.dir", "/diretorio");
 		List<String> arquivos = persistFile.list();
 		Assert.assertEquals(0, arquivos.size());
