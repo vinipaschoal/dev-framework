@@ -1,5 +1,6 @@
 package devframework.webservice;
 
+import java.io.File;
 import java.lang.reflect.Method;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -11,7 +12,7 @@ import devframework.validation.ClassValidationService;
 public class Invoker extends ClassLoader {
 
 	public Object call(String filePath, String className, String methodName, Object... params) throws Exception {
-		String pathClassName = className.replace(".", "\\");
+		String pathClassName = className.replace(".", File.separator);
 		Class clazz = ClassValidationService.getInstance().isClassValid(filePath, pathClassName + ".class", methodName);
 		if (clazz != null) {
 			Object instanceOfClass = clazz.newInstance();
