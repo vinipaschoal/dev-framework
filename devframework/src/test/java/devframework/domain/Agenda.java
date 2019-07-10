@@ -16,26 +16,42 @@ public class Agenda {
 	public Pessoa getPessoaJson() {
 		return pessoa;
 	}
-	
+
 	@ServiceMethod
 	public int getPessoaPrimitivo() {
 		return pessoa.getIdade();
 	}
-	
+
 	@ServiceMethod
-	public void getPessoaSemRetorno() {
-		
+	public String getPessoaComParametro(int a, String b) {
+		return "pessoa com parametro int e String";
+	}
+
+	@ServiceMethod
+	public String getPessoaComParametro(String a, int b) {
+		return "pessoa com parametro String e int";
 	}
 	
+	@ServiceMethod(alias="getPessoaComParametroStringLong")
+	public String getPessoaComParametro(String a, long b) {
+		return "pessoa com parametro String e long anotada com alias";
+	}
+
+
+	@ServiceMethod
+	public void getPessoaSemRetorno() {
+
+	}
+
 	public Pessoa getPessoaSemAnotacao() {
 		return pessoa;
 	}
-	
+
 	@ServiceMethod
 	public Pessoa getPessoa() {
 		return pessoa;
 	}
-	
+
 	public void setPessoa(Pessoa pessoa) {
 		this.pessoa = pessoa;
 	}

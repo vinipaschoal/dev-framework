@@ -35,17 +35,12 @@ public final class ClassValidationService {
 		return null;
 	}
 
-	public Class<?> isClassValid(String filePath, String className, String methodname) throws Exception {
-		filePath = filePath + File.separator + className;
-		Class<?> clazz = ClassLoaderUtils.getInstance().loadClass(filePath);
-		if (clazz.isAnnotationPresent(ServiceClass.class)
-				&& isAnnotationPresent(clazz.getMethod(methodname), ServiceMethod.class)) {
-			return clazz;
-		}
-		return null;
-	}
-
 	public boolean isAnnotationPresent(Method method, Class annotation) throws Exception {
 		return method.isAnnotationPresent(annotation);
+	}
+	
+	public String getAliasFromServiceMethod(Method method) throws Exception {
+		ServiceMethod annotation = method.getAnnotation(ServiceMethod.class);
+		return annotation.alias();
 	}
 }
