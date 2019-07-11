@@ -19,4 +19,5 @@ public class MapeamentoRestController {
 		String filePath = Utils.getInstance().getProperty("upload.dir", System.getProperty("java.io.tmpdir"));
 		return invoker.call(filePath, className, methodName);
 	}
+	
 }

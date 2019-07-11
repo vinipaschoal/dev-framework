@@ -10,7 +10,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import devframework.op.uploadfile.PersistFile;
+import devframework.domain.ClassDescriptor;
+import devframework.services.PersistenceService;
 import devframework.servlet.IJsonRequestHandler;
 
 /**
@@ -20,8 +21,8 @@ public class ListClassesHandler implements IJsonRequestHandler
 {
 	public JsonObject handleAsync(HttpServletRequest request) throws FileNotFoundException
 	{
-		// Fake classes list
-		List<String> classesList = new PersistFile().list();
+		// obtem a lista de classes validas
+		List<ClassDescriptor> classesList = PersistenceService.getInstance().list();
 
         Gson gson = new GsonBuilder().create();
         

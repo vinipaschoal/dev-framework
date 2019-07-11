@@ -1,20 +1,24 @@
 package devframework.webservice;
 
-import java.io.File;
 import java.lang.reflect.Method;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import devframework.annotations.JsonReturn;
-import devframework.validation.ClassValidationService;
+import devframework.domain.ClassDescriptor;
+import devframework.services.PersistenceService;
 
 public class Invoker extends ClassLoader {
 
-	public Object call(String filePath, String className, String methodName, Object... params) throws Exception {
-		String pathClassName = className.replace(".", File.separator);
-		Class clazz = ClassValidationService.getInstance().isClassValid(filePath, pathClassName + ".class", methodName);
-		if (clazz != null) {
+	public Object call(String classQualifiedName, String methodName, Object... params) throws Exception 
+	{
+		// recupera a classe
+		ClassDescriptor classDesc = PersistenceService.getInstance().getClass(classQualifiedName);
+		
+		if ( classDesc != null ) 
+		{
+			Class<?> clazz = classDesc.getClassClass();
 			Object instanceOfClass = clazz.newInstance();
 			Method method = procuraMetodoComQuantidadeDeParametrosPassado(clazz, methodName, params);
 
@@ -22,10 +26,11 @@ public class Invoker extends ClassLoader {
 				return executaChamadaMetodoComRetornoEspecifico(method, instanceOfClass, params);
 			}
 		}
+		
 		return null;
 	}
 
-	private Method procuraMetodoComQuantidadeDeParametrosPassado(Class clazz, String methodName, Object[] params)
+	private Method procuraMetodoComQuantidadeDeParametrosPassado(Class<?> clazz, String methodName, Object[] params)
 			throws NoSuchMethodException, SecurityException {
 		return clazz.getMethod(methodName);
 	}
@@ -33,7 +38,7 @@ public class Invoker extends ClassLoader {
 	private Object executaChamadaMetodoComRetornoEspecifico(Method method, Object instanceOfClass, Object... params) throws JsonProcessingException, Exception {
 		if (method.getReturnType().isPrimitive()) {
 			return method.invoke(instanceOfClass);
-		} else if (ClassValidationService.getInstance().isAnnotationPresent(method, JsonReturn.class)) {
+		} else if (method.isAnnotationPresent(JsonReturn.class)) {
 			ObjectMapper mapper = new ObjectMapper();
 			return mapper.writeValueAsString(method.invoke(instanceOfClass));
 		} else {
