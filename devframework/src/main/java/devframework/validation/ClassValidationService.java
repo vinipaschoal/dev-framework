@@ -38,7 +38,7 @@ public final class ClassValidationService {
 	public boolean isAnnotationPresent(Method method, Class annotation) throws Exception {
 		return method.isAnnotationPresent(annotation);
 	}
-	
+
 	public String getAliasFromServiceMethod(Method method) throws Exception {
 		ServiceMethod annotation = method.getAnnotation(ServiceMethod.class);
 		return annotation.alias();

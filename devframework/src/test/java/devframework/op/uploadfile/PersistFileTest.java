@@ -22,7 +22,7 @@ public class PersistFileTest {
 
 	private PersistFile persistFile;
 
-	private final String diretorioRaiz = System.getProperty("user.dir") + File.separator + "diretorio";
+	private final String diretorioRaiz = File.separator+"tmp_test" + File.separator + "diretorio";
 
 	@Before
 	public void setUp() throws IOException {

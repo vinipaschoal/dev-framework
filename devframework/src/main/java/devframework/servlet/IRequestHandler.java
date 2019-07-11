@@ -7,22 +7,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Interface para tratar requisicoes sincronas. 
+ * Interface para tratar requisicoes sincronas.
  */
-public interface IRequestHandler
-{
+public interface IRequestHandler {
 	/**
 	 * Executa a requisicao encaminhada pelo FrontControllerServlet.
 	 */
-	public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
-	
+	public void handleRequest(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException;
+
 	/**
 	 * Redireciona para a pagina informada.
 	 * 
 	 * @param page nome da pagina a ser redirecionada (incluir a extensao)
 	 */
-	public default void callPage(String page, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-	{
+	public default void callPage(String page, HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		request.getRequestDispatcher("/" + page).forward(request, response);
 	}
 }

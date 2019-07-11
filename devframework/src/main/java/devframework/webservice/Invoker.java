@@ -1,6 +1,5 @@
 package devframework.webservice;
 
-import java.io.File;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,21 +9,26 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import devframework.annotations.JsonReturn;
 import devframework.annotations.ServiceMethod;
+import devframework.domain.ClassDescriptor;
+import devframework.services.PersistenceService;
 import devframework.validation.ClassValidationService;
 
 public class Invoker extends ClassLoader {
 
 	private Object[] valoresConvertidos;
 
-	public Object call(String filePath, String className, String methodName, Object... params) throws Exception {
-		String pathClassName = className.replace(".", File.separator);
-		Class clazz = ClassValidationService.getInstance().isClassValid(filePath, pathClassName + ".class");
-		if (clazz != null) {
+	public Object call(String classQualifiedName, String methodName, Object... params) throws Exception {
+
+		ClassDescriptor classDesc = PersistenceService.getInstance().getClass(classQualifiedName);
+
+		if (classDesc != null) {
+			Class<?> clazz = classDesc.getClassClass();
 			Object instanceOfClass = clazz.newInstance();
 			Method method = procuraMetodoCorrespondente(clazz, methodName, params);
 			if (method != null) {
 				return executaChamadaMetodoComRetornoEspecifico(method, instanceOfClass, valoresConvertidos);
 			}
+			throw new Exception("erro ao executar metodo");
 		}
 		throw new Exception("erro ao executar metodo");
 	}
@@ -78,10 +82,10 @@ public class Invoker extends ClassLoader {
 	private Object executaChamadaMetodoComRetornoEspecifico(Method method, Object instanceOfClass, Object... params)
 			throws JsonProcessingException, Exception {
 		if (method.getReturnType().isPrimitive()) {
-			return method.invoke(instanceOfClass,params);
+			return method.invoke(instanceOfClass, params);
 		} else if (ClassValidationService.getInstance().isAnnotationPresent(method, JsonReturn.class)) {
 			ObjectMapper mapper = new ObjectMapper();
-			return mapper.writeValueAsString(method.invoke(instanceOfClass,params));
+			return mapper.writeValueAsString(method.invoke(instanceOfClass, params));
 		} else {
 			return method.invoke(instanceOfClass, params).toString();
 		}

@@ -165,7 +165,7 @@
 	        	
 	        	listClasses();
 	        	
-	        	var validExts = new Array(".class");
+	        	var validExts = new Array(".class", ".jar");
 	        	$("#uploadFile").attr("accept", validExts);
 	        	
 	        	$("#uploadFile").on("change", function (event) {
@@ -268,8 +268,9 @@
 	                        console.log(data);
 	                        var $classList = data.classes;
 	                        $.each($classList, function( index, value ) {
-	                       	  	console.log( index + ": " + value );
-								$tableClass.row.add([(parseInt(index, 10) + 1), value]).draw( false );
+	                       	  	console.log( index + ": " + value.name + " - " + value.qualifiedName);
+								$tableClass.row.add([(parseInt(index, 10) + 1), 
+									"<a href='listMethods.op?class=" + value.qualifiedName + "'>" + value.qualifiedName + "</a>"]).draw( false );
 	                       	});
 	                    },
 	                    error: function (e) {

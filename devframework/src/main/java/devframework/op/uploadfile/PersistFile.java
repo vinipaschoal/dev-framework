@@ -16,7 +16,7 @@ import devframework.validation.ClassValidationService;
 
 public class PersistFile {
 	public String save(HttpServletRequest request) throws Exception {
-		Utils utils = Utils.getInstance(); 
+		Utils utils = Utils.getInstance();
 
 		// Create a factory for disk-based file items
 		DiskFileItemFactory diskFactory = new DiskFileItemFactory();
@@ -64,7 +64,7 @@ public class PersistFile {
 	public List<String> list() throws FileNotFoundException {
 		// diretorio de upload
 		File uploadDir = new File(Utils.getInstance().getProperty("upload.dir", System.getProperty("java.io.tmpdir")));
-		if(!uploadDir.exists()) {
+		if (!uploadDir.exists()) {
 			throw new FileNotFoundException("Diret�rio n�o encontrado");
 		}
 		// procura as classes salvas
@@ -117,4 +117,5 @@ public class PersistFile {
 
 		}
 	}
+
 }

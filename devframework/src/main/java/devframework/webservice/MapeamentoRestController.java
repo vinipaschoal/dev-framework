@@ -16,8 +16,9 @@ public class MapeamentoRestController {
 	private Invoker invoker = new Invoker();
 
 	@RequestMapping("/services/{className}/{methodName}")
-	public Object message(@PathVariable String className, @PathVariable String methodName, @RequestParam Object ...params) throws Exception {
+	public Object message(@PathVariable String className, @PathVariable String methodName,
+			@RequestParam Object... params) throws Exception {
 		String filePath = Utils.getInstance().getProperty("upload.dir", System.getProperty("java.io.tmpdir"));
-		return invoker.call(filePath, className, methodName, params);
+		return invoker.call(className, methodName, params);
 	}
 }
