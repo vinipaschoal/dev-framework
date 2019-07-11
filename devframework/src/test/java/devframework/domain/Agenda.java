@@ -13,6 +13,25 @@ public class Agenda {
 
 	@ServiceMethod
 	@JsonReturn
+	public Pessoa getPessoaJson() {
+		return pessoa;
+	}
+	
+	@ServiceMethod
+	public int getPessoaPrimitivo() {
+		return pessoa.getIdade();
+	}
+	
+	@ServiceMethod
+	public void getPessoaSemRetorno() {
+		
+	}
+	
+	public Pessoa getPessoaSemAnotacao() {
+		return pessoa;
+	}
+	
+	@ServiceMethod
 	public Pessoa getPessoa() {
 		return pessoa;
 	}
@@ -20,5 +39,4 @@ public class Agenda {
 	public void setPessoa(Pessoa pessoa) {
 		this.pessoa = pessoa;
 	}
-
 }
