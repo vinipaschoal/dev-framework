@@ -31,11 +31,15 @@ public class InvokerTest {
 		this.invoker = new Invoker();
 		File diretorio = new File("/diretorio");
 		if (diretorio.exists()) {
-			FileUtils.deleteDirectory(diretorio);
+			FileUtils.cleanDirectory(diretorio);
+		}else {
+			diretorio.mkdir();
 		}
+		
 		params = new Object[2];
 		params[0] = "teste";
 		params[1] = Integer.toString(12);
+		
 	}
 
 	@Test
