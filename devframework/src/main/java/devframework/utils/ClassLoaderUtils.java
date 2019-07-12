@@ -1,6 +1,7 @@
 package devframework.utils;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -8,7 +9,9 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -16,6 +19,7 @@ import org.apache.bcel.classfile.ClassParser;
 import org.apache.bcel.classfile.JavaClass;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 
 import devframework.servlet.FrontControllerServlet;
 
@@ -158,6 +162,23 @@ public class ClassLoaderUtils {
 		} finally {
 			// apaga o arquivo temporario
 			FileUtils.deleteQuietly(tempJarFile);
+		}
+	}
+	
+	
+	public Map<String, byte[]> getInputStreamClassesFromJar(String jarPath) throws IOException{
+		Map<String, byte[]> inputs = new HashMap<String,byte[]>();
+		try (JarFile jarFile = new JarFile(jarPath);) {
+			List<Class<?>> classList = new ArrayList<Class<?>>();
+			Enumeration<JarEntry> jarEntries = jarFile.entries();
+			while (jarEntries.hasMoreElements()) {
+				JarEntry jarEntry = jarEntries.nextElement();
+				if (jarEntry.isDirectory() || !FilenameUtils.isExtension(jarEntry.getName(), "class")) {
+					continue;
+				}
+				inputs.put(this.fixClassName(jarEntry.getName()),IOUtils.toByteArray(jarFile.getInputStream(jarEntry)));
+			}
+			return inputs;
 		}
 	}
 
