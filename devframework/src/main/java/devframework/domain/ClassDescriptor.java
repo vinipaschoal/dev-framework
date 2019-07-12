@@ -3,64 +3,54 @@ package devframework.domain;
 /**
  * Descritor de classes.
  */
-public class ClassDescriptor
-{
+public class ClassDescriptor {
 	// nome da classe
 	private String name;
-	
+
 	// nome qualificado da classe (pacote + nomeclasse)
 	private String qualifiedName;
-	
+
 	// objeto Class
 	private transient Class<?> classClass;
 
 	/**
 	 * Construtor padrao (para reflexao / demais frameworks)
 	 */
-	public ClassDescriptor()
-	{		
+	public ClassDescriptor() {
 	}
-	
-	public ClassDescriptor(Class<?> clazz)
-	{
+
+	public ClassDescriptor(Class<?> clazz) {
 		this.name = clazz.getSimpleName();
 		this.qualifiedName = clazz.getCanonicalName();
 		this.classClass = clazz;
 	}
-	
-	public String getName()
-	{
+
+	public String getName() {
 		return name;
 	}
 
-	public void setName(String name)
-	{
+	public void setName(String name) {
 		this.name = name;
 	}
 
-	public String getQualifiedName()
-	{
+	public String getQualifiedName() {
 		return qualifiedName;
 	}
 
-	public void setQualifiedName(String qualifiedName)
-	{
+	public void setQualifiedName(String qualifiedName) {
 		this.qualifiedName = qualifiedName;
 	}
 
-	public Class<?> getClassClass()
-	{
+	public Class<?> getClassClass() {
 		return classClass;
 	}
 
-	public void setClassClass(Class<?> clazz)
-	{
+	public void setClassClass(Class<?> clazz) {
 		this.classClass = clazz;
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
@@ -69,8 +59,7 @@ public class ClassDescriptor
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
+	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)
@@ -78,14 +67,12 @@ public class ClassDescriptor
 		if (getClass() != obj.getClass())
 			return false;
 		ClassDescriptor other = (ClassDescriptor) obj;
-		if (name == null)
-		{
+		if (name == null) {
 			if (other.name != null)
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
-		if (qualifiedName == null)
-		{
+		if (qualifiedName == null) {
 			if (other.qualifiedName != null)
 				return false;
 		} else if (!qualifiedName.equals(other.qualifiedName))

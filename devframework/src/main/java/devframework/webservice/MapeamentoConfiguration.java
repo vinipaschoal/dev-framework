@@ -16,12 +16,12 @@ public class MapeamentoConfiguration extends WebMvcConfigurerAdapter {
 
 		if (!registry.hasMappingForPattern("/webjars/**")) {
 			registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
-		}		
-		
+		}
+
 		if (!registry.hasMappingForPattern("/resources/**")) {
 			registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
 		}
-		
+
 		registry.setOrder(1);
 	}
 }

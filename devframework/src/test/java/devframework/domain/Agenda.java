@@ -1,42 +1,53 @@
 package devframework.domain;
 
-import java.util.Date;
-
 import devframework.annotations.JsonReturn;
 import devframework.annotations.ServiceClass;
 import devframework.annotations.ServiceMethod;
 
 @ServiceClass
 public class Agenda {
-
-	private Pessoa pessoa = new Pessoa("Joao", 50, "rua acacias", new Date(System.currentTimeMillis()));
+	
+	private int idade = 50;
 
 	@ServiceMethod
 	@JsonReturn
-	public Pessoa getPessoaJson() {
-		return pessoa;
+	public Agenda getPessoaJson() {
+		return this;
 	}
-	
+
 	@ServiceMethod
 	public int getPessoaPrimitivo() {
-		return pessoa.getIdade();
+		return idade;
+	}
+
+	@ServiceMethod
+	public String getPessoaComParametro(int a, String b) {
+		return "pessoa com parametro int e String";
+	}
+
+	@ServiceMethod
+	public String getPessoaComParametro(String a, int b) {
+		return "pessoa com parametro String e int";
 	}
 	
+	@ServiceMethod(alias="getPessoaComParametroStringLong")
+	public String getPessoaComParametro(String a, long b) {
+		return "pessoa com parametro String e long anotada com alias";
+	}
+
+
 	@ServiceMethod
 	public void getPessoaSemRetorno() {
-		
+
 	}
-	
-	public Pessoa getPessoaSemAnotacao() {
-		return pessoa;
+
+	public Agenda getPessoaSemAnotacao() {
+		return this;
 	}
-	
+
 	@ServiceMethod
-	public Pessoa getPessoa() {
-		return pessoa;
+	public Agenda getPessoa() {
+		return this;
 	}
-	
-	public void setPessoa(Pessoa pessoa) {
-		this.pessoa = pessoa;
-	}
+
 }

@@ -24,7 +24,7 @@ public abstract class TestUtils
 	
 	static 
 	{
-		String testDir = Paths.get("target", "test-dir").toAbsolutePath().toString();
+		String testDir = Paths.get(File.separator+"tmpTeste", "test-dir").toAbsolutePath().toString();
 		try
 		{
 			// tenta criar o diretorio de teste em "target/test-dir"

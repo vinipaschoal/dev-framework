@@ -17,18 +17,16 @@ import devframework.servlet.IJsonRequestHandler;
 /**
  * Trata as requisicoes de listar as classes salvas.
  */
-public class ListClassesHandler implements IJsonRequestHandler
-{
-	public JsonObject handleAsync(HttpServletRequest request) throws FileNotFoundException
-	{
+public class ListClassesHandler implements IJsonRequestHandler {
+	public JsonObject handleAsync(HttpServletRequest request) throws FileNotFoundException {
 		// obtem a lista de classes validas
 		List<ClassDescriptor> classesList = PersistenceService.getInstance().list();
 
-        Gson gson = new GsonBuilder().create();
-        
-        JsonArray jarray = gson.toJsonTree(classesList).getAsJsonArray();
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.add("classes", jarray);
+		Gson gson = new GsonBuilder().create();
+
+		JsonArray jarray = gson.toJsonTree(classesList).getAsJsonArray();
+		JsonObject jsonObject = new JsonObject();
+		jsonObject.add("classes", jarray);
 
 		return jsonObject;
 	}

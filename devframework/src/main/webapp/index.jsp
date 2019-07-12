@@ -270,7 +270,7 @@
 	                        $.each($classList, function( index, value ) {
 	                       	  	console.log( index + ": " + value.name + " - " + value.qualifiedName);
 								$tableClass.row.add([(parseInt(index, 10) + 1), 
-									"<a href='listMethods.op?class=" + value.qualifiedName + "'>" + value.name + "</a>"]).draw( false );
+									"<a href='listMethods.op?class=" + value.qualifiedName + "'>" + value.qualifiedName + "</a>"]).draw( false );
 	                       	});
 	                    },
 	                    error: function (e) {
