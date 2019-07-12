@@ -10,8 +10,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import devframework.annotations.JsonReturn;
 import devframework.annotations.ServiceMethod;
 import devframework.domain.ClassDescriptor;
+import devframework.services.ClassValidationService;
 import devframework.services.PersistenceService;
-import devframework.validation.ClassValidationService;
 
 public class Invoker extends ClassLoader {
 
