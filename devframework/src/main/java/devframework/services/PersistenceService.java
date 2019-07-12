@@ -5,7 +5,10 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
@@ -13,6 +16,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
 import devframework.domain.ClassDescriptor;
+import devframework.utils.ClassLoaderUtils;
 import devframework.utils.Utils;
 
 /**
@@ -56,18 +60,25 @@ public class PersistenceService {
 				String pacote = ((Class) valid).getPackage().getName();
 				pacote = pacote.replace(".", File.separator);
 				fileName = pacote + File.separator + fileName;
+				File file = new File(Utils.getInstance().getUploadDir() + File.separator + fileName);
+				streamCopy.reset();
+				FileUtils.copyInputStreamToFile(streamCopy, file);
+			}else {
+				List<Class> classes = ((List<Class>) valid);
+				File tempJarFile = File.createTempFile("tempJar", ".jar");
+				streamCopy.reset();
+				FileUtils.copyToFile(streamCopy, tempJarFile);
+				Map<String, byte[]> inputStreamClassesFromJar = ClassLoaderUtils.getInstance().getInputStreamClassesFromJar(tempJarFile.getAbsolutePath());
+				for(Class clazz: classes) {
+					String NomeEPacote = clazz.getName();
+					NomeEPacote = NomeEPacote.replace(".", File.separator);
+					File file = new File(Utils.getInstance().getUploadDir() + File.separator + NomeEPacote+".class");
+					ByteArrayInputStream streamCopyClass = new ByteArrayInputStream(inputStreamClassesFromJar.get(clazz.getName()+".class"));
+					FileUtils.copyInputStreamToFile(streamCopyClass, file);
+				}	
 			}
-
-			// arquivo de destino
-			File file = new File(Utils.getInstance().getUploadDir() + File.separator + fileName);
-
-			// salva o arquivo no diretorio de upload
-			streamCopy.reset();
-			FileUtils.copyInputStreamToFile(streamCopy, file);
-
 			return true;
 		}
-
 		return false;
 	}
 
