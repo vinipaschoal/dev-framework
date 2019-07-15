@@ -32,6 +32,7 @@ public class InvokerTest {
 	@BeforeClass
 	public static void setUpClass() throws Exception {
 		TestUtils.copyToTestDir(Agenda.class, AgendaInvalida.class, Tarefa.class, TarefaInvalida.class, Pessoa.class);
+		TestUtils.createJar("test.jar", Agenda.class, Tarefa.class, Pessoa.class);
 	}
 	
 	

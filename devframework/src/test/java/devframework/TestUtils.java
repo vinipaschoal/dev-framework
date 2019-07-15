@@ -86,7 +86,8 @@ public abstract class TestUtils
 	{
 		try
 		{
-			FileUtils.cleanDirectory(TEST_DIR_FILE);
+			TEST_DIR_FILE.delete();
+			TEST_DIR_FILE.createNewFile();
 			return true;
 		}
 		catch ( IOException ioe )
