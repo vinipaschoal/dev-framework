@@ -30,24 +30,34 @@ app.Classes = {
         	
         	$.ajax({
                 type: "GET",
-                url: "listClasses.op",
+                url: $('#classTable').data("url"),
                 processData: false,
                 contentType: false,
                 cache: false,
                 timeout: 600000,
                 success: function (data) {
                     console.log(data);
-                    var $classList = data.classes;                    
-                    $.each($classList, function( i, classe ) {
-                    	app.Classes.tableClass.row.add([
-							classe.name
-							,"<a href='listMethods.op?class=" + classe.qualifiedName + "'>" + classe.qualifiedName + "</a>"
-							]).draw( false );
-                   	});
+                    if (data.success){
+	                    var $classList = data.classes;                    
+	                    $.each($classList, function( i, classe ) {
+	                    	app.Classes.tableClass.row.add([
+								classe.name
+								,"<a href='methods.jsp?class=" + classe.qualifiedName + "'>" + classe.qualifiedName + "</a>"
+								]).draw( false );
+	                   	});
+                    }else{
+                    	alertBt({
+       	        	      messageText: data.message,
+       	        	      headerText: "Alerta",
+       	        	      alertType: "danger"
+       	        	    });
+                    }
                 },
                 error: function (e) {
+                	var $msg = $(e.responseText).filter('title').text();
+                	if ($msg == '') $msg = "Ocorreu um erro.<br/>";
                     alertBt({
-   	        	      messageText: "Ocorreu um erro.<br/>",
+   	        	      messageText: $msg,
    	        	      headerText: "Erro",
    	        	      alertType: "danger"
    	        	    });
@@ -119,9 +129,11 @@ app.Classes = {
                     $('#uploadFile').replaceWith($('#uploadFile').val('').clone(true));
                     $("#inputGroupFile01").text("Selecione uma classe java");
                     $('#classModal').modal('hide');
-                    
+
+                    var $msg = $(e.responseText).filter('title').text();
+                	if ($msg == '') $msg = "Ocorreu um erro.<br/><br/><b>Erro</b>: " + e + ".";
                     alertBt({
-   	        	      messageText: "Ocorreu um erro.<br/><br/><b>Erro</b>: " + e + ".",
+   	        	      messageText: $msg,
    	        	      headerText: "Erro",
    	        	      alertType: "danger"
    	        	    });

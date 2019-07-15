@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import devframework.op.listclasses.ListClassesHandler;
+import devframework.op.listmethods.ListMethodsHandler;
 import devframework.op.uploadfile.UploadFileHandler;
 
 /**
@@ -28,6 +29,7 @@ public class FrontControllerServlet extends HttpServlet {
 		this.handlerMap = new HashMap<String, IRequestHandler>();
 		this.handlerMap.put("uploadFile.op", new UploadFileHandler());
 		this.handlerMap.put("listClasses.op", new ListClassesHandler());
+		this.handlerMap.put("listMethods.op", new ListMethodsHandler());
 	}
 
 	/**

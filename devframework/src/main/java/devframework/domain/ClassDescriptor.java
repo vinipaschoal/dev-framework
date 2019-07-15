@@ -1,5 +1,7 @@
 package devframework.domain;
 
+import java.util.List;
+
 /**
  * Descritor de classes.
  */
@@ -13,6 +15,8 @@ public class ClassDescriptor {
 	// objeto Class
 	private transient Class<?> classClass;
 
+	private List<MethodDescriptor> methods;
+	
 	/**
 	 * Construtor padrao (para reflexao / demais frameworks)
 	 */
@@ -49,6 +53,18 @@ public class ClassDescriptor {
 		this.classClass = clazz;
 	}
 
+	public List<MethodDescriptor> getMethods() {
+		return methods;
+	}
+	
+	public void addMethods(MethodDescriptor method) {
+		this.methods.add(method);
+	}
+	
+	public void setMethods(List<MethodDescriptor> methods) {
+		this.methods = methods;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

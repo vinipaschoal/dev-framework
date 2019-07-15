@@ -1,0 +1,21 @@
+.text-muted {
+	font-size: 15px !important;
+}
+
+.jumbotron {
+	padding: 2rem 2rem !important;
+	margin-bottom: 1rem !important;
+}
+
+.breadcrumb-item::before {
+    content: "" !important;
+    padding-right: 0 !important;
+}
+
+.breadcrumb-item {
+    padding-left: 0 !important;
+}
+
+.breadcrumb {
+	background-color: #F8F8F8;
+}
