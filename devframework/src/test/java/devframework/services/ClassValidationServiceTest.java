@@ -40,11 +40,11 @@ public class ClassValidationServiceTest{
 		TestUtils.createJar("jarInvalido.jar", AgendaInvalida.class, TarefaInvalida.class, Pessoa.class);
 	}
 
-	@AfterClass
+	/*@AfterClass
 	public static void cleanUp() {
 		// apaga os arquivos do diretorio de teste
 		TestUtils.cleanTestDir();
-	}
+	}*/
 
 	@Test
 	@RepeatTest(times = REP_NUM)

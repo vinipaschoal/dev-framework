@@ -36,11 +36,12 @@ public class ClassLoaderUtilsTest {
 		TestUtils.createJar("test.jar", Agenda.class, Tarefa.class, Pessoa.class);
 	}
 
-	@AfterClass
+	/*@AfterClass
 	public static void cleanUp() {
+		System.gc();
 		// apaga os arquivos do diretorio de teste
 		TestUtils.cleanTestDir();
-	}
+	}*/
 
 	@Test
 	@RepeatTest(times = REP_NUM)
