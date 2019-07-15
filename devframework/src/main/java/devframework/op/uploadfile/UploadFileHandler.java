@@ -28,12 +28,13 @@ public class UploadFileHandler implements IJsonRequestHandler
 		try
 		{
 			String fileName = this.saveFile(request);
-			jsonObject.addProperty("classe", fileName);
+			jsonObject.addProperty("message", "Arquivo " + fileName + " carregado com sucesso!");
 			jsonObject.addProperty("success", true);
 		}
 		catch ( Exception e )
 		{
-			e.printStackTrace();			
+			e.printStackTrace();
+			jsonObject.addProperty("message", "Erro: " + e.toString());
 			jsonObject.addProperty("success", false);
 		}
 		

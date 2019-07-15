@@ -6,9 +6,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>DevFramework</title>
-<link href="webjars/bootstrap/4.3.1/css/bootstrap.css" rel="stylesheet">
-<link href="webjars/bootstrap/4.3.1/css/bootstrap-theme.css"
-	rel="stylesheet">
+<link href="webjars/bootstrap/4.3.1/css/bootstrap.css" rel="stylesheet" type="text/css">
+<link href="webjars/datatables/1.10.19/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 
@@ -123,167 +122,16 @@
 	<!-- load Bootstrap library -->
 	<script type="text/javascript"
 		src="webjars/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-	<!-- load alert.bootstrap library -->
-	<script type="text/javascript" src="resources/alert.bootstrap.js"></script>
 	<!-- load dataTables library -->
-	<script type="text/javascript"
-		src="webjars/datatables/1.10.19/js/jquery.dataTables.min.js"></script>
-	<script type="text/javascript"
-		src="webjars/datatables/1.10.19/js/dataTables.bootstrap4.min.js"></script>
-
-
-	<script>
-		$(document).ready(
-			function() {
-	        	var languagePtBr = {
-	            	    "sEmptyTable": "Nenhum registro encontrado",
-	            	    "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
-	            	    "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
-	            	    "sInfoFiltered": "(Filtrados de _MAX_ registros)",
-	            	    "sInfoPostFix": "",
-	            	    "sInfoThousands": ".",
-	            	    "sLengthMenu": "_MENU_ resultados por página",
-	            	    "sLoadingRecords": "Carregando...",
-	            	    "sProcessing": "Processando...",
-	            	    "sZeroRecords": "Nenhum registro encontrado",
-	            	    "sSearch": "Pesquisar",
-	            	    "oPaginate": {
-	            	        "sNext": "Próximo",
-	            	        "sPrevious": "Anterior",
-	            	        "sFirst": "Primeiro",
-	            	        "sLast": "Último"
-	            	    },
-	            	    "oAria": {
-	            	        "sSortAscending": ": Ordenar colunas de forma ascendente",
-	            	        "sSortDescending": ": Ordenar colunas de forma descendente"
-	            	    }
-	            	};
-	        	
-	        	var $tableClass = $('#classTable').DataTable({
-	                "language": languagePtBr
-	        	});
-	        	
-	        	listClasses();
-	        	
-	        	var validExts = new Array(".class", ".jar");
-	        	$("#uploadFile").attr("accept", validExts);
-	        	
-	        	$("#uploadFile").on("change", function (event) {
-	        		$("#inputGroupFile01").text($(this).val());
-	        	});
-	        	
-	        	$("#btnCancel").on("click", function (event) {
-	        		$('#uploadFile').replaceWith($('#uploadFile').val('').clone(true));
-	        		$("#inputGroupFile01").text("Selecione uma classe java");
-	                $('#classModal').modal('hide');
-	        	});
-	        	
-	            $("#btnSubmit").click(function (event) {
-					event.preventDefault();                
-					var $form = $('#fileUploadForm');
-	                
-	                if ($('#uploadFile').val() == ""){
-	                	alertBt({
-	  	        	      messageText: "Selecione uma classe java, arquivo do tipo " + validExts.toString() + ".",
-	  	        	      headerText: "Alerta",
-	  	        	      alertType: "warning"
-	  	        	    });
-	                	return false;
-	                }else{
-	                	var $fileExt = $('#uploadFile').val();
-	                    $fileExt = $fileExt.substring($fileExt.lastIndexOf('.'));
-	                    if (validExts.indexOf($fileExt) < 0) {
-	    					alertBt({
-	    	        	      messageText: "O arquivo selecionado é inválido. Selecione apenas arquivos do tipo " + validExts.toString() + ".",
-	    	        	      headerText: "Alerta",
-	    	        	      alertType: "warning"
-	    	        	    });
-	    					$("#inputGroupFile01").text("Selecione uma classe java");
-	    					$('#uploadFile').replaceWith($('#uploadFile').val('').clone(true));
-	                      return false;
-	                    }
-	                }
-	                
-	                $("#btnSubmit").attr("disabled", true);
-	                
-	                var $data = new FormData($form[0]);
-	                $.ajax({
-	                    type: "POST",
-	                    enctype: 'multipart/form-data',
-	                    url: $form.attr('action'),
-	                    data: $data,
-	                    processData: false,
-	                    contentType: false,
-	                    cache: false,
-	                    timeout: 600000,
-	                    success: function (data) {
-	                        console.log(data);
-	                        $("#btnSubmit").attr("disabled", false);
-	                        
-	                        if (data.success){
-	                        	$('#uploadFile').replaceWith($('#uploadFile').val('').clone(true));
-	                            $("#inputGroupFile01").text("Selecione uma classe java");
-	                            $('#classModal').modal('hide');
-	                            alertBt({
-	           	        	      messageText: "Arquivo \""+ data.classe +"\" cadastrado com sucesso.",
-	           	        	      headerText: "Confirmação",
-	           	        	      alertType: "success"
-	           	        	    });
-	                            listClasses();
-	                        }else{
-	                        	alertBt({
-	             	        	      messageText: "Classe java inválida, a classe deve ter as anotações @ServiceClass e @ServiceMethod.",
-	             	        	      headerText: "Alerta",
-	             	        	      alertType: "warning"
-	             	        	    });
-	                        }
-	                        
-	                    },
-	                    error: function (e) {
-	                        $("#btnSubmit").attr("disabled", false);
-	                        $('#uploadFile').replaceWith($('#uploadFile').val('').clone(true));
-	                        $("#inputGroupFile01").text("Selecione uma classe java");
-	                        $('#classModal').modal('hide');
-	                        alertBt({
-	       	        	      messageText: "Ocorreu um erro.<br/><br/><b>Erro</b>: " + e + ".",
-	       	        	      headerText: "Erro",
-	       	        	      alertType: "danger"
-	       	        	    });
-	                    }
-	                });
-	            });
-	            
-	            function listClasses(){
-	            	
-	            	$tableClass.rows().remove().draw();
-	            	
-	            	$.ajax({
-	                    type: "GET",
-	                    url: "listClasses.op",
-	                    processData: false,
-	                    contentType: false,
-	                    cache: false,
-	                    timeout: 600000,
-	                    success: function (data) {
-	                        console.log(data);
-	                        var $classList = data.classes;
-	                        $.each($classList, function( index, value ) {
-	                       	  	console.log( index + ": " + value.name + " - " + value.qualifiedName);
-								$tableClass.row.add([(parseInt(index, 10) + 1), 
-									"<a href='listMethods.op?class=" + value.qualifiedName + "'>" + value.qualifiedName + "</a>"]).draw( false );
-	                       	});
-	                    },
-	                    error: function (e) {
-	                        alertBt({
-	       	        	      messageText: "Ocorreu um erro.<br/><br/><b>Erro</b>: " + e + ".",
-	       	        	      headerText: "Erro",
-	       	        	      alertType: "danger"
-	       	        	    });
-	                    }
-	                });
-	            }
-	            
-	        });
-	    </script>
+	<script type="text/javascript" src="webjars/datatables/1.10.19/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="webjars/datatables/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+	<!-- load maskedinput library -->
+	<script type="text/javascript" src="webjars/jquery-maskedinput/1.4.0/jquery.maskedinput.min.js"></script>
+	<!-- load alert.bootstrap library -->
+	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/alert.bootstrap.js"></script>
+	<!-- load javascript.app -->
+	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/app/Initialize.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/app/UploadClass.js"></script>
+	
 </body>
 </html>
