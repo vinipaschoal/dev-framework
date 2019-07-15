@@ -1,12 +1,10 @@
 package devframework.webservice;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -14,6 +12,12 @@ import org.springframework.util.ClassUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import devframework.TestUtils;
+import devframework.domain.Agenda;
+import devframework.domain.AgendaInvalida;
+import devframework.domain.Pessoa;
+import devframework.domain.Tarefa;
+import devframework.domain.TarefaInvalida;
 import devframework.utils.Utils;
 
 public class InvokerTest {
@@ -25,21 +29,19 @@ public class InvokerTest {
 
 	private Object[] params;
 
+	@BeforeClass
+	public static void setUpClass() throws Exception {
+		TestUtils.copyToTestDir(Agenda.class, AgendaInvalida.class, Tarefa.class, TarefaInvalida.class, Pessoa.class);
+	}
+	
+	
 	@Before
-	public void setUp() throws IOException {
-		Utils.getInstance().setProperty("upload.dir", "/diretorio");
+	public void setUp() throws Exception {
+		Utils.getInstance().setProperty("upload.dir", TestUtils.TEST_DIR);
 		this.invoker = new Invoker();
-		File diretorio = new File("/diretorio");
-		if (diretorio.exists()) {
-			FileUtils.cleanDirectory(diretorio);
-		}else {
-			diretorio.mkdir();
-		}
-		
 		params = new Object[2];
 		params[0] = "teste";
 		params[1] = Integer.toString(12);
-		
 	}
 
 	@Test
@@ -62,17 +64,13 @@ public class InvokerTest {
 
 	@Test
 	public void testeCallcomClassNameNull() throws Exception {
-		File diretorio = new File("/diretorio");
-		diretorio.mkdir();
-		thrown.expect(NullPointerException.class);
+		thrown.expect(Exception.class);
 		invoker.call(null, "getNome", params);
 	}
 
 	@Test
 	public void testeCallcomClassNameInvalido() throws Exception {
-		File diretorio = new File("/diretorio");
-		diretorio.mkdir();
-		thrown.expect(FileNotFoundException.class);
+		thrown.expect(Exception.class);
 		invoker.call("NomeFicticio", "getNome", params);
 	}
 

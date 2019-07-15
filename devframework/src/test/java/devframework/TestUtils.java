@@ -135,4 +135,5 @@ public abstract class TestUtils
 		// retorna um stream a partir do diretorio de teste
 		return FileUtils.openInputStream(new File(pathFromTestDir(resourceName)));
 	}
+
 }
