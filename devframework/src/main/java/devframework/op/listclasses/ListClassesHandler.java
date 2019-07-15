@@ -23,10 +23,21 @@ public class ListClassesHandler implements IJsonRequestHandler {
 		List<ClassDescriptor> classesList = PersistenceService.getInstance().list();
 
 		Gson gson = new GsonBuilder().create();
-
-		JsonArray jarray = gson.toJsonTree(classesList).getAsJsonArray();
 		JsonObject jsonObject = new JsonObject();
-		jsonObject.add("classes", jarray);
+		
+		try
+		{
+			JsonArray jarray = gson.toJsonTree(classesList).getAsJsonArray();
+			jsonObject.add("classes", jarray);
+			jsonObject.addProperty("message", "");
+			jsonObject.addProperty("success", true);
+		}
+		catch ( Exception e )
+		{
+			e.printStackTrace();
+			jsonObject.addProperty("message", "Erro: " + e.toString());
+			jsonObject.addProperty("success", false);
+		}
 
 		return jsonObject;
 	}

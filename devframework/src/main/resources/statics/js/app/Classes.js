@@ -1,12 +1,12 @@
-app.uploadClass = {
+app.Classes = {
 		validExts: new Array(".class",".jar"),
 		tableClass: $('#classTable').DataTable({"language": app.settings.languagePtBr }),
 		init: function () {
 
-			app.uploadClass.list();
+			app.Classes.list();
 	    	
 	    	var validExts = new Array(".class",".jar");
-	    	$("#uploadFile").attr("accept", app.uploadClass.validExts);
+	    	$("#uploadFile").attr("accept", app.Classes.validExts);
 	    	
 	    	$("#uploadFile").on("change", function (event) {
 	    		$("#inputGroupFile01").text($(this).val());
@@ -20,13 +20,13 @@ app.uploadClass = {
 	    	
 	    	$("#btnSubmit").click(function (event) {
 				event.preventDefault();                
-				app.uploadClass.save();
+				app.Classes.save();
 	        });
 	    	
 		},
 		list: function(){
 			
-        	app.uploadClass.tableClass.rows().remove().draw();
+        	app.Classes.tableClass.rows().remove().draw();
         	
         	$.ajax({
                 type: "GET",
@@ -37,39 +37,13 @@ app.uploadClass = {
                 timeout: 600000,
                 success: function (data) {
                     console.log(data);
-                    var $classList = data.classes;
-                    
+                    var $classList = data.classes;                    
                     $.each($classList, function( i, classe ) {
-
-                    	/*var $methods = "";
-                   	  	var $count = 0;
-                   	  	$.each(classe.methods, function( m, metodo ) {                   	  		
-                   	  		
-                   	  		$count++;
-                   	  		
-                   	  		var $parameters = "";
-		                   	var $countP = 0;
-	                   	  	$.each(metodo.parameters, function( p, param ) {
-	            	  			$countP++;
-	            	  			$parameters = $parameters + param + (($countP < metodo.parameters.length ? ", " : ""));
-	            	  		});
-	                   	  	$parameters = ($parameters == "" ? "" : "(" + $parameters + ")");
-                   	  		
-                	  		$methods = $methods + "<a href='#'>" + metodo.methodName + $parameters + "</a>" + (($count < classe.methods.length ? ", " : ""));
-                	  		
-                	  	});
-                   	  	
-                   	  	app.uploadClass.tableClass.row.add([
-							classe.className, 
-							$methods
-							]).draw( false );
-						*/
-                    	
-                    	app.uploadClass.tableClass.row.add([
-							i + 1, classe.qualifiedName
+                    	app.Classes.tableClass.row.add([
+							classe.name
+							,"<a href='listMethods.op?class=" + classe.qualifiedName + "'>" + classe.qualifiedName + "</a>"
 							]).draw( false );
                    	});
-                    
                 },
                 error: function (e) {
                     alertBt({
@@ -79,7 +53,6 @@ app.uploadClass = {
    	        	    });
                 }
             });
-
 		},
 		save: function () {
 
@@ -87,7 +60,7 @@ app.uploadClass = {
             
             if ($('#uploadFile').val() == ""){
             	alertBt({
-	        	      messageText: "Selecione uma classe java, arquivo do tipo " + app.uploadClass.validExts.toString() + ".",
+	        	      messageText: "Selecione uma classe java, arquivo do tipo " + app.Classes.validExts.toString() + ".",
 	        	      headerText: "Alerta",
 	        	      alertType: "warning"
 	        	    });
@@ -95,9 +68,9 @@ app.uploadClass = {
             }else{
             	var $fileExt = $('#uploadFile').val();
                 $fileExt = $fileExt.substring($fileExt.lastIndexOf('.'));
-                if (app.uploadClass.validExts.indexOf($fileExt) < 0) {
+                if (app.Classes.validExts.indexOf($fileExt) < 0) {
 					alertBt({
-	        	      messageText: "O arquivo selecionado é inválido. Selecione apenas arquivos do tipo " + app.uploadClass.validExts.toString() + ".",
+	        	      messageText: "O arquivo selecionado é inválido. Selecione apenas arquivos do tipo " + app.Classes.validExts.toString() + ".",
 	        	      headerText: "Alerta",
 	        	      alertType: "warning"
 	        	    });
@@ -132,15 +105,14 @@ app.uploadClass = {
        	        	      headerText: "Confirmação",
        	        	      alertType: "success"
        	        	    });
-                        app.uploadClass.list();
+                        app.Classes.list();
                     }else{
                     	alertBt({
          	        	      messageText: data.message, //"Classe java inválida, a classe deve ter as anotações @ServiceClass e @ServiceMethod.",
          	        	      headerText: "Alerta",
          	        	      alertType: "warning"
          	        	    });
-                    }
-                    
+                    }                    
                 },
                 error: function (e) {
                     $("#btnSubmit").attr("disabled", false);
@@ -159,5 +131,5 @@ app.uploadClass = {
 };
 
 $(function() {
-    app.uploadClass.init();
+    app.Classes.init();
 });

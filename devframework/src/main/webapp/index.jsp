@@ -131,7 +131,7 @@
 	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/alert.bootstrap.js"></script>
 	<!-- load javascript.app -->
 	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/app/Initialize.js"></script>
-	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/app/UploadClass.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/app/Classes.js"></script>
 	
 </body>
 </html>
