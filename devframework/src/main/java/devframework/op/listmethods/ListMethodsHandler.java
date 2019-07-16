@@ -27,11 +27,13 @@ public class ListMethodsHandler implements IJsonRequestHandler {
 		
 		try
 		{
-			// obtem a lista de classes validas
+			// obtem a classe requisitada
 			ClassDescriptor classDescriptor = PersistenceService.getInstance().getClass(rClass);
 			
-			//JsonArray jarray = gson.toJsonTree(classesList).getAsJsonArray();
-			//jsonObject.add("classes", jarray);
+			if (classDescriptor != null) {
+				JsonArray jarray = gson.toJsonTree(classDescriptor.getMethods()).getAsJsonArray();
+				jsonObject.add("methods", jarray);
+			}
 			jsonObject.addProperty("message", classDescriptor != null ? "" : "Classe pesquisada não existe.");
 			jsonObject.addProperty("success", classDescriptor != null ? true : false);
 		}

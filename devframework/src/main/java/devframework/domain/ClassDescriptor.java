@@ -1,6 +1,10 @@
 package devframework.domain;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
+
+import devframework.annotations.ServiceMethod;
 
 /**
  * Descritor de classes.
@@ -27,6 +31,18 @@ public class ClassDescriptor {
 		this.name = clazz.getSimpleName();
 		this.qualifiedName = clazz.getCanonicalName();
 		this.classClass = clazz;
+		
+		List<MethodDescriptor> classMethods = new ArrayList<MethodDescriptor>();
+		for (Method method : clazz.getMethods()) {			
+			if (method.isAnnotationPresent(ServiceMethod.class)) {
+				MethodDescriptor methodDescriptor = new MethodDescriptor(method.getParameters());
+				methodDescriptor.setName(method.getName());
+				methodDescriptor.setReturnType(method.getReturnType().getSimpleName());
+				classMethods.add(methodDescriptor);
+			}
+		}
+		
+		this.methods = classMethods;
 	}
 
 	public String getName() {

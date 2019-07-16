@@ -22,7 +22,7 @@
 
 			<section class="jumbotron text-center">
 				<div class="container">
-					<h1 class="jumbotron-heading">Métodos da Classe: ${ param['class'] } </h1>
+					<h1 class="jumbotron-heading">Métodos da Classe: <strong>${ param['class'] }</strong> </h1>
 				</div>
 			</section>
 	
@@ -33,8 +33,7 @@
 							<table id="methodTable" class="table table-striped table-bordered" data-url="listMethods.op" data-class="${param['class']}">
 								<thead>
 									<tr>
-										<th>#</th>
-										<th>Classe Java</th>
+										<th>Métodos</th>
 									</tr>
 								</thead>
 								<tbody>

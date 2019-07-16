@@ -118,7 +118,7 @@ app.Classes = {
                         app.Classes.list();
                     }else{
                     	alertBt({
-         	        	      messageText: data.message, //"Classe java inválida, a classe deve ter as anotações @ServiceClass e @ServiceMethod.",
+         	        	      messageText: data.message,
          	        	      headerText: "Alerta",
          	        	      alertType: "warning"
          	        	    });

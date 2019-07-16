@@ -1,5 +1,12 @@
 app.Methods = {
-		methodClass: $('#methodTable').DataTable({"language": app.settings.languagePtBr }),
+		methodClass: $('#methodTable').DataTable(
+				{
+					"language": app.settings.languagePtBr,
+					"paging": false,
+					"searching": false,
+					"ordering": false,
+			        "info":     false
+				}),
 		init: function () {
 			app.Methods.list();
 		},
@@ -22,11 +29,19 @@ app.Methods = {
                 success: function (data) {
                     console.log(data);
                     if (data.success){
-	                    var $classList = data.classes;                    
-	                    $.each($classList, function( i, classe ) {
+	                    var $methodList = data.methods;                    
+	                    $.each($methodList, function (i, method) {
+	                    	
+	                    	var $parameters = "";
+		                   	var $count = 0;
+	                   	  	$.each(method.parameters, function (p, parameter) {
+	            	  			$count++;
+	            	  			$parameters = $parameters + parameter.dataType + " " + parameter.name + (($count < method.parameters.length ? ", " : ""));
+	            	  		});
+	                   	  	$parameters = "(" + $parameters + ")";
+                   	  		
 	                    	app.Methods.methodClass.row.add([
-								classe.name
-								,"<a href='methods.jsp?class=" + classe.qualifiedName + "'>" + classe.qualifiedName + "</a>"
+								"<a href='#'>" + method.returnType + " " + method.name + $parameters + "</a>"
 								]).draw( false );
 	                   	});
                     }else{
