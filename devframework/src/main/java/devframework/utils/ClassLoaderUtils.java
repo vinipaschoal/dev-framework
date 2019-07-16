@@ -169,7 +169,6 @@ public class ClassLoaderUtils {
 	public Map<String, byte[]> getInputStreamClassesFromJar(String jarPath) throws IOException{
 		Map<String, byte[]> inputs = new HashMap<String,byte[]>();
 		try (JarFile jarFile = new JarFile(jarPath);) {
-			List<Class<?>> classList = new ArrayList<Class<?>>();
 			Enumeration<JarEntry> jarEntries = jarFile.entries();
 			while (jarEntries.hasMoreElements()) {
 				JarEntry jarEntry = jarEntries.nextElement();

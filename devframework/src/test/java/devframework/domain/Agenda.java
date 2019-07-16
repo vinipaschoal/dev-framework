@@ -1,5 +1,7 @@
 package devframework.domain;
 
+import java.util.Date;
+
 import devframework.annotations.JsonReturn;
 import devframework.annotations.ServiceClass;
 import devframework.annotations.ServiceMethod;
@@ -11,8 +13,8 @@ public class Agenda {
 
 	@ServiceMethod
 	@JsonReturn
-	public Agenda getPessoaJson() {
-		return this;
+	public Pessoa getPessoaJson() {
+		return new Pessoa("José", 50, "rua das acacias",new Date());
 	}
 
 	@ServiceMethod
@@ -41,13 +43,13 @@ public class Agenda {
 
 	}
 
-	public Agenda getPessoaSemAnotacao() {
-		return this;
+	public Pessoa getPessoaSemAnotacao() {
+		return new Pessoa("José", 50, "rua das acacias",new Date());
 	}
 
 	@ServiceMethod
-	public Agenda getPessoa() {
-		return this;
+	public Pessoa getPessoa() {
+		return new Pessoa("José", 50, "rua das acacias",new Date());
 	}
 
 }
