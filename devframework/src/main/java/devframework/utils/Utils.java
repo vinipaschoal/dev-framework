@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -90,30 +89,6 @@ public class Utils {
 	public String getUploadDir() {
 		return this.properties.getProperty("upload.dir",
 				Paths.get(FileUtils.getTempDirectoryPath(), "upload").toAbsolutePath().toString());
-	}
-
-	/**
-	 * Retorna os metodos da classe que possuem a anotacao informada pelo parametro.
-	 * 
-	 * @param clazz            a classe com os metodos anotados
-	 * @param annotationClazz  a anotacao a ser verificada nos metodos
-	 * @param includeInherited se deseja incluir os campos herdados das classes-pai
-	 * @return uma lista com os metodos anotados da classe, ou uma lista vazia caso
-	 *         nao exista na classe nenhum metodo anotado com a anotacao informada
-	 */
-	public static List<Method> getAnnotadedMethods(Class<?> clazz, Class<? extends Annotation> annotationClazz,
-			boolean includeInherited) {
-		List<Method> methods = new ArrayList<Method>();
-
-		methods.addAll(Arrays.asList(clazz.getDeclaredMethods()).stream()
-				.filter(f -> f.isAnnotationPresent(annotationClazz)).collect(Collectors.toList()));
-
-		if (includeInherited)
-			while ((clazz = clazz.getSuperclass()) != null)
-				methods.addAll(Arrays.asList(clazz.getDeclaredMethods()).stream()
-						.filter(f -> f.isAnnotationPresent(annotationClazz)).collect(Collectors.toList()));
-
-		return (methods);
 	}
 
 	/**

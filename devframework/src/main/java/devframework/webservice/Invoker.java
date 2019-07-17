@@ -8,7 +8,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import devframework.annotations.JsonReturn;
-import devframework.annotations.ServiceMethod;
+import devframework.annotations.container.MethodContainer;
 import devframework.domain.ClassDescriptor;
 import devframework.services.ClassValidationService;
 import devframework.services.PersistenceService;
@@ -35,13 +35,11 @@ public class Invoker extends ClassLoader {
 
 	private Method procuraMetodoCorrespondente(Class clazz, String methodName, Object[] params) throws Exception {
 		List<Method> metodos = new ArrayList<Method>();
-		for (Method method : clazz.getMethods()) {
-			if (ClassValidationService.getInstance().isAnnotationPresent(method, ServiceMethod.class)) {
-				String alias = ClassValidationService.getInstance().getAliasFromServiceMethod(method);
-				if ((!alias.equals("") && alias.equals(methodName))
-						|| (alias.equals("") && method.getName().equals(methodName))) {
-					metodos.add(method);
-				}
+		for (MethodContainer methodContainer : ClassValidationService.getInstance().getServiceMethods(clazz)) {
+			String alias = methodContainer.getAliasMethod();
+			if ((!"".equals(alias) && alias.equals(methodName))
+					|| ("".equals(alias) && methodContainer.getNomeMethod().equals(methodName))) {
+				metodos.add(methodContainer.getMethod());
 			}
 		}
 		if (metodos.isEmpty()) {
@@ -83,7 +81,7 @@ public class Invoker extends ClassLoader {
 			throws JsonProcessingException, Exception {
 		if (method.getReturnType().isPrimitive()) {
 			return method.invoke(instanceOfClass, params);
-		} else if (ClassValidationService.getInstance().isAnnotationPresent(method, JsonReturn.class)) {
+		} else if (ClassValidationService.getInstance().isJsonReturnPresent(method)) {
 			ObjectMapper mapper = new ObjectMapper();
 			return mapper.writeValueAsString(method.invoke(instanceOfClass, params));
 		} else {

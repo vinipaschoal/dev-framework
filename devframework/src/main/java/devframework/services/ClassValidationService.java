@@ -9,9 +9,10 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
-import devframework.annotations.ServiceClass;
-import devframework.annotations.ServiceMethod;
+import devframework.annotations.container.ClassContainer;
+import devframework.annotations.container.MethodContainer;
 import devframework.utils.ClassLoaderUtils;
+import net.sf.esfinge.metadata.AnnotationReader;
 
 /**
  * Validator de classes.
@@ -19,11 +20,14 @@ import devframework.utils.ClassLoaderUtils;
 public final class ClassValidationService {
 	// instancia unica da classe
 	private static ClassValidationService _instance;
+	
+	private AnnotationReader reader;
 
 	/**
 	 * Construtor interno.
 	 */
 	private ClassValidationService() {
+		this.reader = new AnnotationReader();
 	}
 
 	/**
@@ -73,29 +77,35 @@ public final class ClassValidationService {
 	private List<Class<?>> isValidInternal(InputStream fileStream, String fileName) throws Exception {
 		List<Class<?>> classList = new ArrayList<Class<?>>();
 		List<Class<?>> validClasses = new ArrayList<Class<?>>();
-
-		if (fileName.endsWith(".jar"))
+		if (fileName.endsWith(".jar")) {
 			classList.addAll(ClassLoaderUtils.getInstance().loadJar(fileStream));
-		else
+		}else {
 			classList.add(ClassLoaderUtils.getInstance().loadClass(fileStream, fileName));
-
-		for (Class<?> clazz : classList)
-			if (clazz.isAnnotationPresent(ServiceClass.class))
-				for (Method m : clazz.getMethods())
-					if (m.isAnnotationPresent(ServiceMethod.class)) {
-						validClasses.add(clazz);
-						break;
-					}
-
+		}
+		for (Class<?> clazz : classList) {
+			ClassContainer container = reader.readingAnnotationsTo(clazz, ClassContainer.class);					
+			if (container.isTemAnotacaoServiceClass() && !container.getMethodsWithServiceMethod().isEmpty()) {			
+				validClasses.add(clazz);									
+			}				
+		}
 		return (validClasses.size() == 0 ? null : validClasses);
 	}
 	
-	public boolean isAnnotationPresent(Method method, Class annotation) throws Exception {
-		return method.isAnnotationPresent(annotation);
+	public boolean isJsonReturnPresent(Method method) throws Exception {
+		MethodContainer container = reader.readingAnnotationsTo(method, MethodContainer.class);
+		return container.isTemAnotacaoJsonReturn();
 	}
 
 	public String getAliasFromServiceMethod(Method method) throws Exception {
-		ServiceMethod annotation = method.getAnnotation(ServiceMethod.class);
-		return annotation.alias();
+		MethodContainer container = reader.readingAnnotationsTo(method, MethodContainer.class);
+		return container.getAliasMethod();
+	}
+
+	public List<MethodContainer> getServiceMethods(Class clazz) throws Exception {
+		ClassContainer container = reader.readingAnnotationsTo(clazz, ClassContainer.class);
+		if (container.isTemAnotacaoServiceClass()) {
+			return container.getMethodsWithServiceMethod();
+		}
+		return new ArrayList<MethodContainer>();
 	}
 }
