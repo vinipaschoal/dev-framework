@@ -16,7 +16,13 @@
 			    		<i class="fas fa-angle-right mx-2" aria-hidden="true"></i>
 			    		
 			    	</li>
-			    	<li class="breadcrumb-item active" aria-current="page">${ param['clazz'] }</li>
+			    	<li class="breadcrumb-item active" aria-current="page">
+			    		<a href="./">${ param['clazz'] }</a>
+			    		<i class="fas fa-angle-right mx-2" aria-hidden="true"></i>
+			    	</li>
+			    	<li class="breadcrumb-item active" aria-current="page">
+			    		${ param['method'] }
+			    	</li>
 				</ol>
 			</nav>
 
@@ -29,17 +35,7 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-md-12">
-						<div class="listClass">
-							<table id="methodTable" class="table table-striped table-bordered" data-url="listMethods.op" data-clazz="${param['clazz']}">
-								<thead>
-									<tr>
-										<th>Métodos</th>
-									</tr>
-								</thead>
-								<tbody>
-								</tbody>
-							</table>
-						</div>
+						<form></form>
 					</div>
 				</div>
 				<div class="row">
@@ -56,6 +52,6 @@
 	</jsp:attribute>
 	
 	<jsp:attribute name="js_custom">
-		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/app/Methods.js"></script>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/app/InvokeMethod.js"></script>
 	</jsp:attribute>
 </tags:_Layout>

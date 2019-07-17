@@ -38,11 +38,11 @@ app.Classes = {
                 success: function (data) {
                     console.log(data);
                     if (data.success){
-	                    var $classList = data.classes;                    
+	                    var $classList = data.clazzes;                    
 	                    $.each($classList, function( i, classe ) {
 	                    	app.Classes.tableClass.row.add([
 								classe.name
-								,"<a href='methods.jsp?class=" + classe.qualifiedName + "'>" + classe.qualifiedName + "</a>"
+								,"<a href='methods.jsp?clazz=" + classe.qualifiedName + "'>" + classe.qualifiedName + "</a>"
 								]).draw( false );
 	                   	});
                     }else{

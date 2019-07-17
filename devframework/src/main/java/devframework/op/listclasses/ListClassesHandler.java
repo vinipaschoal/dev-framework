@@ -28,7 +28,7 @@ public class ListClassesHandler implements IJsonRequestHandler {
 		try
 		{
 			JsonArray jarray = gson.toJsonTree(classesList).getAsJsonArray();
-			jsonObject.add("classes", jarray);
+			jsonObject.add("clazzes", jarray);
 			jsonObject.addProperty("message", "");
 			jsonObject.addProperty("success", true);
 		}

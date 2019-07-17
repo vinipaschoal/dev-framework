@@ -14,13 +14,13 @@ app.Methods = {
 			
         	app.Methods.methodClass.rows().remove().draw();
         	
-        	console.log($('#methodTable').data("class"));
+        	console.log($('#methodTable').data("clazz"));
         	
         	$.ajax({
                 type: "GET",
                 url: $('#methodTable').data("url"),
                 data: {
-                	class: $('#methodTable').data("class")
+                	clazz: $('#methodTable').data("clazz")
                 },
                 processData: true,
                 contentType: false,
@@ -29,9 +29,9 @@ app.Methods = {
                 success: function (data) {
                     console.log(data);
                     if (data.success){
-	                    var $methodList = data.methods;                    
+                    	var $clazz = data.clazz;
+                    	var $methodList = data.clazz.methods;
 	                    $.each($methodList, function (i, method) {
-	                    	
 	                    	var $parameters = "";
 		                   	var $count = 0;
 	                   	  	$.each(method.parameters, function (p, parameter) {
@@ -41,7 +41,7 @@ app.Methods = {
 	                   	  	$parameters = "(" + $parameters + ")";
                    	  		
 	                    	app.Methods.methodClass.row.add([
-								"<a href='#'>" + method.returnType + " " + method.name + $parameters + "</a>"
+								"<a href='invokeMethod.jsp?clazz=" + $clazz.qualifiedName + "&method=" + method.name + "'>" + method.returnType + " " + method.name + $parameters + "</a>"
 								]).draw( false );
 	                   	});
                     }else{

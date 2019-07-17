@@ -81,6 +81,13 @@
 		    <artifactId>font-awesome</artifactId>
 		    <version>5.9.0</version>
 		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.webjars/underscorejs -->
+		<dependency>
+		    <groupId>org.webjars</groupId>
+		    <artifactId>underscorejs</artifactId>
+		    <version>1.8.3</version>
+		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
 		<dependency>
