@@ -5,7 +5,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import devframework.annotations.logical.NeedReturnListLogical;
-import devframework.annotations.logical.NoVoidReturnLogical;
+import net.sf.esfinge.metadata.annotation.validator.Prohibits;
 import net.sf.esfinge.metadata.annotation.validator.ToValidate;
 
 @Retention(RetentionPolicy.RUNTIME)
