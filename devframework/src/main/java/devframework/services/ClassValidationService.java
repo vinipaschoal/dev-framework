@@ -108,4 +108,9 @@ public final class ClassValidationService {
 		}
 		return new ArrayList<MethodContainer>();
 	}
+
+	public boolean isHtmlTableReturnPresent(Method method) throws Exception {
+		MethodContainer container = reader.readingAnnotationsTo(method, MethodContainer.class);
+		return container.isTemAnotacaoHtmlTableReturn();
+	}
 }

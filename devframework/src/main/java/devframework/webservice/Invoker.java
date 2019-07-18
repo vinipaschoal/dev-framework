@@ -12,10 +12,12 @@ import devframework.annotations.container.MethodContainer;
 import devframework.domain.ClassDescriptor;
 import devframework.services.ClassValidationService;
 import devframework.services.PersistenceService;
+import devframework.services.TransformationService;
 
 public class Invoker extends ClassLoader {
 
 	private Object[] valoresConvertidos;
+	private TransformationService transformationService = new TransformationService();
 
 	public Object call(String classQualifiedName, String methodName, Object... params) throws Exception {
 
@@ -60,7 +62,7 @@ public class Invoker extends ClassLoader {
 				for (int i = 0; i < method.getParameterTypes().length; i++) {
 					try {
 						if (method.getParameterTypes()[i].isPrimitive()) {
-							valoresConvertidos[i] = wrapperPrimitive(method.getParameterTypes()[i], (String) params[i]);
+							valoresConvertidos[i] = transformationService.wrapperPrimitive(method.getParameterTypes()[i], (String) params[i]);
 						} else {
 							valoresConvertidos[i] = method.getParameterTypes()[i].cast(params[i]);
 						}
@@ -82,28 +84,14 @@ public class Invoker extends ClassLoader {
 		if (method.getReturnType().isPrimitive()) {
 			return method.invoke(instanceOfClass, params);
 		} else if (ClassValidationService.getInstance().isJsonReturnPresent(method)) {
-			ObjectMapper mapper = new ObjectMapper();
-			return mapper.writeValueAsString(method.invoke(instanceOfClass, params));
-		} else {
+			return transformationService.transformToJson(method.invoke(instanceOfClass, params));
+		}else if(ClassValidationService.getInstance().isHtmlTableReturnPresent(method)) {
+			return transformationService.transformToHtml((List<Object>) method.invoke(instanceOfClass, params));
+		}
+		else {
 			return method.invoke(instanceOfClass, params).toString();
 		}
 	}
 
-	private Object wrapperPrimitive(Class clazz, String value) {
-		if (boolean.class == clazz)
-			return Boolean.parseBoolean(value);
-		if (byte.class == clazz)
-			return Byte.parseByte(value);
-		if (short.class == clazz)
-			return Short.parseShort(value);
-		if (int.class == clazz)
-			return Integer.parseInt(value);
-		if (long.class == clazz)
-			return Long.parseLong(value);
-		if (float.class == clazz)
-			return Float.parseFloat(value);
-		if (double.class == clazz)
-			return Double.parseDouble(value);
-		return value;
-	}
+	
 }

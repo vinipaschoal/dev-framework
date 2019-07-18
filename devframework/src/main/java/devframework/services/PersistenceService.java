@@ -71,7 +71,7 @@ public class PersistenceService {
 					String NomeEPacote = clazz.getName();
 					NomeEPacote = NomeEPacote.replace(".", File.separator);
 					File file = new File(Utils.getInstance().getUploadDir() + File.separator + NomeEPacote+".class");
-					ByteArrayInputStream streamCopyClass = new ByteArrayInputStream(inputStreamClassesFromJar.get(clazz.getSimpleName()+".class"));
+					ByteArrayInputStream streamCopyClass = new ByteArrayInputStream(inputStreamClassesFromJar.get(clazz.getCanonicalName()+".class"));
 					FileUtils.copyInputStreamToFile(streamCopyClass, file);
 				}	
 			}

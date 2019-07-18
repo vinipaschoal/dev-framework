@@ -2,6 +2,7 @@ package devframework.annotations.container;
 
 import java.lang.reflect.Method;
 
+import devframework.annotations.HtmlTableReturn;
 import devframework.annotations.JsonReturn;
 import devframework.annotations.ServiceMethod;
 import net.sf.esfinge.metadata.annotation.container.AnnotationProperty;
@@ -20,6 +21,9 @@ public class MethodContainer {
 	@ContainsAnnotation(JsonReturn.class)
 	private boolean temAnotacaoJsonReturn;
 
+	@ContainsAnnotation(HtmlTableReturn.class)
+	private boolean temAnotacaoHtmlTableReturn;
+	
 	@ElementName
 	private String nomeMethod;
 	
@@ -67,6 +71,14 @@ public class MethodContainer {
 
 	public void setTemAnotacaoJsonReturn(boolean temAnotacaoJsonReturn) {
 		this.temAnotacaoJsonReturn = temAnotacaoJsonReturn;
+	}
+
+	public boolean isTemAnotacaoHtmlTableReturn() {
+		return temAnotacaoHtmlTableReturn;
+	}
+
+	public void setTemAnotacaoHtmlTableReturn(boolean temAnotacaoHtmlTableReturn) {
+		this.temAnotacaoHtmlTableReturn = temAnotacaoHtmlTableReturn;
 	}
 
 }

@@ -6,8 +6,8 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@NoVoidReturn
-public @interface JsonReturn {
+@NeedReturnList
+public @interface HtmlTableReturn {
 
 	 
 }	
