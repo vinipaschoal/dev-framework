@@ -17,25 +17,25 @@
 			    		
 			    	</li>
 			    	<li class="breadcrumb-item active" aria-current="page">
-			    		<a href="./">${ param['clazz'] }</a>
+			    		<a href="methods.jsp?clazz=${ param['clazz'] }">${ param['clazz'] }</a>
 			    		<i class="fas fa-angle-right mx-2" aria-hidden="true"></i>
 			    	</li>
 			    	<li class="breadcrumb-item active" aria-current="page">
-			    		${ param['method'] }
+			    		${ param['methodReturnType'] } ${ param['methodName'] }
 			    	</li>
 				</ol>
 			</nav>
 
 			<section class="jumbotron text-center">
 				<div class="container">
-					<h1 class="jumbotron-heading">Métodos da Classe: <strong>${ param['clazz'] }</strong> </h1>
+					<h3 class="jumbotron-heading">Método <strong>"${ param['methodReturnType'] } ${ param['methodName'] }"</strong> da Classe: <strong>${ param['clazz'] }</strong> </h1>
 				</div>
 			</section>
 	
 			<div class="container">
 				<div class="row">
 					<div class="col-md-12">
-						<form></form>
+						<form id="formParam" data-url="invokeMethod.op"></form>
 					</div>
 				</div>
 				<div class="row">
@@ -46,8 +46,6 @@
 			</div>
 	
 		</main>
-		
-		
 		
 	</jsp:attribute>
 	

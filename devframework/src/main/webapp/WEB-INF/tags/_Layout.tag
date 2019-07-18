@@ -33,7 +33,7 @@
 			</div>
 			<div class="navbar navbar-dark bg-dark box-shadow">
 				<div class="container d-flex justify-content-between">
-					<a href="#" class="navbar-brand d-flex align-items-center"> <strong>DevFramework</strong>
+					<a href="./" class="navbar-brand d-flex align-items-center"> <strong>DevFramework</strong>
 					</a>
 					<button class="navbar-toggler" type="button" data-toggle="collapse"
 						data-target="#navbarHeader" aria-controls="navbarHeader"

@@ -3,6 +3,7 @@ package devframework.services;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -13,7 +14,9 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
+import devframework.annotations.ServiceMethod;
 import devframework.domain.ClassDescriptor;
+import devframework.domain.MethodDescriptor;
 import devframework.utils.ClassLoaderUtils;
 import devframework.utils.Utils;
 
@@ -95,6 +98,38 @@ public class PersistenceService {
 				c -> c.getCanonicalName().equals(classQualifiedName));
 
 		return clazz != null ? new ClassDescriptor(clazz) : null;
+	}
+
+	/**
+	 * Retorna o descritor do metodo da classe e metodo informados.
+	 */
+	public Method getMethod(String qualifiedName, MethodDescriptor methodDescriptor) {
+		
+		Class<?> clazz = Utils.getFromCollection(this.listInternal(),
+				c -> c.getCanonicalName().equals(qualifiedName));
+		
+		if (clazz == null)
+			return null;
+		
+		String methodDescriptorName = methodDescriptor.getName().toString().toLowerCase();
+		String methodDescriptorReturnType = methodDescriptor.getReturnType().toLowerCase();
+		
+		for (Method method : clazz.getMethods()) {
+			
+			String methodName = method.getName().toLowerCase();
+			String methodReturnType = method.getReturnType().getSimpleName().toString().toLowerCase();
+			
+			if (
+					method.isAnnotationPresent(ServiceMethod.class) 
+					&& methodDescriptorName.equals(methodName)
+					&& methodDescriptorReturnType.equals(methodReturnType)
+					) {
+				return method;
+			}
+		}
+		
+		return null;
+		
 	}
 
 	/**

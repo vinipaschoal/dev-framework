@@ -3,6 +3,8 @@ app.Classes = {
 		tableClass: $('#classTable').DataTable({"language": app.settings.languagePtBr }),
 		init: function () {
 
+			app.settings.loading.show();
+			
 			app.Classes.list();
 	    	
 	    	var validExts = new Array(".class",".jar");
@@ -52,6 +54,7 @@ app.Classes = {
        	        	      alertType: "danger"
        	        	    });
                     }
+        			app.settings.loading.hide();
                 },
                 error: function (e) {
                 	var $msg = $(e.responseText).filter('title').text();
@@ -61,6 +64,7 @@ app.Classes = {
    	        	      headerText: "Erro",
    	        	      alertType: "danger"
    	        	    });
+        			app.settings.loading.hide();
                 }
             });
 		},
