@@ -2,12 +2,15 @@ package devframework.annotations.container;
 
 import java.util.List;
 
+import devframework.annotations.Label;
 import devframework.annotations.ServiceClass;
 import devframework.annotations.ServiceMethod;
 import net.sf.esfinge.metadata.annotation.container.AllMethodsWith;
+import net.sf.esfinge.metadata.annotation.container.AnnotationProperty;
 import net.sf.esfinge.metadata.annotation.container.ContainerFor;
 import net.sf.esfinge.metadata.annotation.container.ContainsAnnotation;
 import net.sf.esfinge.metadata.annotation.container.ElementName;
+import net.sf.esfinge.metadata.annotation.container.ProcessFields;
 import net.sf.esfinge.metadata.annotation.container.ReflectionReference;
 import net.sf.esfinge.metadata.container.ContainerTarget;
 
@@ -16,6 +19,12 @@ public class ClassContainer {
 
 	@AllMethodsWith(ServiceMethod.class)
 	private List<MethodContainer> methodsWithServiceMethod;
+	
+	@ProcessFields
+	private List<FieldContainer> fields;
+	
+	@AnnotationProperty(annotation = Label.class, property = "name")
+	private String labelClass;
 
 	@ReflectionReference
 	private Class<?> classe;
@@ -25,6 +34,9 @@ public class ClassContainer {
 
 	@ContainsAnnotation(ServiceClass.class)
 	private boolean temAnotacaoServiceClass;
+
+	@ContainsAnnotation(Label.class)
+	private boolean temAnotacaoLabel;
 
 	public Class<?> getClasse() {
 		return classe;
@@ -57,5 +69,31 @@ public class ClassContainer {
 	public void setMethodsWithServiceMethod(List<MethodContainer> methodsWithServiceMethod) {
 		this.methodsWithServiceMethod = methodsWithServiceMethod;
 	}
+
+	public boolean isTemAnotacaoLabel() {
+		return temAnotacaoLabel;
+	}
+
+	public void setTemAnotacaoLabel(boolean temAnotacaoLabel) {
+		this.temAnotacaoLabel = temAnotacaoLabel;
+	}
+
+	public String getLabelClass() {
+		return labelClass;
+	}
+
+	public void setLabelClass(String labelClass) {
+		this.labelClass = labelClass;
+	}
+
+	public List<FieldContainer> getFields() {
+		return fields;
+	}
+
+	public void setFields(List<FieldContainer> fields) {
+		this.fields = fields;
+	}
+	
+	
 
 }

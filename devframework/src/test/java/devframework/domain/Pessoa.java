@@ -2,11 +2,15 @@ package devframework.domain;
 
 import java.util.Date;
 
+import devframework.annotations.Label;
+
 public class Pessoa {
 	
 	private String nome;
 	private int idade;
 	private String endereco;
+	
+	@Label(name="Data de Nascimento")
 	private Date dataNascimento;
 
 	public Pessoa(String nome, int idade, String endereco, Date dataNascimento) {

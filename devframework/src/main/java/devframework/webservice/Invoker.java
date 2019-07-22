@@ -62,7 +62,8 @@ public class Invoker extends ClassLoader {
 				for (int i = 0; i < method.getParameterTypes().length; i++) {
 					try {
 						if (method.getParameterTypes()[i].isPrimitive()) {
-							valoresConvertidos[i] = transformationService.wrapperPrimitive(method.getParameterTypes()[i], (String) params[i]);
+							valoresConvertidos[i] = transformationService
+									.wrapperPrimitive(method.getParameterTypes()[i], (String) params[i]);
 						} else {
 							valoresConvertidos[i] = method.getParameterTypes()[i].cast(params[i]);
 						}
@@ -85,13 +86,11 @@ public class Invoker extends ClassLoader {
 			return method.invoke(instanceOfClass, params);
 		} else if (ClassValidationService.getInstance().isJsonReturnPresent(method)) {
 			return transformationService.transformToJson(method.invoke(instanceOfClass, params));
-		}else if(ClassValidationService.getInstance().isHtmlTableReturnPresent(method)) {
-			return transformationService.transformToHtml((List<Object>) method.invoke(instanceOfClass, params));
-		}
-		else {
+		} else if (ClassValidationService.getInstance().isHtmlTableReturnPresent(method)) {
+			return transformationService.transformToHtml((List) method.invoke(instanceOfClass, params));
+		} else {
 			return method.invoke(instanceOfClass, params).toString();
 		}
 	}
 
-	
 }

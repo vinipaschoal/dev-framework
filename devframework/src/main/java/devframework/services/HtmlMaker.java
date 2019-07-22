@@ -1,50 +1,53 @@
 package devframework.services;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
-import org.apache.commons.lang3.SystemUtils;
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import devframework.annotations.container.FieldContainer;
 
 public class HtmlMaker {
-	private static final class HTMLStyle extends ToStringStyle {
- 
-		public HTMLStyle() {
-			setFieldSeparator("</td></tr>"+ SystemUtils.LINE_SEPARATOR + "<tr><td>");
- 
-			setContentStart("<table>"+ SystemUtils.LINE_SEPARATOR +
-								"<thead><tr><th>Field</th><th>Data</th></tr></thead>" +
-								"<tbody><tr><td>");
- 
-			setFieldNameValueSeparator("</td><td>");
- 
-			setContentEnd("</td></tr>"+ SystemUtils.LINE_SEPARATOR + "</tbody></table>");
- 
-			setArrayContentDetail(true);
-			setUseShortClassName(true);
-			setUseClassName(false);
-			setUseIdentityHashCode(false);
+
+	public String makeHTML(List objects) throws Exception {
+		String html = "<table border=\"1\">";
+		if (objects.isEmpty()) {
+			return html + "</table>";
 		}
- 
-		@Override
-		public void appendDetail(StringBuffer buffer, String fieldName, Object value) {
-			if (value.getClass().getName().startsWith("java.lang")) {
-				super.appendDetail(buffer, fieldName, value);
-			} else {
-				buffer.append(ReflectionToStringBuilder.toString(value, this));
-			}
-		}
-	}
- 
-	private String makeHTML(Object object) {
-		return	ReflectionToStringBuilder.toString(object, new HTMLStyle());
-	}
-	
-	static public String makeHTML(List<Object> objects) {
-		String html = "";
-		for (Object object : objects) {
-			html+=ReflectionToStringBuilder.toString(object, new HTMLStyle());
-		}
+		html += adicionaCabecalho(objects.get(0).getClass());
+		html+=adicionaDados(objects);
+		html += "</table>";
 		return html;
+	}
+
+	private String adicionaDados(List objects) throws Exception {
+		String dados = "";
+		for(Object object: objects) {
+			dados+="<tr>";
+			for (FieldContainer fieldContainer : ClassValidationService.getInstance().getFields(object.getClass())) {
+				dados+="<td>";
+				Field field =fieldContainer.getField(); 
+				field.setAccessible(true);
+				dados+=field.get(object);
+				dados+="</td>";
+			}
+			dados+="</tr>";
+		}
+		return dados;
+	}
+
+	private String adicionaCabecalho(Class clazz) throws Exception {
+		String cabecalho = "<tr><th>";
+		cabecalho += ClassValidationService.getInstance().getClassName(clazz);
+		cabecalho += "</th></tr><tr>";
+		for (FieldContainer field : ClassValidationService.getInstance().getFields(clazz)) {
+			cabecalho += "<th>";
+			if (field.isTemAnotacaoLabel()) {
+				cabecalho += field.getLabelField();
+			} else {
+				cabecalho += field.getNameField();
+			}
+			cabecalho += "</th>";
+		}
+		cabecalho += "</tr>";
+		return cabecalho;
 	}
 }

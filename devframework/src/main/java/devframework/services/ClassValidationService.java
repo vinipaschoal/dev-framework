@@ -2,6 +2,7 @@ package devframework.services;
 
 import java.io.File;
 import java.io.InputStream;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import devframework.annotations.container.ClassContainer;
+import devframework.annotations.container.FieldContainer;
 import devframework.annotations.container.MethodContainer;
 import devframework.utils.ClassLoaderUtils;
 import net.sf.esfinge.metadata.AnnotationReader;
@@ -108,9 +110,24 @@ public final class ClassValidationService {
 		}
 		return new ArrayList<MethodContainer>();
 	}
+	
+	public List<FieldContainer> getFields(Class clazz) throws Exception {
+		ClassContainer container = reader.readingAnnotationsTo(clazz, ClassContainer.class);
+		return container.getFields();
+	}
 
 	public boolean isHtmlTableReturnPresent(Method method) throws Exception {
 		MethodContainer container = reader.readingAnnotationsTo(method, MethodContainer.class);
 		return container.isTemAnotacaoHtmlTableReturn();
+	}
+
+	public String getClassName(Class clazz) throws Exception {
+		ClassContainer container = reader.readingAnnotationsTo(clazz, ClassContainer.class);
+		if(container.isTemAnotacaoLabel()) {
+			return container.getLabelClass();
+		}else {
+			return container.getNomeClass();
+		}
+		
 	}
 }
