@@ -33,7 +33,7 @@
 			</div>
 			<div class="navbar navbar-dark bg-dark box-shadow">
 				<div class="container d-flex justify-content-between">
-					<a href="#" class="navbar-brand d-flex align-items-center"> <strong>DevFramework</strong>
+					<a href="./" class="navbar-brand d-flex align-items-center"> <strong>DevFramework</strong>
 					</a>
 					<button class="navbar-toggler" type="button" data-toggle="collapse"
 						data-target="#navbarHeader" aria-controls="navbarHeader"
@@ -56,6 +56,10 @@
 	<script type="text/javascript" src="webjars/datatables/1.10.19/js/dataTables.bootstrap4.min.js"></script>
 	<!-- load maskedinput library -->
 	<script type="text/javascript" src="webjars/jquery-maskedinput/1.4.0/jquery.maskedinput.min.js"></script>
+	<!-- load underscore library -->
+	<script type="text/javascript" src="webjars/underscorejs/1.8.3/underscore-min.js"></script>
+	<!-- load jsonform library -->
+	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jsonform.js"></script>
 	<!-- load font-awesome library -->
 	<script type="text/javascript" src="webjars/font-awesome/5.9.0/js/all.min.js"></script>
 	<!-- load alert.bootstrap library -->

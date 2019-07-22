@@ -3,6 +3,8 @@ app.Classes = {
 		tableClass: $('#classTable').DataTable({"language": app.settings.languagePtBr }),
 		init: function () {
 
+			app.settings.loading.show();
+			
 			app.Classes.list();
 	    	
 	    	var validExts = new Array(".class",".jar");
@@ -38,11 +40,11 @@ app.Classes = {
                 success: function (data) {
                     console.log(data);
                     if (data.success){
-	                    var $classList = data.classes;                    
+	                    var $classList = data.clazzes;                    
 	                    $.each($classList, function( i, classe ) {
 	                    	app.Classes.tableClass.row.add([
 								classe.name
-								,"<a href='methods.jsp?class=" + classe.qualifiedName + "'>" + classe.qualifiedName + "</a>"
+								,"<a href='methods.jsp?clazz=" + classe.qualifiedName + "'>" + classe.qualifiedName + "</a>"
 								]).draw( false );
 	                   	});
                     }else{
@@ -52,6 +54,7 @@ app.Classes = {
        	        	      alertType: "danger"
        	        	    });
                     }
+        			app.settings.loading.hide();
                 },
                 error: function (e) {
                 	var $msg = $(e.responseText).filter('title').text();
@@ -61,6 +64,7 @@ app.Classes = {
    	        	      headerText: "Erro",
    	        	      alertType: "danger"
    	        	    });
+        			app.settings.loading.hide();
                 }
             });
 		},

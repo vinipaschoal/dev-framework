@@ -25,6 +25,7 @@ public class ClassDescriptor {
 	 * Construtor padrao (para reflexao / demais frameworks)
 	 */
 	public ClassDescriptor() {
+		this.methods = new ArrayList<MethodDescriptor>();
 	}
 
 	public ClassDescriptor(Class<?> clazz) {

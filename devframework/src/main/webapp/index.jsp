@@ -22,7 +22,7 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-md-12">
-						<div class="listClass">
+						<div class="listClass Load">
 							<table id="classTable" class="table table-striped table-bordered" data-url="listClasses.op">
 								<thead>
 									<tr>

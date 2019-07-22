@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import devframework.domain.ClassDescriptor;
 import devframework.services.PersistenceService;
@@ -20,7 +21,7 @@ import devframework.servlet.IJsonRequestHandler;
 public class ListMethodsHandler implements IJsonRequestHandler {
 	public JsonObject handleAsync(HttpServletRequest request) throws FileNotFoundException {
 		
-		String rClass = request.getParameter("class");
+		String clazzQualifiedName = request.getParameter("clazz");
 
 		Gson gson = new GsonBuilder().create();
 		JsonObject jsonObject = new JsonObject();
@@ -28,12 +29,14 @@ public class ListMethodsHandler implements IJsonRequestHandler {
 		try
 		{
 			// obtem a classe requisitada
-			ClassDescriptor classDescriptor = PersistenceService.getInstance().getClass(rClass);
+			ClassDescriptor classDescriptor = PersistenceService.getInstance().getClass(clazzQualifiedName);
 			
 			if (classDescriptor != null) {
-				JsonArray jarray = gson.toJsonTree(classDescriptor.getMethods()).getAsJsonArray();
-				jsonObject.add("methods", jarray);
+				JsonParser parser = new JsonParser();
+				JsonObject jObjectClass = parser.parse(gson.toJson(classDescriptor)).getAsJsonObject();
+				jsonObject.add("clazz", jObjectClass);
 			}
+			
 			jsonObject.addProperty("message", classDescriptor != null ? "" : "Classe pesquisada não existe.");
 			jsonObject.addProperty("success", classDescriptor != null ? true : false);
 		}

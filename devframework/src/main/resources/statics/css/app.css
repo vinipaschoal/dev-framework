@@ -19,3 +19,22 @@
 .breadcrumb {
 	background-color: #F8F8F8;
 }
+
+#loading {
+	position: absolute;
+	top:0;
+	width: 100%;
+	height: 100%;
+	background: #ffffff;
+	z-index: 999;
+	display; none;
+}
+
+#loading span {
+	display: block;
+	position: relative;
+	width: 100%;
+	text-align: center;
+    height:100%;
+    line-height: 200px;
+}
