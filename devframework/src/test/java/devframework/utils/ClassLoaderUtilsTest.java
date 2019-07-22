@@ -36,13 +36,6 @@ public class ClassLoaderUtilsTest {
 		TestUtils.createJar("test.jar", Agenda.class, Tarefa.class, Pessoa.class);
 	}
 
-	/*@AfterClass
-	public static void cleanUp() {
-		System.gc();
-		// apaga os arquivos do diretorio de teste
-		TestUtils.cleanTestDir();
-	}*/
-
 	@Test
 	@RepeatTest(times = REP_NUM)
 	public void testLoadClassFromPath() throws Exception {
@@ -111,5 +104,10 @@ public class ClassLoaderUtilsTest {
 		Assert.assertTrue(classList.contains(Agenda.class));
 		Assert.assertTrue(classList.contains(Pessoa.class));
 		Assert.assertTrue(classList.contains(Tarefa.class));
+	}
+	
+	@Test
+	public void testLoadAll() throws Exception {
+		ClassLoaderUtils.getInstance().loadAll();
 	}
 }

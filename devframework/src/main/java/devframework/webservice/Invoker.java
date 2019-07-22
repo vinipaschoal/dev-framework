@@ -5,12 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-import devframework.annotations.JsonReturn;
 import devframework.annotations.container.MethodContainer;
 import devframework.domain.ClassDescriptor;
-import devframework.services.ClassValidationService;
+import devframework.services.InformationClassService;
 import devframework.services.PersistenceService;
 import devframework.services.TransformationService;
 
@@ -37,7 +35,7 @@ public class Invoker extends ClassLoader {
 
 	private Method procuraMetodoCorrespondente(Class clazz, String methodName, Object[] params) throws Exception {
 		List<Method> metodos = new ArrayList<Method>();
-		for (MethodContainer methodContainer : ClassValidationService.getInstance().getServiceMethods(clazz)) {
+		for (MethodContainer methodContainer : InformationClassService.getInstance().getServiceMethods(clazz)) {
 			String alias = methodContainer.getAliasMethod();
 			if ((!"".equals(alias) && alias.equals(methodName))
 					|| ("".equals(alias) && methodContainer.getNomeMethod().equals(methodName))) {
@@ -84,9 +82,9 @@ public class Invoker extends ClassLoader {
 			throws JsonProcessingException, Exception {
 		if (method.getReturnType().isPrimitive()) {
 			return method.invoke(instanceOfClass, params);
-		} else if (ClassValidationService.getInstance().isJsonReturnPresent(method)) {
+		} else if (InformationClassService.getInstance().isJsonReturnPresent(method)) {
 			return transformationService.transformToJson(method.invoke(instanceOfClass, params));
-		} else if (ClassValidationService.getInstance().isHtmlTableReturnPresent(method)) {
+		} else if (InformationClassService.getInstance().isHtmlTableReturnPresent(method)) {
 			return transformationService.transformToHtml((List) method.invoke(instanceOfClass, params));
 		} else {
 			return method.invoke(instanceOfClass, params).toString();

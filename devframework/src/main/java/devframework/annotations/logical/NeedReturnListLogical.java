@@ -15,7 +15,7 @@ public class NeedReturnListLogical implements AnnotationValidator {
 	}
 
 	@Override
-	public void validate(Annotation toValidate, AnnotatedElement annotated) throws AnnotationValidationException {
+	public void validate(Annotation toValidate, AnnotatedElement annotated) throws AnnotationValidationException{
 		Class<?> returnedType= ((Method) annotated).getReturnType();
 		if (!(returnedType.isArray()||returnedType.equals(List.class))) {
 			throw new AnnotationValidationException(

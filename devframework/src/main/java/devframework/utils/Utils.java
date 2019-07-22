@@ -2,11 +2,7 @@ package devframework.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
@@ -89,43 +85,6 @@ public class Utils {
 	public String getUploadDir() {
 		return this.properties.getProperty("upload.dir",
 				Paths.get(FileUtils.getTempDirectoryPath(), "upload").toAbsolutePath().toString());
-	}
-
-	/**
-	 * Retorna os campos da classe.
-	 */
-	public static List<Field> getFields(Class<?> clazz, boolean includeInherited) {
-		List<Field> fields = new ArrayList<Field>();
-
-		fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
-
-		if (includeInherited)
-			while ((clazz = clazz.getSuperclass()) != null)
-				fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
-
-		return (fields);
-	}
-
-	/**
-	 * Retorna os campos da classe que possuem a anotacao informada pelo parametro.
-	 */
-	public static List<Field> getAnnotadedFields(Class<?> clazz, Class<? extends Annotation> annotationClazz,
-			boolean includeInherited) {
-		List<Field> fields = new ArrayList<Field>();
-
-		fields.addAll(getFields(clazz, includeInherited).stream().filter(f -> f.isAnnotationPresent(annotationClazz))
-				.collect(Collectors.toList()));
-
-		return (fields);
-	}
-
-	/**
-	 * Retorna o campo da classe com o nome informado pelo parametro, ou null se nao
-	 * encontrado.
-	 */
-	public static Field getField(Class<?> clazz, String name, boolean includeInherited) {
-		return (getFields(clazz, includeInherited).stream().filter(f -> f.getName().equals(name)).findFirst()
-				.orElse(null));
 	}
 
 	/**

@@ -30,8 +30,8 @@ public class TransformationService {
 		return mapper.writeValueAsString(object);
 	}
 
-	public String transformToHtml(List objects) throws Exception {
-		HtmlMaker htmlMaker = new HtmlMaker();
+	public String transformToHtml(List objects) throws Exception{
+		HtmlService htmlMaker = new HtmlService();
 		return htmlMaker.makeHTML(objects);
 	}
 	

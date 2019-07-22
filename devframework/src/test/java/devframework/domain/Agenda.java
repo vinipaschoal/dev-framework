@@ -48,7 +48,7 @@ public class Agenda {
 	
 	@ServiceMethod
 	@HtmlTableReturn
-	public List<Pessoa> getPessoaSemRetorno2() {
+	public List<Pessoa> getPessoaHtml1() {
 		Pessoa p = new Pessoa("José", 50, "rua das acacias",new Date());
 		List<Pessoa> lista = new ArrayList<Pessoa>();
 		lista.add(p);
@@ -57,13 +57,19 @@ public class Agenda {
 	
 	@ServiceMethod
 	@HtmlTableReturn
-	public List<Pessoa> getPessoaSemRetorno3() {
+	public List<Pessoa> getPessoaHtml2() {
 		Pessoa p = new Pessoa("José", 50, "rua das acacias",new Date());
 		Pessoa p2 = new Pessoa("Pedro", 49, "rua das palmeiras",new Date());
 		List<Pessoa> lista = new ArrayList<Pessoa>();
 		lista.add(p);
 		lista.add(p2);
 		return lista;
+	}
+	
+	@ServiceMethod
+	@HtmlTableReturn
+	public List<Pessoa> getPessoaHtml3() {
+		return new ArrayList<Pessoa>();
 	}
 
 

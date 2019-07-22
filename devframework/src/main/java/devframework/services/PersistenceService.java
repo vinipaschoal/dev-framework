@@ -53,8 +53,9 @@ public class PersistenceService {
 		ByteArrayInputStream streamCopy = new ByteArrayInputStream(IOUtils.toByteArray(fileStream));
 
 		// verifica se o arquivo (classe/jar) eh valido
-		Object valid = fileName.endsWith(".jar") ? ClassLoaderUtils.getInstance().loadJar(streamCopy)
-				: ClassLoaderUtils.getInstance().loadClass(streamCopy, fileName);
+		
+		Object valid = fileName.endsWith(".jar") ? ClassValidationService.getInstance().isValidJar(streamCopy, fileName)
+				: ClassValidationService.getInstance().isValidClass(streamCopy, fileName);
 
 		if (valid != null) {
 			if (fileName.endsWith(".class")) {
@@ -65,16 +66,15 @@ public class PersistenceService {
 				streamCopy.reset();
 				FileUtils.copyInputStreamToFile(streamCopy, file);
 			}else {
-				List<Class> classes = ((List<Class>) valid);
 				File tempJarFile = File.createTempFile("tempJar", ".jar");
 				streamCopy.reset();
 				FileUtils.copyToFile(streamCopy, tempJarFile);
 				Map<String, byte[]> inputStreamClassesFromJar = ClassLoaderUtils.getInstance().getInputStreamClassesFromJar(tempJarFile.getAbsolutePath());
-				for(Class clazz: classes) {
-					String NomeEPacote = clazz.getName();
+				for(String clazzFullName: inputStreamClassesFromJar.keySet()) {					
+					String NomeEPacote = clazzFullName.substring(0,clazzFullName.length()-6);
 					NomeEPacote = NomeEPacote.replace(".", File.separator);
 					File file = new File(Utils.getInstance().getUploadDir() + File.separator + NomeEPacote+".class");
-					ByteArrayInputStream streamCopyClass = new ByteArrayInputStream(inputStreamClassesFromJar.get(clazz.getCanonicalName()+".class"));
+					ByteArrayInputStream streamCopyClass = new ByteArrayInputStream(inputStreamClassesFromJar.get(clazzFullName));
 					FileUtils.copyInputStreamToFile(streamCopyClass, file);
 				}	
 			}

@@ -114,6 +114,22 @@ public class InvokerTest {
 		String jsonString = mapper.writeValueAsString(object);
 		Assert.assertTrue(jsonString.contains("nome"));
 	}
+	
+	@Test
+	public void testeCallcomClasseValidaERetornoHtmlTable() throws Exception {
+		params = new Object[0];
+		Object object = invoker.call("devframework.domain.Agenda", "getPessoaHtml2", params);
+		Assert.assertTrue(((String)object).contains("<table"));
+	}
+	
+	@Test
+	public void testeCallcomClasseValidaERetornoHtmlTableSemObjetos() throws Exception {
+		params = new Object[0];
+		Object object = invoker.call("devframework.domain.Agenda", "getPessoaHtml3", params);
+		Assert.assertTrue(((String)object).contains("<table"));
+	}
+	
+	
 
 	@Test
 	public void testeCallcomClasseValidaERetornoPrimitivo() throws Exception {

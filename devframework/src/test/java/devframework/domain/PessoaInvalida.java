@@ -2,10 +2,11 @@ package devframework.domain;
 
 import java.util.Date;
 
+import devframework.annotations.HtmlTableReturn;
 import devframework.annotations.Label;
 
 @Label(name="Pessoa com Label")
-public class Pessoa {
+public class PessoaInvalida {
 	
 	private String nome;
 	private int idade;
@@ -14,7 +15,7 @@ public class Pessoa {
 	@Label(name="Data de Nascimento")
 	private Date dataNascimento;
 
-	public Pessoa(String nome, int idade, String endereco, Date dataNascimento) {
+	public PessoaInvalida(String nome, int idade, String endereco, Date dataNascimento) {
 		super();
 		this.nome = nome;
 		this.idade = idade;
@@ -22,6 +23,7 @@ public class Pessoa {
 		this.dataNascimento = dataNascimento;
 	}
 
+	@HtmlTableReturn
 	public String getNome() {
 		return nome;
 	}

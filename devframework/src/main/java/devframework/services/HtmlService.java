@@ -5,7 +5,7 @@ import java.util.List;
 
 import devframework.annotations.container.FieldContainer;
 
-public class HtmlMaker {
+public class HtmlService {
 
 	public String makeHTML(List objects) throws Exception {
 		String html = "<table border=\"1\">";
@@ -22,7 +22,7 @@ public class HtmlMaker {
 		String dados = "";
 		for(Object object: objects) {
 			dados+="<tr>";
-			for (FieldContainer fieldContainer : ClassValidationService.getInstance().getFields(object.getClass())) {
+			for (FieldContainer fieldContainer : InformationClassService.getInstance().getFields(object.getClass())) {
 				dados+="<td>";
 				Field field =fieldContainer.getField(); 
 				field.setAccessible(true);
@@ -36,9 +36,9 @@ public class HtmlMaker {
 
 	private String adicionaCabecalho(Class clazz) throws Exception {
 		String cabecalho = "<tr><th>";
-		cabecalho += ClassValidationService.getInstance().getClassName(clazz);
+		cabecalho += InformationClassService.getInstance().getClassName(clazz);
 		cabecalho += "</th></tr><tr>";
-		for (FieldContainer field : ClassValidationService.getInstance().getFields(clazz)) {
+		for (FieldContainer field : InformationClassService.getInstance().getFields(clazz)) {
 			cabecalho += "<th>";
 			if (field.isTemAnotacaoLabel()) {
 				cabecalho += field.getLabelField();
