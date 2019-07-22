@@ -53,8 +53,8 @@ public class PersistenceService {
 		ByteArrayInputStream streamCopy = new ByteArrayInputStream(IOUtils.toByteArray(fileStream));
 
 		// verifica se o arquivo (classe/jar) eh valido
-		Object valid = fileName.endsWith(".jar") ? ClassValidationService.getInstance().isValidJar(streamCopy, fileName)
-				: ClassValidationService.getInstance().isValidClass(streamCopy, fileName);
+		Object valid = fileName.endsWith(".jar") ? ClassLoaderUtils.getInstance().loadJar(streamCopy)
+				: ClassLoaderUtils.getInstance().loadClass(streamCopy, fileName);
 
 		if (valid != null) {
 			if (fileName.endsWith(".class")) {

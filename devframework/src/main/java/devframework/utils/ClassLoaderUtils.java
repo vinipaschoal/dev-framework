@@ -1,12 +1,14 @@
 package devframework.utils;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -164,10 +166,9 @@ public class ClassLoaderUtils {
 			FileUtils.deleteQuietly(tempJarFile);
 		}
 	}
-	
-	
-	public Map<String, byte[]> getInputStreamClassesFromJar(String jarPath) throws IOException{
-		Map<String, byte[]> inputs = new HashMap<String,byte[]>();
+
+	public Map<String, byte[]> getInputStreamClassesFromJar(String jarPath) throws IOException {
+		Map<String, byte[]> inputs = new HashMap<String, byte[]>();
 		try (JarFile jarFile = new JarFile(jarPath);) {
 			Enumeration<JarEntry> jarEntries = jarFile.entries();
 			while (jarEntries.hasMoreElements()) {
@@ -175,7 +176,8 @@ public class ClassLoaderUtils {
 				if (jarEntry.isDirectory() || !FilenameUtils.isExtension(jarEntry.getName(), "class")) {
 					continue;
 				}
-				inputs.put(this.fixClassName(jarEntry.getName()),IOUtils.toByteArray(jarFile.getInputStream(jarEntry)));
+				inputs.put(this.fixClassName(jarEntry.getName()),
+						IOUtils.toByteArray(jarFile.getInputStream(jarEntry)));
 			}
 			return inputs;
 		}
@@ -206,5 +208,20 @@ public class ClassLoaderUtils {
 
 		// retorna o nome padronizado com a extensao .class
 		return className.replaceAll("[\\\\/]", ".") + ".class";
+	}
+
+	public void loadAll() throws Exception {
+		List<Class<?>> classesList = new ArrayList<>();
+		Collection<File> files = FileUtils.listFiles(new File(Utils.getInstance().getUploadDir()),
+				new String[] { "class", "jar" }, true);
+		for (File file : files) {
+			String filePath = file.getAbsolutePath();
+			if (FilenameUtils.isExtension(filePath, "class")) {
+				ClassLoaderUtils.getInstance().loadClass(file.getAbsolutePath());
+			} else {
+				ClassLoaderUtils.getInstance().loadJar(file.getAbsolutePath());
+			}
+
+		}
 	}
 }
