@@ -1,0 +1,59 @@
+package org.esfinge.virtuallab.domain;
+
+import java.util.Date;
+
+import org.esfinge.virtuallab.annotations.HtmlTableReturn;
+import org.esfinge.virtuallab.annotations.Label;
+
+@Label(name="Pessoa com Label")
+public class PessoaInvalida {
+	
+	private String nome;
+	private int idade;
+	private String endereco;
+	
+	@Label(name="Data de Nascimento")
+	private Date dataNascimento;
+
+	public PessoaInvalida(String nome, int idade, String endereco, Date dataNascimento) {
+		super();
+		this.nome = nome;
+		this.idade = idade;
+		this.endereco = endereco;
+		this.dataNascimento = dataNascimento;
+	}
+
+	@HtmlTableReturn
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	public int getIdade() {
+		return idade;
+	}
+
+	public void setIdade(int idade) {
+		this.idade = idade;
+	}
+
+	public String getEndereco() {
+		return endereco;
+	}
+
+	public void setEndereco(String endereco) {
+		this.endereco = endereco;
+	}
+
+	public Date getDataNascimento() {
+		return dataNascimento;
+	}
+
+	public void setDataNascimento(Date dataNascimento) {
+		this.dataNascimento = dataNascimento;
+	}
+
+}

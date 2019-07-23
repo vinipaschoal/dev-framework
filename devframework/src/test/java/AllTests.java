@@ -1,14 +1,13 @@
 
+import org.esfinge.virtuallab.services.ClassValidationServiceTest;
+import org.esfinge.virtuallab.services.InformationClassServiceTest;
+import org.esfinge.virtuallab.services.PersistenceServiceTest;
+import org.esfinge.virtuallab.services.TransformationServiceTest;
+import org.esfinge.virtuallab.utils.ClassLoaderUtilsTest;
+import org.esfinge.virtuallab.webservice.InvokerTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
-
-import devframework.services.ClassValidationServiceTest;
-import devframework.services.InformationClassServiceTest;
-import devframework.services.PersistenceServiceTest;
-import devframework.services.TransformationServiceTest;
-import devframework.utils.ClassLoaderUtilsTest;
-import devframework.webservice.InvokerTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({ ClassValidationServiceTest.class, ClassLoaderUtilsTest.class, InvokerTest.class,
@@ -16,3 +15,5 @@ import devframework.webservice.InvokerTest;
 public class AllTests {
 
 }
+
+
