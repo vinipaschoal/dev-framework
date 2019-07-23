@@ -1,6 +1,7 @@
 package org.esfinge.virtuallab.webservice;
 
 import java.io.File;
+import java.util.LinkedHashMap;
 
 import org.esfinge.virtuallab.TestUtils;
 import org.esfinge.virtuallab.domain.Agenda;
@@ -9,7 +10,6 @@ import org.esfinge.virtuallab.domain.Pessoa;
 import org.esfinge.virtuallab.domain.Tarefa;
 import org.esfinge.virtuallab.domain.TarefaInvalida;
 import org.esfinge.virtuallab.utils.Utils;
-import org.esfinge.virtuallab.webservice.Invoker;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -27,7 +27,7 @@ public class InvokerTest {
 
 	private Invoker invoker = null;
 
-	private Object[] params;
+	private LinkedHashMap<String, Object> params;
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
@@ -40,16 +40,15 @@ public class InvokerTest {
 	public void setUp() throws Exception {
 		Utils.getInstance().setProperty("upload.dir", TestUtils.TEST_DIR);
 		this.invoker = new Invoker();
-		params = new Object[2];
-		params[0] = "teste";
-		params[1] = Integer.toString(12);
+		params = new LinkedHashMap<String, Object>();
+		params.put("teste", Integer.toString(12));
 	}
 
 	@Test
 	public void testeCallcomDiretorioNull() throws Exception {
 		Utils.getInstance().setProperty("upload.dir", "");
 		thrown.expect(IllegalArgumentException.class);
-		invoker.call(null, "org.esfinge.virtuallab.domain.Agenda", "getNome", params);
+		invoker.call("org.esfinge.virtuallab.domain.Agenda", "getNome", params);
 	}
 
 	@Test
@@ -101,14 +100,14 @@ public class InvokerTest {
 
 	@Test
 	public void testeCallcomClasseValida() throws Exception {
-		params = new Object[0];
+		params.clear();
 		Object object = invoker.call("org.esfinge.virtuallab.domain.Agenda", "getPessoa", params);
 		Assert.assertNotNull(object);
 	}
 
 	@Test
 	public void testeCallcomClasseValidaERetornoJson() throws Exception {
-		params = new Object[0];
+		params.clear();
 		Object object = invoker.call("org.esfinge.virtuallab.domain.Agenda", "getPessoaJson", params);
 		ObjectMapper mapper = new ObjectMapper();
 		String jsonString = mapper.writeValueAsString(object);
@@ -117,14 +116,14 @@ public class InvokerTest {
 	
 	@Test
 	public void testeCallcomClasseValidaERetornoHtmlTable() throws Exception {
-		params = new Object[0];
+		params.clear();
 		Object object = invoker.call("org.esfinge.virtuallab.domain.Agenda", "getPessoaHtml2", params);
 		Assert.assertTrue(((String)object).contains("<table"));
 	}
 	
 	@Test
 	public void testeCallcomClasseValidaERetornoHtmlTableSemObjetos() throws Exception {
-		params = new Object[0];
+		params.clear();
 		Object object = invoker.call("org.esfinge.virtuallab.domain.Agenda", "getPessoaHtml3", params);
 		Assert.assertTrue(((String)object).contains("<table"));
 	}
@@ -133,14 +132,14 @@ public class InvokerTest {
 
 	@Test
 	public void testeCallcomClasseValidaERetornoPrimitivo() throws Exception {
-		params = new Object[0];
+		params.clear();
 		Object object = invoker.call("org.esfinge.virtuallab.domain.Agenda", "getPessoaPrimitivo", params);
-		Assert.assertTrue(ClassUtils.isPrimitiveOrWrapper(object.getClass()));
+		Assert.assertTrue(ClassUtils.isPrimitiveOrWrapper(object.getClass())); 
 	}
 
 	@Test
 	public void testeCallcomClasseValidaEClasseVoidAnotada() throws Exception {
-		params = new Object[0];
+		params.clear();
 		Object object = invoker.call("org.esfinge.virtuallab.domain.Agenda", "getPessoaSemRetorno", params);
 		Assert.assertNull(object);
 	}
@@ -153,15 +152,15 @@ public class InvokerTest {
 
 	@Test
 	public void testeCallcomClasseValidaEDoisParametrosEmOverload() throws Exception {
-		params[1] = "teste";
-		params[0] = Integer.toString(12);
+	/*	params[1] = "teste";
+		params[0] = Integer.toString(12);*/
 		Object object = invoker.call("org.esfinge.virtuallab.domain.Agenda", "getPessoaComParametro", params);
 		Assert.assertNotNull(object);
 	}
 
 	@Test
 	public void testeCallcomClasseValidaEParametrosInvalidos() throws Exception {
-		params[1] = "teste2";
+	/*	params[1] = "teste2";*/
 		thrown.expect(Exception.class);
 		invoker.call("org.esfinge.virtuallab.domain.Agenda", "getPessoaComParametro", params);
 	}

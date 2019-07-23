@@ -1,6 +1,9 @@
 package org.esfinge.virtuallab.annotations.container;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.esfinge.virtuallab.annotations.HtmlTableReturn;
 import org.esfinge.virtuallab.annotations.JsonReturn;
@@ -43,11 +46,11 @@ public class MethodContainer {
 	}
 	
 	public String getNomeMethod() {
-		return nomeMethod;
-	}
-
-	public void setNomeMethod(String nomeMethod) {
-		this.nomeMethod = nomeMethod;
+		if(aliasMethod!=null && !"".equals(aliasMethod)) {
+			return aliasMethod;
+		}else {
+			return nomeMethod;
+		}
 	}
 
 	public String getAliasMethod() {
@@ -80,6 +83,18 @@ public class MethodContainer {
 
 	public void setTemAnotacaoHtmlTableReturn(boolean temAnotacaoHtmlTableReturn) {
 		this.temAnotacaoHtmlTableReturn = temAnotacaoHtmlTableReturn;
+	}
+
+	public void setNomeMethod(String nomeMethod) {
+		this.nomeMethod = nomeMethod;
+	}
+
+	public List<String> getNomeParametros() {
+		List<String> nomes = new ArrayList<String>();
+		for(Parameter parameter: method.getParameters()){
+			nomes.add(parameter.getName());
+		}
+		return nomes;
 	}
 
 }

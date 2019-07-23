@@ -32,7 +32,7 @@ public class Agenda {
 
 	@ServiceMethod
 	public String getPessoaComParametro(String a, int b) {
-		return "pessoa com parametro String e int";
+		return "pessoa com parametro String " +a+" e parametro int "+b;
 	}
 	
 	@ServiceMethod(alias="getPessoaComParametroStringLong")
