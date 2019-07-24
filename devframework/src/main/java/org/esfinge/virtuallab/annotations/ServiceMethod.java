@@ -6,6 +6,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
+@NoVoidReturn
 public @interface ServiceMethod {
 	String alias() default "";
 }

@@ -1,13 +1,13 @@
 package org.esfinge.virtuallab.annotations.container;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.esfinge.virtuallab.annotations.HtmlTableReturn;
 import org.esfinge.virtuallab.annotations.JsonReturn;
 import org.esfinge.virtuallab.annotations.ServiceMethod;
+import org.springframework.core.DefaultParameterNameDiscoverer;
 
 import net.sf.esfinge.metadata.annotation.container.AnnotationProperty;
 import net.sf.esfinge.metadata.annotation.container.ContainerFor;
@@ -21,16 +21,16 @@ public class MethodContainer {
 
 	@ContainsAnnotation(ServiceMethod.class)
 	private boolean temAnotacaoServiceMethod;
-	
+
 	@ContainsAnnotation(JsonReturn.class)
 	private boolean temAnotacaoJsonReturn;
 
 	@ContainsAnnotation(HtmlTableReturn.class)
 	private boolean temAnotacaoHtmlTableReturn;
-	
+
 	@ElementName
 	private String nomeMethod;
-	
+
 	@ReflectionReference
 	private Method method;
 
@@ -44,11 +44,11 @@ public class MethodContainer {
 	public void setTemAnotacaoServiceMethod(boolean temAnotacaoServiceMethod) {
 		this.temAnotacaoServiceMethod = temAnotacaoServiceMethod;
 	}
-	
+
 	public String getNomeMethod() {
-		if(aliasMethod!=null && !"".equals(aliasMethod)) {
+		if (aliasMethod != null && !"".equals(aliasMethod)) {
 			return aliasMethod;
-		}else {
+		} else {
 			return nomeMethod;
 		}
 	}
@@ -90,11 +90,16 @@ public class MethodContainer {
 	}
 
 	public List<String> getNomeParametros() {
-		List<String> nomes = new ArrayList<String>();
-		for(Parameter parameter: method.getParameters()){
-			nomes.add(parameter.getName());
-		}
-		return nomes;
+		DefaultParameterNameDiscoverer defaultParameterNameDiscoverer = new DefaultParameterNameDiscoverer();
+		return Arrays.asList(defaultParameterNameDiscoverer.getParameterNames(method));
+	}
+
+	public Class<?> getReturnType() {
+		return method.getReturnType();
+	}
+	
+	public int getNumberOfParameters() {
+		return method.getParameterCount();
 	}
 
 }

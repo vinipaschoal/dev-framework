@@ -41,7 +41,7 @@ public class InformationClassServiceTest {
 
 	@Test
 	public void testServiceMethods() throws Exception {
-		Assert.assertEquals(10, InformationClassService.getInstance().getServiceMethods(Agenda.class).size());
+		Assert.assertEquals(9, InformationClassService.getInstance().getServiceMethods(Agenda.class).size());
 	}
 	
 	@Test

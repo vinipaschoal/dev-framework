@@ -40,8 +40,6 @@ public class Agenda {
 		return "pessoa com parametro String e long anotada com alias";
 	}
 
-
-	@ServiceMethod
 	public void getPessoaSemRetorno() {
 
 	}

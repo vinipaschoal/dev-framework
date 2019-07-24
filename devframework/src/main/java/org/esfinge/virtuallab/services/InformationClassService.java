@@ -1,6 +1,5 @@
 package org.esfinge.virtuallab.services;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,11 +39,6 @@ public class InformationClassService {
 		return container.getFields();
 	}
 
-	public boolean isHtmlTableReturnPresent(Method method) throws Exception {
-		MethodContainer container = reader.readingAnnotationsTo(method, MethodContainer.class);
-		return container.isTemAnotacaoHtmlTableReturn();
-	}
-
 	public String getClassName(Class clazz) throws Exception {
 		ClassContainer container = reader.readingAnnotationsTo(clazz, ClassContainer.class);
 		if (container.isTemAnotacaoLabel()) {
@@ -55,8 +49,4 @@ public class InformationClassService {
 
 	}
 
-	public boolean isJsonReturnPresent(Method method) throws Exception {
-		MethodContainer container = reader.readingAnnotationsTo(method, MethodContainer.class);
-		return container.isTemAnotacaoJsonReturn();
-	}
 }

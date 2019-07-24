@@ -200,6 +200,9 @@
 				<artifactId>tomcat7-maven-plugin</artifactId>
 				<version>2.2</version>
 				<configuration>
+					<compilerArgs>
+		    		<arg>-parameters</arg>
+		   			 </compilerArgs>
 					<url>http://localhost:8080/manager/text</url>
 					<path>/devframework</path>
 					<!-- Set update to true to avoid exist war package can not be override 

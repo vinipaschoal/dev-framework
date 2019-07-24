@@ -138,22 +138,19 @@ public class InvokerTest {
 	}
 
 	@Test
-	public void testeCallcomClasseValidaEClasseVoidAnotada() throws Exception {
-		params.clear();
-		Object object = invoker.call("org.esfinge.virtuallab.domain.Agenda", "getPessoaSemRetorno", params);
-		Assert.assertNull(object);
-	}
-
-	@Test
 	public void testeCallcomClasseValidaEDoisParametros() throws Exception {
+		params.clear();
+		params.put("b", String.valueOf("teste"));
+		params.put("a", Integer.valueOf(10));
 		Object object = invoker.call("org.esfinge.virtuallab.domain.Agenda", "getPessoaComParametro", params);
 		Assert.assertNotNull(object);
 	}
 
 	@Test
 	public void testeCallcomClasseValidaEDoisParametrosEmOverload() throws Exception {
-	/*	params[1] = "teste";
-		params[0] = Integer.toString(12);*/
+		params.clear();
+		params.put("a", String.valueOf("teste"));
+		params.put("b", Integer.valueOf(10));
 		Object object = invoker.call("org.esfinge.virtuallab.domain.Agenda", "getPessoaComParametro", params);
 		Assert.assertNotNull(object);
 	}
@@ -167,6 +164,9 @@ public class InvokerTest {
 
 	@Test
 	public void testeCallcomClasseValidaEChamadaPeloAlias() throws Exception {
+		params.clear();
+		params.put("a", String.valueOf("teste"));
+		params.put("b", Long.valueOf(10));
 		Object object = invoker.call("org.esfinge.virtuallab.domain.Agenda", "getPessoaComParametroStringLong", params);
 		Assert.assertNotNull(object);
 	}
