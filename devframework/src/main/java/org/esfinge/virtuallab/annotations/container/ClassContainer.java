@@ -43,7 +43,7 @@ public class ClassContainer implements IContainer {
 		return clazz;
 	}
 
-	public void setClass(Class<?> clazz) {
+	public void setClazz(Class<?> clazz) {
 		this.clazz = clazz;
 	}
 

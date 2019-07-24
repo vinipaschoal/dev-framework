@@ -4,10 +4,12 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 
+import org.esfinge.virtuallab.annotations.ServiceClass;
+
 import net.sf.esfinge.metadata.AnnotationValidationException;
 import net.sf.esfinge.metadata.AnnotationValidator;
 
-public class NoVoidReturnLogical implements AnnotationValidator {
+public class NeedServiceClassLogical implements AnnotationValidator {
 
 	@Override
 	public void initialize(Annotation self) {
@@ -16,9 +18,10 @@ public class NoVoidReturnLogical implements AnnotationValidator {
 
 	@Override
 	public void validate(Annotation toValidate, AnnotatedElement annotated) throws AnnotationValidationException {
-		if ("void".equals(((Method) annotated).getReturnType().getName())) {
-			throw new AnnotationValidationException("O método " + ((Method) annotated).getName() + " da classe "
-					+ ((Method) annotated).getDeclaringClass().getName() + " não possui retorno");
+
+		if (((Method) annotated).getDeclaringClass().getAnnotation(ServiceClass.class) == null) {
+			throw new AnnotationValidationException(
+					"A classe" + ((Method) annotated).getDeclaringClass().getName() + " não possui a anotação @serviceClass");
 		}
 	}
 
