@@ -16,51 +16,51 @@ import net.sf.esfinge.metadata.annotation.container.ReflectionReference;
 import net.sf.esfinge.metadata.container.ContainerTarget;
 
 @ContainerFor(ContainerTarget.TYPE)
-public class ClassContainer implements IContainer{
+public class ClassContainer implements IContainer {
 
 	@AllMethodsWith(ServiceMethod.class)
 	private List<MethodContainer> methodsWithServiceMethod;
-	
+
 	@ProcessFields
 	private List<FieldContainer> fields;
-	
+
 	@AnnotationProperty(annotation = Label.class, property = "name")
 	private String labelClass;
 
 	@ReflectionReference
-	private Class<?> classe;
+	private Class<?> clazz;
 
 	@ElementName
-	private String nomeClass;
+	private String className;
 
 	@ContainsAnnotation(ServiceClass.class)
-	private boolean temAnotacaoServiceClass;
+	private boolean annotatedWithServiceClass;
 
 	@ContainsAnnotation(Label.class)
-	private boolean temAnotacaoLabel;
+	private boolean annotatedWithLabel;
 
-	public Class<?> getClasse() {
-		return classe;
+	public Class<?> getClazz() {
+		return clazz;
 	}
 
-	public void setClasse(Class<?> classe) {
-		this.classe = classe;
+	public void setClass(Class<?> clazz) {
+		this.clazz = clazz;
 	}
 
-	public String getNomeClass() {
-		return nomeClass;
+	public String getClassName() {
+		return className;
 	}
 
-	public void setNomeClass(String nomeClass) {
-		this.nomeClass = nomeClass;
+	public void setClassName(String className) {
+		this.className = className;
 	}
 
-	public boolean isTemAnotacaoServiceClass() {
-		return temAnotacaoServiceClass;
+	public boolean isAnnotatedWithServiceClass() {
+		return annotatedWithServiceClass;
 	}
 
-	public void setTemAnotacaoServiceClass(boolean temAnotacaoServiceClass) {
-		this.temAnotacaoServiceClass = temAnotacaoServiceClass;
+	public void setAnnotatedWithServiceClass(boolean annotatedWithServiceClass) {
+		this.annotatedWithServiceClass = annotatedWithServiceClass;
 	}
 
 	public List<MethodContainer> getMethodsWithServiceMethod() {
@@ -71,8 +71,8 @@ public class ClassContainer implements IContainer{
 		this.methodsWithServiceMethod = methodsWithServiceMethod;
 	}
 
-	public void setTemAnotacaoLabel(boolean temAnotacaoLabel) {
-		this.temAnotacaoLabel = temAnotacaoLabel;
+	public void setAnnotatedWithLabel(boolean annotatedWithLabel) {
+		this.annotatedWithLabel = annotatedWithLabel;
 	}
 
 	public void setLabelClass(String labelClass) {
@@ -86,12 +86,12 @@ public class ClassContainer implements IContainer{
 	public void setFields(List<FieldContainer> fields) {
 		this.fields = fields;
 	}
-	
+
 	public String getLabeledClassName() {
-		if (temAnotacaoLabel) {
+		if (annotatedWithLabel) {
 			return labelClass;
 		} else {
-			return nomeClass;
+			return className;
 		}
 	}
 }

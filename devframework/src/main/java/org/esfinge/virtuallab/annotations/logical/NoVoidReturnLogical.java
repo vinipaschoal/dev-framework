@@ -17,8 +17,8 @@ public class NoVoidReturnLogical implements AnnotationValidator {
 	@Override
 	public void validate(Annotation toValidate, AnnotatedElement annotated) throws AnnotationValidationException {
 		if ("void".equals(((Method) annotated).getReturnType().getName())) {
-			throw new AnnotationValidationException(
-					"O método " + ((Method) annotated).getName() + " não possui retorno");
+			throw new AnnotationValidationException("O método " + ((Method) annotated).getName() + " da classe "
+					+ ((Method) annotated).getClass().getName() + " não possui retorno");
 		}
 	}
 

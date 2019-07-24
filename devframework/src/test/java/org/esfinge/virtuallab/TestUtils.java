@@ -74,19 +74,18 @@ public abstract class TestUtils {
 	 * Apaga o conteudo do diretorio de teste.
 	 */
 	public static boolean cleanTestDir() {
-		boolean apagou = false;
-		while (!apagou) {
+		boolean deleted = false;
+		while (!deleted) {
 			try {
 				System.gc();
 				FileUtils.cleanDirectory(TEST_DIR_FILE);
 				TEST_DIR_FILE.mkdirs();
-				apagou= true;
+				deleted= true;
 			} catch (IOException ioe) {
 				
 			}
 		}
 		return true;
-
 	}
 
 	/**
@@ -99,7 +98,6 @@ public abstract class TestUtils {
 				FileUtils.copyFileToDirectory(new File(clazz.getClassLoader().getResource(classPath).getFile()),
 						TEST_DIR_FILE);
 			}
-
 			return true;
 		} catch (IOException ioe) {
 			ioe.printStackTrace();

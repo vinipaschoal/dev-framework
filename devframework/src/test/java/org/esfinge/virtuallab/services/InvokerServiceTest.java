@@ -1,4 +1,4 @@
-package org.esfinge.virtuallab.webservice;
+package org.esfinge.virtuallab.services;
 
 import java.io.File;
 import java.util.LinkedHashMap;
@@ -9,6 +9,7 @@ import org.esfinge.virtuallab.domain.AgendaInvalida;
 import org.esfinge.virtuallab.domain.Pessoa;
 import org.esfinge.virtuallab.domain.Tarefa;
 import org.esfinge.virtuallab.domain.TarefaInvalida;
+import org.esfinge.virtuallab.services.InvokerService;
 import org.esfinge.virtuallab.utils.Utils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,12 +21,12 @@ import org.springframework.util.ClassUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class InvokerTest {
+public class InvokerServiceTest {
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 
-	private Invoker invoker = null;
+	private InvokerService invoker = null;
 
 	private LinkedHashMap<String, Object> params;
 
@@ -39,7 +40,7 @@ public class InvokerTest {
 	@Before
 	public void setUp() throws Exception {
 		Utils.getInstance().setProperty("upload.dir", TestUtils.TEST_DIR);
-		this.invoker = new Invoker();
+		this.invoker = new InvokerService();
 		params = new LinkedHashMap<String, Object>();
 		params.put("teste", Integer.toString(12));
 	}

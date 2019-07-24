@@ -58,9 +58,9 @@ public class PersistenceService {
 
 		if (valid != null) {
 			if (fileName.endsWith(".class")) {
-				String pacote = ((Class) valid).getPackage().getName();
-				pacote = pacote.replace(".", File.separator);
-				fileName = pacote + File.separator + fileName;
+				String packageName = ((Class) valid).getPackage().getName();
+				packageName = packageName.replace(".", File.separator);
+				fileName = packageName + File.separator + fileName;
 				File file = new File(Utils.getInstance().getUploadDir() + File.separator + fileName);
 				streamCopy.reset();
 				FileUtils.copyInputStreamToFile(streamCopy, file);
@@ -69,11 +69,11 @@ public class PersistenceService {
 				streamCopy.reset();
 				FileUtils.copyToFile(streamCopy, tempJarFile);
 				Map<String, byte[]> inputStreamClassesFromJar = ClassLoaderUtils.getInstance().getInputStreamClassesFromJar(tempJarFile.getAbsolutePath());
-				for(String clazzFullName: inputStreamClassesFromJar.keySet()) {					
-					String NomeEPacote = clazzFullName.substring(0,clazzFullName.length()-6);
-					NomeEPacote = NomeEPacote.replace(".", File.separator);
-					File file = new File(Utils.getInstance().getUploadDir() + File.separator + NomeEPacote+".class");
-					ByteArrayInputStream streamCopyClass = new ByteArrayInputStream(inputStreamClassesFromJar.get(clazzFullName));
+				for(String fullClassName: inputStreamClassesFromJar.keySet()) {					
+					String classNameWithPackage = fullClassName.substring(0,fullClassName.length()-6);
+					classNameWithPackage = classNameWithPackage.replace(".", File.separator);
+					File file = new File(Utils.getInstance().getUploadDir() + File.separator + classNameWithPackage+".class");
+					ByteArrayInputStream streamCopyClass = new ByteArrayInputStream(inputStreamClassesFromJar.get(fullClassName));
 					FileUtils.copyInputStreamToFile(streamCopyClass, file);
 				}	
 			}

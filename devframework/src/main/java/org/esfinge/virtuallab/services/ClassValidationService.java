@@ -18,7 +18,7 @@ import org.esfinge.virtuallab.utils.ClassLoaderUtils;
 public final class ClassValidationService {
 	// instancia unica da classe
 	private static ClassValidationService _instance;
-	
+
 	/**
 	 * Construtor interno.
 	 */
@@ -74,16 +74,16 @@ public final class ClassValidationService {
 		List<Class<?>> validClasses = new ArrayList<Class<?>>();
 		if (fileName.endsWith(".jar")) {
 			classList.addAll(ClassLoaderUtils.getInstance().loadJar(fileStream));
-		}else {
+		} else {
 			classList.add(ClassLoaderUtils.getInstance().loadClass(fileStream, fileName));
 		}
 		for (Class<?> clazz : classList) {
-			ClassContainer container = ContainerFactory.create(clazz, TypeContainer.CLASS_CONTAINER);					
-			if (container.isTemAnotacaoServiceClass() && !container.getMethodsWithServiceMethod().isEmpty()) {			
-				validClasses.add(clazz);									
-			}				
+			ClassContainer container = ContainerFactory.create(clazz, TypeContainer.CLASS_CONTAINER);
+			if (container.isAnnotatedWithServiceClass() && !container.getMethodsWithServiceMethod().isEmpty()) {
+				validClasses.add(clazz);
+			}
 		}
 		return (validClasses.size() == 0 ? null : validClasses);
 	}
-	
+
 }

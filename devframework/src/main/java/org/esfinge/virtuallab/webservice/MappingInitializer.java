@@ -1,13 +1,18 @@
 package org.esfinge.virtuallab.webservice;
 
+import org.esfinge.virtuallab.utils.ClassLoaderUtils;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
-public class MapeamentoInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
+public class MappingInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
-
-		return new Class[] { MapeamentoConfiguration.class };
+		try {
+			ClassLoaderUtils.getInstance().loadAll();
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		return new Class[] { MappingConfiguration.class };
 	}
 
 	@Override

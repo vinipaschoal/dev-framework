@@ -15,40 +15,40 @@ public class HtmlService {
 		if (objects.isEmpty()) {
 			return html + "</table>";
 		}
-		html += adicionaCabecalho(objects.get(0).getClass());
-		html+=adicionaDados(objects);
+		html += addHeader(objects.get(0).getClass());
+		html+=addData(objects);
 		html += "</table>";
 		return html;
 	}
 
-	private String adicionaDados(List<?> objects) throws Exception {
-		String dados = "";
+	private String addData(List<?> objects) throws Exception {
+		String data = "";
 		for(Object object: objects) {
-			dados+="<tr>";
+			data+="<tr>";
 			ClassContainer container = ContainerFactory.create(object.getClass(), TypeContainer.CLASS_CONTAINER);
 			for (FieldContainer fieldContainer : container.getFields()) {
-				dados+="<td>";
+				data+="<td>";
 				Field field =fieldContainer.getField(); 
 				field.setAccessible(true);
-				dados+=field.get(object);
-				dados+="</td>";
+				data+=field.get(object);
+				data+="</td>";
 			}
-			dados+="</tr>";
+			data+="</tr>";
 		}
-		return dados;
+		return data;
 	}
 
-	private String adicionaCabecalho(Class<?> clazz) throws Exception {
-		String cabecalho = "<tr><th>";
+	private String addHeader(Class<?> clazz) throws Exception {
+		String header = "<tr><th>";
 		ClassContainer container = ContainerFactory.create(clazz, TypeContainer.CLASS_CONTAINER);
-		cabecalho += container.getLabeledClassName();
-		cabecalho += "</th></tr><tr>";
+		header += container.getLabeledClassName();
+		header += "</th></tr><tr>";
 		for (FieldContainer fieldContainer :container.getFields()) {
-			cabecalho += "<th>";
-			cabecalho += fieldContainer.getLabeledFieldName();
-			cabecalho += "</th>";
+			header += "<th>";
+			header += fieldContainer.getLabeledFieldName();
+			header += "</th>";
 		}
-		cabecalho += "</tr>";
-		return cabecalho;
+		header += "</tr>";
+		return header;
 	}
 }

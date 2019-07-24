@@ -1,6 +1,5 @@
 package org.esfinge.virtuallab.annotations.container;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
@@ -23,19 +22,19 @@ import net.sf.esfinge.metadata.container.ContainerTarget;
 public class MethodContainer implements IContainer {
 
 	@ContainsAnnotation(ServiceMethod.class)
-	private boolean temAnotacaoServiceMethod;
+	private boolean annotatedWithServiceMethod;
 
 	@ContainsAnnotation(JsonReturn.class)
-	private boolean temAnotacaoJsonReturn;
+	private boolean annotatedWithJsonReturn;
 
 	@ContainsAnnotation(HtmlTableReturn.class)
-	private boolean temAnotacaoHtmlTableReturn;
+	private boolean annotatedWithHtmlTableReturn;
 
 	@ContainsAnnotation(Label.class)
-	private boolean temAnotacaoLabel;
+	private boolean annotatedWithLabel;
 
 	@ElementName
-	private String nomeMethod;
+	private String methodName;
 
 	@ReflectionReference
 	private Method method;
@@ -44,21 +43,21 @@ public class MethodContainer implements IContainer {
 	private String aliasMethod;
 
 	@AnnotationProperty(annotation = Label.class, property = "name")
-	private String labelClass;
+	private String labelMethod;
 
-	public boolean isTemAnotacaoServiceMethod() {
-		return temAnotacaoServiceMethod;
+	public boolean isAnnotatedWithServiceMethod() {
+		return annotatedWithServiceMethod;
 	}
 
-	public void setTemAnotacaoServiceMethod(boolean temAnotacaoServiceMethod) {
-		this.temAnotacaoServiceMethod = temAnotacaoServiceMethod;
+	public void setAnnotatedWithServiceMethod(boolean annotatedWithServiceMethod) {
+		this.annotatedWithServiceMethod = annotatedWithServiceMethod;
 	}
 
-	public String getNomeMethod() {
+	public String getMethodName() {
 		if (aliasMethod != null && !"".equals(aliasMethod)) {
 			return aliasMethod;
 		} else {
-			return nomeMethod;
+			return methodName;
 		}
 	}
 
@@ -74,24 +73,24 @@ public class MethodContainer implements IContainer {
 		this.method = method;
 	}
 
-	public boolean isTemAnotacaoJsonReturn() {
-		return temAnotacaoJsonReturn;
+	public boolean isAnnotatedWithJsonReturn() {
+		return annotatedWithJsonReturn;
 	}
 
-	public void setTemAnotacaoJsonReturn(boolean temAnotacaoJsonReturn) {
-		this.temAnotacaoJsonReturn = temAnotacaoJsonReturn;
+	public void setAnnotatedWithJsonReturn(boolean annotatedWithJsonReturn) {
+		this.annotatedWithJsonReturn = annotatedWithJsonReturn;
 	}
 
-	public boolean isTemAnotacaoHtmlTableReturn() {
-		return temAnotacaoHtmlTableReturn;
+	public boolean isAnnotatedWithHtmlTableReturn() {
+		return annotatedWithHtmlTableReturn;
 	}
 
-	public void setTemAnotacaoHtmlTableReturn(boolean temAnotacaoHtmlTableReturn) {
-		this.temAnotacaoHtmlTableReturn = temAnotacaoHtmlTableReturn;
+	public void setAnnotatedWithHtmlTableReturn(boolean annotatedWithHtmlTableReturn) {
+		this.annotatedWithHtmlTableReturn = annotatedWithHtmlTableReturn;
 	}
 
-	public void setNomeMethod(String nomeMethod) {
-		this.nomeMethod = nomeMethod;
+	public void setMethodName(String methodName) {
+		this.methodName = methodName;
 	}
 
 	public List<String> getLabeledParameterNames() {
@@ -119,19 +118,19 @@ public class MethodContainer implements IContainer {
 		return method.getParameterCount();
 	}
 
-	public void setTemAnotacaoLabel(boolean temAnotacaoLabel) {
-		this.temAnotacaoLabel = temAnotacaoLabel;
+	public void setAnnotatedWithLabel(boolean annotatedWithLabel) {
+		this.annotatedWithLabel = annotatedWithLabel;
 	}
 
-	public void setLabelClass(String labelClass) {
-		this.labelClass = labelClass;
+	public void setLabelMethod(String labelMethod) {
+		this.labelMethod = labelMethod;
 	}
 
 	public String getLabeledMethodName() {
-		if (temAnotacaoLabel) {
-			return labelClass;
+		if (annotatedWithLabel) {
+			return labelMethod;
 		} else {
-			return nomeMethod;
+			return methodName;
 		}
 	}
 

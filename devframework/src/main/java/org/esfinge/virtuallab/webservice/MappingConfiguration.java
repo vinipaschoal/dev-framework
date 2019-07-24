@@ -10,7 +10,7 @@ import org.springframework.web.servlet.resource.PathResourceResolver;
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = "org.esfinge.virtuallab.*")
-public class MapeamentoConfiguration extends WebMvcConfigurerAdapter {
+public class MappingConfiguration extends WebMvcConfigurerAdapter {
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
