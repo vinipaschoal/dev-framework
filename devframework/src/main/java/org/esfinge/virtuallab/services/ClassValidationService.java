@@ -8,9 +8,9 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.esfinge.virtuallab.annotations.container.ClassContainer;
+import org.esfinge.virtuallab.annotations.container.ContainerFactory;
+import org.esfinge.virtuallab.annotations.container.TypeContainer;
 import org.esfinge.virtuallab.utils.ClassLoaderUtils;
-
-import net.sf.esfinge.metadata.AnnotationReader;
 
 /**
  * Validator de classes.
@@ -19,22 +19,19 @@ public final class ClassValidationService {
 	// instancia unica da classe
 	private static ClassValidationService _instance;
 	
-	private AnnotationReader reader;
-
 	/**
 	 * Construtor interno.
 	 */
 	private ClassValidationService() {
-		this.reader = new AnnotationReader();
 	}
 
 	/**
 	 * Singleton.
 	 */
 	public synchronized static ClassValidationService getInstance() {
-		if (_instance == null)
+		if (_instance == null) {
 			_instance = new ClassValidationService();
-
+		}
 		return _instance;
 	}
 
@@ -81,7 +78,7 @@ public final class ClassValidationService {
 			classList.add(ClassLoaderUtils.getInstance().loadClass(fileStream, fileName));
 		}
 		for (Class<?> clazz : classList) {
-			ClassContainer container = reader.readingAnnotationsTo(clazz, ClassContainer.class);					
+			ClassContainer container = ContainerFactory.create(clazz, TypeContainer.CLASS_CONTAINER);					
 			if (container.isTemAnotacaoServiceClass() && !container.getMethodsWithServiceMethod().isEmpty()) {			
 				validClasses.add(clazz);									
 			}				

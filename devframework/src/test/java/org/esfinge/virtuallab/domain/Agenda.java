@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.esfinge.virtuallab.annotations.HtmlTableReturn;
 import org.esfinge.virtuallab.annotations.JsonReturn;
+import org.esfinge.virtuallab.annotations.Label;
 import org.esfinge.virtuallab.annotations.ServiceClass;
 import org.esfinge.virtuallab.annotations.ServiceMethod;
 
@@ -31,7 +32,7 @@ public class Agenda {
 	}
 
 	@ServiceMethod
-	public String getPessoaComParametro(String a, int b) {
+	public String getPessoaComParametro(@Label(name="nomePessoa")String a, int b) {
 		return "pessoa com parametro String " +a+" e parametro int "+b;
 	}
 	

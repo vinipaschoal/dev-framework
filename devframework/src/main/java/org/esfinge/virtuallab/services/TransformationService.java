@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class TransformationService {
 
-	public Object wrapperPrimitive(Class clazz, String value) throws Exception {
+	public Object wrapperPrimitive(Class<?> clazz, String value) throws Exception {
 		if (boolean.class == clazz)
 			return Boolean.parseBoolean(value);
 		if (byte.class == clazz)
@@ -30,7 +30,7 @@ public class TransformationService {
 		return mapper.writeValueAsString(object);
 	}
 
-	public String transformToHtml(List objects) throws Exception{
+	public String transformToHtml(List<?> objects) throws Exception{
 		HtmlService htmlMaker = new HtmlService();
 		return htmlMaker.makeHTML(objects);
 	}

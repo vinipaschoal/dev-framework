@@ -16,7 +16,7 @@ import net.sf.esfinge.metadata.annotation.container.ReflectionReference;
 import net.sf.esfinge.metadata.container.ContainerTarget;
 
 @ContainerFor(ContainerTarget.TYPE)
-public class ClassContainer {
+public class ClassContainer implements IContainer{
 
 	@AllMethodsWith(ServiceMethod.class)
 	private List<MethodContainer> methodsWithServiceMethod;
@@ -71,16 +71,8 @@ public class ClassContainer {
 		this.methodsWithServiceMethod = methodsWithServiceMethod;
 	}
 
-	public boolean isTemAnotacaoLabel() {
-		return temAnotacaoLabel;
-	}
-
 	public void setTemAnotacaoLabel(boolean temAnotacaoLabel) {
 		this.temAnotacaoLabel = temAnotacaoLabel;
-	}
-
-	public String getLabelClass() {
-		return labelClass;
 	}
 
 	public void setLabelClass(String labelClass) {
@@ -95,6 +87,11 @@ public class ClassContainer {
 		this.fields = fields;
 	}
 	
-	
-
+	public String getLabeledClassName() {
+		if (temAnotacaoLabel) {
+			return labelClass;
+		} else {
+			return nomeClass;
+		}
+	}
 }

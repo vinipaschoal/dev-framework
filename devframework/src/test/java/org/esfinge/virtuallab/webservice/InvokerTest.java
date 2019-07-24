@@ -149,7 +149,7 @@ public class InvokerTest {
 	@Test
 	public void testeCallcomClasseValidaEDoisParametrosEmOverload() throws Exception {
 		params.clear();
-		params.put("a", String.valueOf("teste"));
+		params.put("nomePessoa", String.valueOf("teste"));
 		params.put("b", Integer.valueOf(10));
 		Object object = invoker.call("org.esfinge.virtuallab.domain.Agenda", "getPessoaComParametro", params);
 		Assert.assertNotNull(object);

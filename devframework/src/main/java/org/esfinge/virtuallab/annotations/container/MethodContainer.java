@@ -1,11 +1,14 @@
 package org.esfinge.virtuallab.annotations.container;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.Arrays;
+import java.lang.reflect.Parameter;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.esfinge.virtuallab.annotations.HtmlTableReturn;
 import org.esfinge.virtuallab.annotations.JsonReturn;
+import org.esfinge.virtuallab.annotations.Label;
 import org.esfinge.virtuallab.annotations.ServiceMethod;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 
@@ -17,7 +20,7 @@ import net.sf.esfinge.metadata.annotation.container.ReflectionReference;
 import net.sf.esfinge.metadata.container.ContainerTarget;
 
 @ContainerFor(ContainerTarget.METHODS)
-public class MethodContainer {
+public class MethodContainer implements IContainer {
 
 	@ContainsAnnotation(ServiceMethod.class)
 	private boolean temAnotacaoServiceMethod;
@@ -28,6 +31,9 @@ public class MethodContainer {
 	@ContainsAnnotation(HtmlTableReturn.class)
 	private boolean temAnotacaoHtmlTableReturn;
 
+	@ContainsAnnotation(Label.class)
+	private boolean temAnotacaoLabel;
+
 	@ElementName
 	private String nomeMethod;
 
@@ -36,6 +42,9 @@ public class MethodContainer {
 
 	@AnnotationProperty(annotation = ServiceMethod.class, property = "alias")
 	private String aliasMethod;
+
+	@AnnotationProperty(annotation = Label.class, property = "name")
+	private String labelClass;
 
 	public boolean isTemAnotacaoServiceMethod() {
 		return temAnotacaoServiceMethod;
@@ -51,10 +60,6 @@ public class MethodContainer {
 		} else {
 			return nomeMethod;
 		}
-	}
-
-	public String getAliasMethod() {
-		return aliasMethod;
 	}
 
 	public void setAliasMethod(String aliasMethod) {
@@ -89,17 +94,45 @@ public class MethodContainer {
 		this.nomeMethod = nomeMethod;
 	}
 
-	public List<String> getNomeParametros() {
+	public List<String> getLabeledParameterNames() {
 		DefaultParameterNameDiscoverer defaultParameterNameDiscoverer = new DefaultParameterNameDiscoverer();
-		return Arrays.asList(defaultParameterNameDiscoverer.getParameterNames(method));
+		String[] parameterNames = defaultParameterNameDiscoverer.getParameterNames(method);		
+		List<String> labeledAndNamed = new ArrayList<String>();
+		for (int i = 0; i < parameterNames.length; i++) {
+			Parameter parameter = method.getParameters()[i];
+			if(parameter.isAnnotationPresent(Label.class)) {
+				Label annotation = parameter.getAnnotation(Label.class);
+				labeledAndNamed.add(annotation.name());
+			}else {
+				labeledAndNamed.add(parameterNames[i]);
+			}
+		}
+		
+		return labeledAndNamed;
 	}
 
 	public Class<?> getReturnType() {
 		return method.getReturnType();
 	}
-	
+
 	public int getNumberOfParameters() {
 		return method.getParameterCount();
+	}
+
+	public void setTemAnotacaoLabel(boolean temAnotacaoLabel) {
+		this.temAnotacaoLabel = temAnotacaoLabel;
+	}
+
+	public void setLabelClass(String labelClass) {
+		this.labelClass = labelClass;
+	}
+
+	public String getLabeledMethodName() {
+		if (temAnotacaoLabel) {
+			return labelClass;
+		} else {
+			return nomeMethod;
+		}
 	}
 
 }

@@ -3,11 +3,14 @@ package org.esfinge.virtuallab.services;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import org.esfinge.virtuallab.annotations.container.ClassContainer;
+import org.esfinge.virtuallab.annotations.container.ContainerFactory;
 import org.esfinge.virtuallab.annotations.container.FieldContainer;
+import org.esfinge.virtuallab.annotations.container.TypeContainer;
 
 public class HtmlService {
 
-	public String makeHTML(List objects) throws Exception {
+	public String makeHTML(List<?> objects) throws Exception {
 		String html = "<table border=\"1\">";
 		if (objects.isEmpty()) {
 			return html + "</table>";
@@ -18,11 +21,12 @@ public class HtmlService {
 		return html;
 	}
 
-	private String adicionaDados(List objects) throws Exception {
+	private String adicionaDados(List<?> objects) throws Exception {
 		String dados = "";
 		for(Object object: objects) {
 			dados+="<tr>";
-			for (FieldContainer fieldContainer : InformationClassService.getInstance().getFields(object.getClass())) {
+			ClassContainer container = ContainerFactory.create(object.getClass(), TypeContainer.CLASS_CONTAINER);
+			for (FieldContainer fieldContainer : container.getFields()) {
 				dados+="<td>";
 				Field field =fieldContainer.getField(); 
 				field.setAccessible(true);
@@ -34,17 +38,14 @@ public class HtmlService {
 		return dados;
 	}
 
-	private String adicionaCabecalho(Class clazz) throws Exception {
+	private String adicionaCabecalho(Class<?> clazz) throws Exception {
 		String cabecalho = "<tr><th>";
-		cabecalho += InformationClassService.getInstance().getClassName(clazz);
+		ClassContainer container = ContainerFactory.create(clazz, TypeContainer.CLASS_CONTAINER);
+		cabecalho += container.getLabeledClassName();
 		cabecalho += "</th></tr><tr>";
-		for (FieldContainer field : InformationClassService.getInstance().getFields(clazz)) {
+		for (FieldContainer fieldContainer :container.getFields()) {
 			cabecalho += "<th>";
-			if (field.isTemAnotacaoLabel()) {
-				cabecalho += field.getLabelField();
-			} else {
-				cabecalho += field.getNameField();
-			}
+			cabecalho += fieldContainer.getLabeledFieldName();
 			cabecalho += "</th>";
 		}
 		cabecalho += "</tr>";

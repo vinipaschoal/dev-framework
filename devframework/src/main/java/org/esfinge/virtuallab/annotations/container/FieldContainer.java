@@ -12,7 +12,7 @@ import net.sf.esfinge.metadata.annotation.container.ReflectionReference;
 import net.sf.esfinge.metadata.container.ContainerTarget;
 
 @ContainerFor(ContainerTarget.FIELDS)
-public class FieldContainer {
+public class FieldContainer implements IContainer{
 
 	@ElementName
 	private String nameField;
@@ -26,10 +26,6 @@ public class FieldContainer {
 	@ContainsAnnotation(Label.class)
 	private boolean temAnotacaoLabel;
 
-	public String getNameField() {
-		return nameField;
-	}
-
 	public void setNameField(String nameField) {
 		this.nameField = nameField;
 	}
@@ -42,19 +38,20 @@ public class FieldContainer {
 		this.field = field;
 	}
 
-	public String getLabelField() {
-		return labelField;
-	}
-
 	public void setLabelField(String labelField) {
 		this.labelField = labelField;
-	}
-
-	public boolean isTemAnotacaoLabel() {
-		return temAnotacaoLabel;
 	}
 
 	public void setTemAnotacaoLabel(boolean temAnotacaoLabel) {
 		this.temAnotacaoLabel = temAnotacaoLabel;
 	}
+	
+	public String getLabeledFieldName() {
+		if (temAnotacaoLabel) {
+			return labelField;
+		} else {
+			return nameField;
+		}
+	}
+
 }

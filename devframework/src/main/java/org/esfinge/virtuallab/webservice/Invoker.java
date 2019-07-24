@@ -5,16 +5,19 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
+import org.esfinge.virtuallab.annotations.container.ClassContainer;
 import org.esfinge.virtuallab.annotations.container.MethodContainer;
 import org.esfinge.virtuallab.domain.ClassDescriptor;
-import org.esfinge.virtuallab.services.InformationClassService;
 import org.esfinge.virtuallab.services.PersistenceService;
 import org.esfinge.virtuallab.services.TransformationService;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import net.sf.esfinge.metadata.AnnotationReader;
+
 public class Invoker extends ClassLoader {
 
+	private AnnotationReader reader = new AnnotationReader();
 	private TransformationService transformationService = new TransformationService();
 	private List<Object> valoresConvertidos = new ArrayList<Object>();
 
@@ -37,7 +40,7 @@ public class Invoker extends ClassLoader {
 	private MethodContainer verificaCompatibilidadeDeParametros(List<MethodContainer> methods,
 			LinkedHashMap<String, Object> allParameters) {
 		for (MethodContainer methodContainer : methods) {
-			List<String> nomesParametrosdoMetodo = methodContainer.getNomeParametros();
+			List<String> nomesParametrosdoMetodo = methodContainer.getLabeledParameterNames();
 			boolean ocorreuErro = false;
 			valoresConvertidos.clear();
 			for (int i = 0; i < methodContainer.getMethod().getParameterCount(); i++) {
@@ -66,10 +69,11 @@ public class Invoker extends ClassLoader {
 	private List<MethodContainer> procuraMetodoCorrespondente(Class<?> clazz, String methodName,
 			Set<String> nomesParametros) throws Exception {
 		List<MethodContainer> metodos = new ArrayList<MethodContainer>();
-		for (MethodContainer methodContainer : InformationClassService.getInstance().getServiceMethods(clazz)) {
+		ClassContainer container = reader.readingAnnotationsTo(clazz, ClassContainer.class);
+		for (MethodContainer methodContainer : container.getMethodsWithServiceMethod()) {
 			if (methodContainer.getNomeMethod().equals(methodName)
 					&& methodContainer.getMethod().getParameterCount() == nomesParametros.size()
-					&& nomesParametrosCorrespondentes(methodContainer.getNomeParametros(), nomesParametros)) {
+					&& nomesParametrosCorrespondentes(methodContainer.getLabeledParameterNames(), nomesParametros)) {
 				metodos.add(methodContainer);
 			}
 		}
@@ -100,9 +104,9 @@ public class Invoker extends ClassLoader {
 		}
 		if (methodContainer.isTemAnotacaoJsonReturn()) {
 			return transformationService.transformToJson(returnValue);
-		}else if (methodContainer.isTemAnotacaoHtmlTableReturn()) {
+		} else if (methodContainer.isTemAnotacaoHtmlTableReturn()) {
 			return transformationService.transformToHtml((List<?>) returnValue);
-		}else {
+		} else {
 			return returnValue;
 		}
 	}

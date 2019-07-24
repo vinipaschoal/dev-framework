@@ -36,9 +36,9 @@ public class PersistenceService {
 	 * Singleton.
 	 */
 	public static PersistenceService getInstance() {
-		if (_instance == null)
+		if (_instance == null) {
 			_instance = new PersistenceService();
-
+		}
 		return _instance;
 	}
 
