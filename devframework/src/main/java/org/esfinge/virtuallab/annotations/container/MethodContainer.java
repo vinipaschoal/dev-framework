@@ -45,10 +45,6 @@ public class MethodContainer implements IContainer {
 	@AnnotationProperty(annotation = Label.class, property = "name")
 	private String labelMethod;
 
-	public boolean isAnnotatedWithServiceMethod() {
-		return annotatedWithServiceMethod;
-	}
-
 	public void setAnnotatedWithServiceMethod(boolean annotatedWithServiceMethod) {
 		this.annotatedWithServiceMethod = annotatedWithServiceMethod;
 	}
@@ -108,10 +104,6 @@ public class MethodContainer implements IContainer {
 		}
 		
 		return labeledAndNamed;
-	}
-
-	public Class<?> getReturnType() {
-		return method.getReturnType();
 	}
 
 	public int getNumberOfParameters() {

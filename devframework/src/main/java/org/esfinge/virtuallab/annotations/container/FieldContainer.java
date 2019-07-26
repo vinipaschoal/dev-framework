@@ -53,5 +53,9 @@ public class FieldContainer implements IContainer {
 			return fieldName;
 		}
 	}
+	
+	public String getDeclaredName() {
+		return fieldName;
+	}
 
 }

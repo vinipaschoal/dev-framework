@@ -1,5 +1,6 @@
 package org.esfinge.virtuallab.annotations.container;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 import org.esfinge.virtuallab.annotations.Label;
@@ -39,16 +40,12 @@ public class ClassContainer implements IContainer {
 	@ContainsAnnotation(Label.class)
 	private boolean annotatedWithLabel;
 
-	public Class<?> getClazz() {
-		return clazz;
-	}
-
 	public void setClazz(Class<?> clazz) {
 		this.clazz = clazz;
 	}
 
-	public String getClassName() {
-		return className;
+	public Class<?> getClazz() {
+		return clazz;
 	}
 
 	public void setClassName(String className) {
@@ -93,5 +90,14 @@ public class ClassContainer implements IContainer {
 		} else {
 			return className;
 		}
+	}
+	
+	public FieldContainer getDeclaredField(String name) {
+		for(FieldContainer fieldContainer :fields){
+			if(fieldContainer.getDeclaredName().equals(name)) {
+				return fieldContainer;
+			}
+		}
+		return null;
 	}
 }
