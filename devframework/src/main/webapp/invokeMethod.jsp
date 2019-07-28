@@ -4,6 +4,7 @@
 <tags:_Layout>
 
 	<jsp:attribute name="css_custom">
+		<link rel="stylesheet" type="text/css" href="webjars/chartjs/2.8.0/Chart.min.css">
 	</jsp:attribute>
 	
 	<jsp:attribute name="content">
@@ -44,12 +45,17 @@
 					</div>
 				</div>
 			</div>
+			<div>
+				
+			</div>
 	
 		</main>
 		
 	</jsp:attribute>
 	
 	<jsp:attribute name="js_custom">
+		<!-- load chartjs library -->
+		<script type="text/javascript" src="webjars/chartjs/2.8.0/Chart.min.js"></script>
 		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/app/InvokeMethod.js"></script>
 	</jsp:attribute>
 </tags:_Layout>
