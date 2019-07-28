@@ -1,3 +1,23 @@
+@font-face {
+    font-family: 'POERedcoatNew';
+    src: url('fonts/POERedcoatNewBold.eot');
+    src: url('fonts/POERedcoatNewBold.eot?#iefix') format('embedded-opentype'),
+        url('fonts/POERedcoatNewBold.woff2') format('woff2'),
+        url('fonts/POERedcoatNewBold.woff') format('woff'),
+        url('fonts/POERedcoatNewBold.ttf') format('truetype'),
+        url('fonts/POERedcoatNewBold.svg#POERedcoatNewBold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+}
+
+.font-esfinge {
+	font-size: 20px;
+	font-family: 'POERedcoatNew';
+	font-weight: normal;
+	font-style: normal;
+}
+
+
 .text-muted {
 	font-size: 15px !important;
 }

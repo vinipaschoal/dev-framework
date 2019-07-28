@@ -8,7 +8,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>DevFramework</title>
+		<title>Esfinge Virtual Lab</title>
 		<link href="webjars/bootstrap/4.3.1/css/bootstrap.css" rel="stylesheet" type="text/css">
 		<link href="webjars/datatables/1.10.19/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css">
 		<link href="webjars/font-awesome/5.9.0/css/all.min.css" rel="stylesheet" type="text/css">
@@ -33,7 +33,7 @@
 			</div>
 			<div class="navbar navbar-dark bg-dark box-shadow">
 				<div class="container d-flex justify-content-between">
-					<a href="./" class="navbar-brand d-flex align-items-center"> <strong>DevFramework</strong>
+					<a href="./" class="navbar-brand d-flex align-items-center font-esfinge"> <strong>Esfinge Virtual Lab</strong>
 					</a>
 					<button class="navbar-toggler" type="button" data-toggle="collapse"
 						data-target="#navbarHeader" aria-controls="navbarHeader"
