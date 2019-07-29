@@ -43,6 +43,8 @@ app.settings = {
 			
 			app.settings.setLoad();
 			
+			$('.menu-link').bigSlide();
+			
 	        $(".date, .dateNotpicker").mask("99/99/9999");
 	        $(".zipcode").mask("99999-999");
 	        $(".cnpj").mask("99.999.999/9999-99");

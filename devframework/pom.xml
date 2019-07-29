@@ -88,6 +88,13 @@
 		    <artifactId>underscorejs</artifactId>
 		    <version>1.8.3</version>
 		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.webjars/chartjs -->
+		<dependency>
+		    <groupId>org.webjars</groupId>
+		    <artifactId>chartjs</artifactId>
+		    <version>2.8.0</version>
+		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
 		<dependency>

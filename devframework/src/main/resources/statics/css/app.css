@@ -1,3 +1,23 @@
+@font-face {
+    font-family: 'POERedcoatNew';
+    src: url('fonts/POERedcoatNewBold.eot');
+    src: url('fonts/POERedcoatNewBold.eot?#iefix') format('embedded-opentype'),
+        url('fonts/POERedcoatNewBold.woff2') format('woff2'),
+        url('fonts/POERedcoatNewBold.woff') format('woff'),
+        url('fonts/POERedcoatNewBold.ttf') format('truetype'),
+        url('fonts/POERedcoatNewBold.svg#POERedcoatNewBold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+}
+
+.font-esfinge {
+	font-size: 20px;
+	font-family: 'POERedcoatNew';
+	font-weight: normal;
+	font-style: normal;
+}
+
+
 .text-muted {
 	font-size: 15px !important;
 }
@@ -37,4 +57,54 @@
 	text-align: center;
     height:100%;
     line-height: 200px;
+}
+
+.panel {
+    position: fixed;
+    left: -15.625em; /*left or right and the width of your navigation panel*/
+    width: 15.625em; /*should match the above value*/
+    background: #2C3E50;
+    z-index: 9999;
+}
+.panel ul {
+    border-top: 2px solid #34495D;
+}
+.panel ul, .panel li {
+  margin: 0;
+  padding: 0;
+}
+.panel li {
+  list-style: none;
+}
+
+.panel li a {
+  text-decoration: none;
+  transition: 0.2s ease;
+  font-size: 14px;
+}
+.panel li a:link,
+.panel li a:visited {
+  color: rgba(255,255,255,.5);
+}
+
+.panel li a:hover,
+.panel li a:active {
+  color: rgba(255,255,255,.75);
+}
+.panel li a .svg-inline--fa {
+	margin-right: 5px !important;
+}
+.panel a:link, .panel a:visited {
+    color: #fff;
+}
+.panel a {
+    display: block;
+    border-bottom: 2px solid #34495D;
+    padding: 1em;
+}
+
+.menu-title {
+    display: block;
+    padding: 13px;
+    color: #fff;
 }
