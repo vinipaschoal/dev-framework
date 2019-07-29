@@ -23,7 +23,7 @@ public class MethodDescriptor {
 		this.parameters = new ArrayList<ParameterDescriptor>();
         for (Parameter parameter : parameters) {
 			ParameterDescriptor parameterDescriptor = new ParameterDescriptor();
-			parameterDescriptor.setName(parameter.getName());
+			parameterDescriptor.setName(parameter.getName()); //TODO: precisa ser compilado com a diretiva -parameters!
 			parameterDescriptor.setDataType(parameter.getType().getSimpleName());
 			this.addParameter(parameterDescriptor);
 		}

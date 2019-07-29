@@ -1,5 +1,9 @@
 package org.esfinge.virtuallab.webservice;
 
+import java.io.File;
+
+import org.apache.commons.io.FilenameUtils;
+import org.esfinge.virtuallab.services.PersistenceService;
 import org.esfinge.virtuallab.utils.ClassLoaderUtils;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
@@ -8,7 +12,26 @@ public class MappingInitializer extends AbstractAnnotationConfigDispatcherServle
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
 		try {
-			ClassLoaderUtils.getInstance().loadAll();
+			// carrega as classes/jar do diretorio de upload
+			ClassLoaderUtils classLoader = ClassLoaderUtils.getInstance();
+			
+			for (File file : PersistenceService.getInstance().getUploadedFiles())
+			{
+				try {
+					// caminho para o arquivo
+					String filePath = file.getAbsolutePath();
+					
+					// classe
+					if ( FilenameUtils.isExtension(filePath, "class") )
+						classLoader.loadClass(filePath);
+					
+					// jar
+					else
+						classLoader.loadJar(filePath);
+				} catch (Exception exc) {
+					exc.printStackTrace();
+				}
+			}
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}

@@ -1,11 +1,11 @@
 package org.esfinge.virtuallab.annotations.container;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 import org.esfinge.virtuallab.annotations.Label;
 import org.esfinge.virtuallab.annotations.ServiceClass;
 import org.esfinge.virtuallab.annotations.ServiceMethod;
+import org.esfinge.virtuallab.annotations.TableStructure;
 
 import net.sf.esfinge.metadata.annotation.container.AllMethodsWith;
 import net.sf.esfinge.metadata.annotation.container.AnnotationProperty;
@@ -28,6 +28,9 @@ public class ClassContainer implements IContainer {
 	@AnnotationProperty(annotation = Label.class, property = "name")
 	private String labelClass;
 
+	@AnnotationProperty(annotation = TableStructure.class, property = "fields")
+	private String[] fieldsNameTableStructure;
+
 	@ReflectionReference
 	private Class<?> clazz;
 
@@ -39,6 +42,9 @@ public class ClassContainer implements IContainer {
 
 	@ContainsAnnotation(Label.class)
 	private boolean annotatedWithLabel;
+
+	@ContainsAnnotation(TableStructure.class)
+	private boolean annotatedWithTableStructure;
 
 	public void setClazz(Class<?> clazz) {
 		this.clazz = clazz;
@@ -72,8 +78,16 @@ public class ClassContainer implements IContainer {
 		this.annotatedWithLabel = annotatedWithLabel;
 	}
 
+	public boolean isAnnotatedWithTableStructure() {
+		return annotatedWithTableStructure;
+	}
+
 	public void setLabelClass(String labelClass) {
 		this.labelClass = labelClass;
+	}
+
+	public String[] getFieldsNameTableStructure() {
+		return fieldsNameTableStructure;
 	}
 
 	public List<FieldContainer> getFields() {
@@ -91,13 +105,22 @@ public class ClassContainer implements IContainer {
 			return className;
 		}
 	}
-	
+
 	public FieldContainer getDeclaredField(String name) {
-		for(FieldContainer fieldContainer :fields){
-			if(fieldContainer.getDeclaredName().equals(name)) {
+		for (FieldContainer fieldContainer : fields) {
+			if (fieldContainer.getDeclaredName().equals(name)) {
 				return fieldContainer;
 			}
 		}
 		return null;
 	}
+
+	public void setFieldsNameTableStructure(String[] fieldsNameTableStructure) {
+		this.fieldsNameTableStructure = fieldsNameTableStructure;
+	}
+
+	public void setAnnotatedWithTableStructure(boolean annotatedWithTableStructure) {
+		this.annotatedWithTableStructure = annotatedWithTableStructure;
+	}
+
 }

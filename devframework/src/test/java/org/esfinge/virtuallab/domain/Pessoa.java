@@ -6,7 +6,7 @@ import org.esfinge.virtuallab.annotations.Label;
 import org.esfinge.virtuallab.annotations.TableStructure;
 
 @Label(name="Pessoa com Label")
-@TableStructure(fields={"idade","endereco","nome"})
+@TableStructure(fields={"idade","endereco","dataNascimento"})
 public class Pessoa {
 	
 	private String nome;

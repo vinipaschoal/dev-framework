@@ -11,7 +11,7 @@ import org.esfinge.virtuallab.domain.Tarefa;
 import org.esfinge.virtuallab.domain.TarefaInvalida;
 import org.esfinge.virtuallab.junit4.RepeatTest;
 import org.esfinge.virtuallab.junit4.RepeatTestRule;
-import org.esfinge.virtuallab.services.ClassValidationService;
+import org.esfinge.virtuallab.services.ValidationService;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -52,7 +52,7 @@ public class ClassValidationServiceTest{
 		// classe: Agenda.class
 		String classPath = TestUtils.pathFromTestDir("Agenda.class");
 
-		Class<?> clazz = ClassValidationService.getInstance().isValidClass(classPath);
+		Class<?> clazz = ValidationService.getInstance().isValidClass(classPath);
 		Assert.assertEquals(Agenda.class, clazz);
 	}
 
@@ -62,7 +62,7 @@ public class ClassValidationServiceTest{
 		// classe: Tarefa.class
 		InputStream classStream = TestUtils.streamFromTestDir("Tarefa.class");
 
-		Class<?> clazz = ClassValidationService.getInstance().isValidClass(classStream, "Tarefa");
+		Class<?> clazz = ValidationService.getInstance().isValidClass(classStream, "Tarefa");
 		Assert.assertEquals(Tarefa.class, clazz);
 	}
 
@@ -72,7 +72,7 @@ public class ClassValidationServiceTest{
 		// classe: Pessoa.class
 		String classPath = TestUtils.pathFromTestDir("Pessoa.class");
 
-		Class<?> clazz = ClassValidationService.getInstance().isValidClass(classPath);
+		Class<?> clazz = ValidationService.getInstance().isValidClass(classPath);
 		Assert.assertNull(clazz);
 	}
 
@@ -82,7 +82,7 @@ public class ClassValidationServiceTest{
 		// classe: AgendaInvalida.class
 		InputStream classStream = TestUtils.streamFromTestDir("AgendaInvalida.class");
 
-		Class<?> clazz = ClassValidationService.getInstance().isValidClass(classStream, "AgendaInvalida.class");
+		Class<?> clazz = ValidationService.getInstance().isValidClass(classStream, "AgendaInvalida.class");
 		Assert.assertNull(clazz);
 	}
 
@@ -92,7 +92,7 @@ public class ClassValidationServiceTest{
 		// jar: jarValido.jar
 		String jarPath = TestUtils.pathFromTestDir("jarValido.jar");
 
-		List<Class<?>> classList = ClassValidationService.getInstance().isValidJar(jarPath);
+		List<Class<?>> classList = ValidationService.getInstance().isValidJar(jarPath);
 		Assert.assertEquals(2, classList.size());
 		Assert.assertTrue(classList.contains(Agenda.class));
 		Assert.assertTrue(classList.contains(Tarefa.class));
@@ -104,7 +104,7 @@ public class ClassValidationServiceTest{
 		// jar: jarValido.jar
 		InputStream jarStream = TestUtils.streamFromTestDir("jarValido.jar");
 
-		List<Class<?>> classList = ClassValidationService.getInstance().isValidJar(jarStream, "jarValido.jar");
+		List<Class<?>> classList = ValidationService.getInstance().isValidJar(jarStream, "jarValido.jar");
 		Assert.assertEquals(2, classList.size());
 		Assert.assertTrue(classList.contains(Agenda.class));
 		Assert.assertTrue(classList.contains(Tarefa.class));
@@ -116,7 +116,7 @@ public class ClassValidationServiceTest{
 		// jar: jarInvalido.jar
 		String jarPath = TestUtils.pathFromTestDir("jarInvalido.jar");
 
-		List<Class<?>> classList = ClassValidationService.getInstance().isValidJar(jarPath);
+		List<Class<?>> classList = ValidationService.getInstance().isValidJar(jarPath);
 		Assert.assertNull(classList);
 	}
 
@@ -126,7 +126,7 @@ public class ClassValidationServiceTest{
 		// jar: jarInvalido.jar
 		InputStream jarStream = TestUtils.streamFromTestDir("jarInvalido.jar");
 
-		List<Class<?>> classList = ClassValidationService.getInstance().isValidJar(jarStream, "jarInvalido.jar");
+		List<Class<?>> classList = ValidationService.getInstance().isValidJar(jarStream, "jarInvalido.jar");
 		Assert.assertNull(classList);
 	}
 }

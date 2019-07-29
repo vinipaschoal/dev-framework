@@ -15,22 +15,22 @@ import org.esfinge.virtuallab.utils.ClassLoaderUtils;
 /**
  * Validator de classes.
  */
-public final class ClassValidationService {
+public final class ValidationService {
 	// instancia unica da classe
-	private static ClassValidationService _instance;
+	private static ValidationService _instance;
 
 	/**
 	 * Construtor interno.
 	 */
-	private ClassValidationService() {
+	private ValidationService() {
 	}
 
 	/**
 	 * Singleton.
 	 */
-	public synchronized static ClassValidationService getInstance() {
+	public synchronized static ValidationService getInstance() {
 		if (_instance == null) {
-			_instance = new ClassValidationService();
+			_instance = new ValidationService();
 		}
 		return _instance;
 	}

@@ -1,4 +1,4 @@
-package org.esfinge.virtuallab.servlet;
+package org.esfinge.virtuallab.web;
 
 import java.io.IOException;
 

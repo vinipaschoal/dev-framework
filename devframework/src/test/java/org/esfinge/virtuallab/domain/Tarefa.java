@@ -16,4 +16,9 @@ public class Tarefa {
 	public void setNome(String nome) {
 		this.nome = nome;
 	}	
+	
+	@ServiceMethod
+	public int getPrioridade(String categoria) {
+		return 1;
+	}
 }

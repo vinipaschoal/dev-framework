@@ -5,9 +5,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
@@ -16,7 +14,6 @@ import org.apache.commons.io.IOUtils;
 import org.esfinge.virtuallab.annotations.ServiceMethod;
 import org.esfinge.virtuallab.domain.ClassDescriptor;
 import org.esfinge.virtuallab.domain.MethodDescriptor;
-import org.esfinge.virtuallab.utils.ClassLoaderUtils;
 import org.esfinge.virtuallab.utils.Utils;
 
 /**
@@ -46,6 +43,32 @@ public class PersistenceService {
 	 * Salva o arquivo (classe/jar) no diretorio de upload se o mesmo for valido.
 	 */
 	public synchronized boolean save(InputStream fileStream, String fileName) throws Exception {
+		
+		// salva uma copia do stream (pois o metodo de validacao consome o stream informado, 
+    	// nao permitindo utiliza-lo novamente)
+    	ByteArrayInputStream streamCopy = new ByteArrayInputStream(IOUtils.toByteArray(fileStream));
+
+ 		// verifica se o arquivo (classe/jar) eh valido
+		Object valid = fileName.endsWith(".jar") 
+				? ValidationService.getInstance().isValidJar(streamCopy, fileName) 
+				: ValidationService.getInstance().isValidClass(streamCopy, fileName);
+
+ 		if ( valid != null )
+		{
+	    	// arquivo de destino
+	    	File file = new File(Utils.getInstance().getUploadDir() + File.separator + fileName);
+
+ 	    	// salva o arquivo no diretorio de upload
+	    	streamCopy.reset();
+	    	FileUtils.copyInputStreamToFile(streamCopy, file);
+
+ 	    	return true;
+		}
+
+ 		return false;
+		
+		
+		/*
 		// salva uma copia do stream (pois o metodo de validacao consome o stream
 		// informado,
 		// nao permitindo utiliza-lo novamente)
@@ -53,8 +76,8 @@ public class PersistenceService {
 
 		// verifica se o arquivo (classe/jar) eh valido
 		
-		Object valid = fileName.endsWith(".jar") ? ClassValidationService.getInstance().isValidJar(streamCopy, fileName)
-				: ClassValidationService.getInstance().isValidClass(streamCopy, fileName);
+		Object valid = fileName.endsWith(".jar") ? ValidationService.getInstance().isValidJar(streamCopy, fileName)
+				: ValidationService.getInstance().isValidClass(streamCopy, fileName);
 
 		if (valid != null) {
 			if (fileName.endsWith(".class")) {
@@ -80,6 +103,7 @@ public class PersistenceService {
 			return true;
 		}
 		return false;
+		*/
 	}
 
 	/**
@@ -130,6 +154,16 @@ public class PersistenceService {
 		return null;
 		
 	}
+	
+	/**
+	 * Retorna os arquivos de classes/jar do diretorio de upload.
+	 */
+	public List<File> getUploadedFiles() {
+		
+		// 
+		return new ArrayList<File>(FileUtils.listFiles(new File(Utils.getInstance().getUploadDir()),
+				new String[] { "class", "jar" }, false));
+	}
 
 	/**
 	 * Retorna as classes do diretorio de upload com servicos validos.
@@ -139,11 +173,10 @@ public class PersistenceService {
 		List<Class<?>> classesList = new ArrayList<>();
 
 		// obtem os arquivos de classes e jar do diretorio de upload
-		Collection<File> files = FileUtils.listFiles(new File(Utils.getInstance().getUploadDir()),
-				new String[] { "class", "jar" }, true);
+		List<File> files = this.getUploadedFiles();
 
 		//
-		ClassValidationService validation = ClassValidationService.getInstance();
+		ValidationService validation = ValidationService.getInstance();
 
 		for (File file : files)
 			try {
@@ -157,7 +190,7 @@ public class PersistenceService {
 						classesList.add(clazz);
 				} else // jar
 				{
-					// obtem as classes validas do jare
+					// obtem as classes validas do jar
 					List<Class<?>> jarClassList = validation.isValidJar(filePath);
 					if (jarClassList != null)
 						for (Class<?> clazz : jarClassList)

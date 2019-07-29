@@ -1,5 +1,6 @@
 package org.esfinge.virtuallab.utils;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
@@ -82,9 +83,14 @@ public class Utils {
 	/**
 	 * Retorna o diretorio de upload.
 	 */
-	public String getUploadDir() {
-		return this.properties.getProperty("upload.dir",
-				Paths.get(FileUtils.getTempDirectoryPath(), "upload").toAbsolutePath().toString());
+	public String getUploadDir() {		
+		// verifica se o diretorio de upload existe e pode ser escrito 
+		File uploadDir = Paths.get(this.properties.getProperty("upload.dir")).toAbsolutePath().toFile();
+		if ( uploadDir.isDirectory() && uploadDir.canWrite() )
+			return uploadDir.getAbsolutePath();
+		
+		// retorna o diretorio de upload criado no diretorio temporario do sistema
+		return Paths.get(FileUtils.getTempDirectoryPath(), "upload").toAbsolutePath().toString();
 	}
 
 	/**

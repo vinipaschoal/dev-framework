@@ -1,4 +1,4 @@
-package org.esfinge.virtuallab.servlet;
+package org.esfinge.virtuallab.web;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -10,10 +10,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.esfinge.virtuallab.op.invokemethod.InvokeMethodHandler;
-import org.esfinge.virtuallab.op.listclasses.ListClassesHandler;
-import org.esfinge.virtuallab.op.listmethods.ListMethodsHandler;
-import org.esfinge.virtuallab.op.uploadfile.UploadFileHandler;
+import org.esfinge.virtuallab.web.op.InvokeMethodHandler;
+import org.esfinge.virtuallab.web.op.ListClassesHandler;
+import org.esfinge.virtuallab.web.op.ListMethodsHandler;
+import org.esfinge.virtuallab.web.op.UploadFileHandler;
 
 /**
  * Servlet principal da aplicacao.

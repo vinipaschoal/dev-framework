@@ -1,4 +1,4 @@
-package org.esfinge.virtuallab.op.uploadfile;
+package org.esfinge.virtuallab.web.op;
 
 import java.util.List;
 
@@ -10,8 +10,8 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.esfinge.virtuallab.services.PersistenceService;
-import org.esfinge.virtuallab.servlet.IJsonRequestHandler;
 import org.esfinge.virtuallab.utils.Utils;
+import org.esfinge.virtuallab.web.IJsonRequestHandler;
 
 import com.google.gson.JsonObject;
 

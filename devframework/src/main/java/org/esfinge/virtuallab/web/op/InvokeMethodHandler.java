@@ -1,4 +1,4 @@
-package org.esfinge.virtuallab.op.invokemethod;
+package org.esfinge.virtuallab.web.op;
 
 import java.io.FileNotFoundException;
 import java.lang.reflect.Method;
@@ -10,7 +10,7 @@ import org.esfinge.virtuallab.domain.FormDescriptor;
 import org.esfinge.virtuallab.domain.MethodDescriptor;
 import org.esfinge.virtuallab.domain.ParameterDescriptor;
 import org.esfinge.virtuallab.services.PersistenceService;
-import org.esfinge.virtuallab.servlet.IJsonRequestHandler;
+import org.esfinge.virtuallab.web.IJsonRequestHandler;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
