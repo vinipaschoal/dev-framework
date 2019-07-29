@@ -112,7 +112,7 @@ public class InvokerServiceTest {
 		Object object = invoker.call("org.esfinge.virtuallab.domain.Agenda", "getPessoaJson", params);
 		ObjectMapper mapper = new ObjectMapper();
 		String jsonString = mapper.writeValueAsString(object);
-		Assert.assertTrue(jsonString.contains("nome"));
+		Assert.assertTrue(jsonString.contains("idade"));
 	}
 	
 	@Test
