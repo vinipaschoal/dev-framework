@@ -2,7 +2,7 @@ app.Classes = {
 		validExts: new Array(".class",".jar"),
 		tableClass: $('#classTable').DataTable({"language": app.settings.languagePtBr }),
 		init: function () {
-
+			
 			app.settings.loading.show();
 			
 			app.Classes.list();
@@ -24,6 +24,34 @@ app.Classes = {
 				event.preventDefault();                
 				app.Classes.save();
 	        });
+	    	
+	    	//https://hmkcode.github.io/java-servlet-send-receive-json-using-jquery-ajax/
+	    		    	
+	    	$('#classTable').on('click', 'tbody > tr > td > a', function (e) {
+	    		e.preventDefault();
+	    		
+	    		var $clazz = $(this).html();
+	    		var clazz = new Object();
+	    		clazz.name = $clazz;
+	    		
+	    		
+	    		
+	    		$.ajax({
+	    			url: 'listMethods.op',
+	    			type: 'POST',
+	    			dataType: 'json',
+	    			data: JSON.stringify(clazz),
+	    			contentType: 'application/json',
+	    			mimeType: 'application/json',
+	    			success: function (data) {
+
+	    	        },
+	    			error:function(data,status,er) {
+	    				alert("error");
+	    			}
+	    		});
+	    		
+			});
 	    	
 		},
 		list: function(){
