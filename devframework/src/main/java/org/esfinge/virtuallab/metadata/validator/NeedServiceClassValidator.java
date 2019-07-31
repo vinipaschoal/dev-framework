@@ -22,11 +22,10 @@ public class NeedServiceClassValidator implements AnnotationValidator
 	@Override
 	public void validate(Annotation toValidate, AnnotatedElement annotated) throws AnnotationValidationException
 	{
-
 		if (((Method) annotated).getDeclaringClass().getAnnotation(ServiceClass.class) == null)
 		{
-			throw new AnnotationValidationException("A classe" + ((Method) annotated).getDeclaringClass().getName()
-					+ " não possui a anotação @ServiceClass");
+			throw new AnnotationValidationException("A classe '" + ((Method) annotated).getDeclaringClass().getCanonicalName()
+					+ "' não possui a anotação @ServiceClass");
 		}
 	}
 }

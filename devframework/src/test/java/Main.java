@@ -1,10 +1,10 @@
 import java.util.List;
 
-import org.esfinge.virtuallab.domain.Tarefa;
+import org.esfinge.virtuallab.domain.TarefaInvalida;
+import org.esfinge.virtuallab.metadata.MetadataHelper;
 import org.esfinge.virtuallab.metadata.ParameterMetadata;
 import org.esfinge.virtuallab.metadata.processor.ProcessParameters;
 
-import net.sf.esfinge.metadata.AnnotationReader;
 import net.sf.esfinge.metadata.annotation.container.ContainerFor;
 import net.sf.esfinge.metadata.annotation.container.ElementName;
 import net.sf.esfinge.metadata.annotation.container.ProcessMethods;
@@ -14,6 +14,8 @@ public class Main
 {
 	public static void main(String... args) throws Exception
 	{
+		
+		/*
 		AnnotationReader reader = new AnnotationReader();
 		ClassContainer cc = reader.readingAnnotationsTo(Tarefa.class, ClassContainer.class);
 		System.out.println("Classe: " + cc.name);
@@ -29,11 +31,12 @@ public class Main
 				System.out.println("Reflection: " + pc.getParameter().getClass());
 				System.out.println("Posicao: " + pc.getIndex());
 			}
-			
+			      
 			System.out.println("------------------------");
 		}
+		*/		
 		
-//		MetadataHelper.getInstance().getClassMetadata(Tarefa.class);
+		MetadataHelper.getInstance().getClassMetadata(TarefaInvalida.class);
 //		MetadataHelper.getInstance().getMethodMetadata(Tarefa.class.getDeclaredMethod("getPrioridade", String.class));
 	}
 	
