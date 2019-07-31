@@ -22,7 +22,7 @@
 
 			<section class="jumbotron text-center">
 				<div class="container">
-					<h1 class="jumbotron-heading">Métodos da Classe: <strong id="headerClassName"></strong></h1>
+					<h1 class="jumbotron-heading">Serviços do Módulo: <strong id="headerClassName"></strong></h1>
 				</div>
 			</section>
 	
@@ -33,7 +33,9 @@
 							<table id="methodTable" class="table table-striped table-bordered">
 								<thead>
 									<tr>
-										<th>Métodos</th>
+										<th>Serviço</th>
+										<th>Assinatura</th>
+										<th>Descrição</th>
 									</tr>
 								</thead>
 								<tbody>

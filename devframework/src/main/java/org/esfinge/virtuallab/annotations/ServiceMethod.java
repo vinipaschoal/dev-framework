@@ -17,6 +17,6 @@ import org.esfinge.virtuallab.metadata.validator.NoVoidReturn;
 @NeedServiceClass
 public @interface ServiceMethod
 {
-	// define um apelido para servico; por padrao utiliza o mesmo nome do metodo
-	String alias() default "";
+	// texto informativo sobre o servico
+	String description() default "";
 }

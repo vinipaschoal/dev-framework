@@ -12,4 +12,6 @@ import java.lang.annotation.Target;
 @Target({ ElementType.TYPE })
 public @interface ServiceClass
 {
+	// texto informativo sobre os tipos de servicos que a classe disponibiliza
+	String description() default "";
 }

@@ -41,6 +41,10 @@ public class ClassMetadata
 	// atributos da classe
 	@ProcessFields
 	private List<FieldMetadata> fields;
+	
+	// texto informativo sobre a classe
+	@AnnotationProperty(annotation=ServiceClass.class, property = "description")
+	private String description;
 
 	// informacoes da anotacao @Label (se utilizada)
 	@AnnotationProperty(annotation = Label.class, property = "value")
@@ -107,6 +111,16 @@ public class ClassMetadata
 	public void setFields(List<FieldMetadata> fields)
 	{
 		this.fields = fields;
+	}
+	
+	public String getDescription()
+	{
+		return description;
+	}
+	
+	public void setDescription(String description)
+	{
+		this.description = description;
 	}
 
 	public String getLabel()

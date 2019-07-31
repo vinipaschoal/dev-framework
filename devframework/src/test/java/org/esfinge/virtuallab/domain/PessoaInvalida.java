@@ -2,7 +2,7 @@ package org.esfinge.virtuallab.domain;
 
 import java.util.Date;
 
-import org.esfinge.virtuallab.annotations.HtmlTableReturn;
+import org.esfinge.virtuallab.annotations.TableReturn;
 import org.esfinge.virtuallab.annotations.Label;
 
 @Label(name="Pessoa com Label")
@@ -23,7 +23,7 @@ public class PessoaInvalida {
 		this.dataNascimento = dataNascimento;
 	}
 
-	@HtmlTableReturn
+	@TableReturn
 	public String getNome() {
 		return nome;
 	}

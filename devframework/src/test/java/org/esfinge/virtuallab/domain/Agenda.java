@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.esfinge.virtuallab.annotations.HtmlTableReturn;
+import org.esfinge.virtuallab.annotations.TableReturn;
 import org.esfinge.virtuallab.annotations.JsonReturn;
 import org.esfinge.virtuallab.annotations.Label;
 import org.esfinge.virtuallab.annotations.ServiceClass;
@@ -46,7 +46,7 @@ public class Agenda {
 	}
 	
 	@ServiceMethod
-	@HtmlTableReturn
+	@TableReturn
 	public List<Pessoa> getPessoaHtml1() {
 		Pessoa p = new Pessoa("José", 50, "rua das acacias",new Date());
 		List<Pessoa> lista = new ArrayList<Pessoa>();
@@ -55,7 +55,7 @@ public class Agenda {
 	}
 	
 	@ServiceMethod
-	@HtmlTableReturn
+	@TableReturn
 	public List<Pessoa> getPessoaHtml2() {
 		Pessoa p = new Pessoa("José", 50, "rua das acacias",new Date());
 		Pessoa p2 = new Pessoa("Pedro", 49, "rua das palmeiras",new Date());
@@ -66,7 +66,7 @@ public class Agenda {
 	}
 	
 	@ServiceMethod
-	@HtmlTableReturn
+	@TableReturn
 	public List<Pessoa> getPessoaHtml3() {
 		return new ArrayList<Pessoa>();
 	}

@@ -11,6 +11,9 @@ public class ParameterDescriptor
 	// nome do parametro
 	private String name;
 	
+	// label do parametro
+	private String label;
+	
 	// tipo do parametro
 	private String dataType;
 	
@@ -19,25 +22,17 @@ public class ParameterDescriptor
 
 	
 	/**
-	 * Construtor padrao.
-	 */
-	public ParameterDescriptor() 
-	{		
-	}	
-
-	/**
 	 * Construtor a partir dos metadados de uma classe.
 	 */
 	public ParameterDescriptor(ParameterMetadata parameterMetadata)
 	{
-		this();
-		
-		// se informado, utiliza o label do parametro; caso contrario, utiliza o nome do parametro
-		this.name = Utils.isNullOrEmpty(parameterMetadata.getLabel()) ?
-				parameterMetadata.getParameterName() : parameterMetadata.getLabel();
-				
+		this.name = parameterMetadata.getParameterName();
 		this.dataType = parameterMetadata.getParameter().getType().getCanonicalName();		
 		this.index = parameterMetadata.getIndex();
+		
+		// verifica se foi informado um label para o parametro
+		this.label = Utils.isNullOrEmpty(parameterMetadata.getLabel()) ?
+				this.name : parameterMetadata.getLabel();
 	}
 
 	public String getName()
@@ -48,6 +43,16 @@ public class ParameterDescriptor
 	public void setName(String name)
 	{
 		this.name = name;
+	}
+	
+	public String getLabel()
+	{
+		return label;
+	}
+	
+	public void setLabel(String label)
+	{
+		this.label = label;
 	}
 
 	public String getDataType()

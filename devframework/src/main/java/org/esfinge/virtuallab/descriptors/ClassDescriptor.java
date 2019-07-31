@@ -10,29 +10,29 @@ public class ClassDescriptor
 {
 	// nome da classe
 	private String name;
+	
+	// label da classe
+	private String label;
 
 	// nome qualificado da classe (pacote + nomeclasse)
 	private String qualifiedName;
+	
+	// texto informativo sobre a classe
+	private String description;
 
 	
-	/**
-	 * Construtor padrao.
-	 */
-	public ClassDescriptor() 
-	{		
-	}	
-
 	/**
 	 * Construtor a partir dos metadados de uma classe.
 	 */
 	public ClassDescriptor(ClassMetadata classMetadata)
 	{
-		this();
-		
-		// se informado, utiliza o label da classe; caso contrario, utiliza o nome da classe
-		this.name = Utils.isNullOrEmpty(classMetadata.getLabel()) ?
-				classMetadata.getClazz().getSimpleName() : classMetadata.getLabel();
+		this.name = classMetadata.getClazz().getSimpleName();
 		this.qualifiedName = classMetadata.getClazz().getCanonicalName();
+		this.description = classMetadata.getDescription();
+		
+		// verifica se foi informado um label para a classe
+		this.label = Utils.isNullOrEmpty(classMetadata.getLabel()) ?
+				this.name : classMetadata.getLabel();
 	}
 
 	public String getName()
@@ -44,6 +44,16 @@ public class ClassDescriptor
 	{
 		this.name = name;
 	}
+	
+	public String getLabel()
+	{
+		return label;
+	}
+	
+	public void setLabel(String label)
+	{
+		this.label = label;
+	}
 
 	public String getQualifiedName()
 	{
@@ -53,5 +63,15 @@ public class ClassDescriptor
 	public void setQualifiedName(String qualifiedName)
 	{
 		this.qualifiedName = qualifiedName;
+	}
+	
+	public String getDescription()
+	{
+		return description;
+	}
+	
+	public void setDescription(String description)
+	{
+		this.description = description;
 	}
 }

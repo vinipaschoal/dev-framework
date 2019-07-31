@@ -15,7 +15,7 @@ import net.sf.esfinge.metadata.annotation.validator.Prohibits;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @NoVoidReturn
-@Prohibits(HtmlTableReturn.class)
+@Prohibits(TableReturn.class)
 public @interface JsonReturn
 {
 }

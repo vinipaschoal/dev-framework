@@ -27,7 +27,7 @@
 
 			<section class="jumbotron text-center">
 				<div class="container">
-					<h1 class="jumbotron-heading">Método: <strong id="headerMethodName"></strong> da Classe: <strong id="headerClassName"></strong> </h1>
+					<h1 class="jumbotron-heading">Serviço: <strong id="headerMethodName"></strong> do Módulo: <strong id="headerClassName"></strong> </h1>
 				</div>
 			</section>
 	

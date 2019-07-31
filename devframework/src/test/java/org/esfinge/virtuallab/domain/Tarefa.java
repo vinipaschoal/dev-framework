@@ -4,12 +4,13 @@ import org.esfinge.virtuallab.annotations.Label;
 import org.esfinge.virtuallab.annotations.ServiceClass;
 import org.esfinge.virtuallab.annotations.ServiceMethod;
 
-@ServiceClass
+@ServiceClass(description="Disponibiliza serviços relacionados a tarefas, no estilo TO-DO.")
+@Label("ToDo")
 public class Tarefa {
 	
 	private String nome = "compromissos";
 
-	@ServiceMethod
+	@ServiceMethod(description="Retorna o nome da tarefa")
 	public String getNome() {
 		return nome;
 	}
@@ -19,7 +20,8 @@ public class Tarefa {
 	}	
 	
 	@ServiceMethod
-	public int getPrioridade(@Label("meu_label") String categoria, int idade) {
+	@Label("Obter prioridade")
+	public int getPrioridade(@Label("Categoria") String categoria, @Label("Prioridade") int prioridade) {
 		return 1;
 	}
 }

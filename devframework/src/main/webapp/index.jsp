@@ -27,8 +27,9 @@
 							<table id="classTable" class="table table-striped table-bordered" data-url="listClasses.op">
 								<thead>
 									<tr>
-										<th>#</th>
-										<th>Classe Java</th>
+										<th>Módulo</th>
+										<th>Classe</th>
+										<th>Descrição</th>
 									</tr>
 								</thead>
 								<tbody>

@@ -3,10 +3,10 @@ package org.esfinge.virtuallab.metadata;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import org.esfinge.virtuallab.annotations.HtmlTableReturn;
 import org.esfinge.virtuallab.annotations.JsonReturn;
 import org.esfinge.virtuallab.annotations.Label;
 import org.esfinge.virtuallab.annotations.ServiceMethod;
+import org.esfinge.virtuallab.annotations.TableReturn;
 import org.esfinge.virtuallab.metadata.processor.ProcessParameters;
 
 import net.sf.esfinge.metadata.annotation.container.AnnotationProperty;
@@ -31,16 +31,16 @@ public class MethodMetadata
 	private boolean annotatedWithJsonReturn;
 
 	// indica se o metodo contem a anotacao @HtmlTableReturn
-	@ContainsAnnotation(HtmlTableReturn.class)
+	@ContainsAnnotation(TableReturn.class)
 	private boolean annotatedWithHtmlTableReturn;
+	
+	// texto informativo sobre o metodo
+	@AnnotationProperty(annotation=ServiceMethod.class, property = "description")
+	private String description;
 
 	// indica se o metodo contem a anotacao @Label
 	@ContainsAnnotation(Label.class)
 	private boolean annotatedWithLabel;
-
-	// apelido do metodo
-	@AnnotationProperty(annotation = ServiceMethod.class, property = "alias")
-	private String alias;
 
 	// informacoes da anotacao @Label (se utilizada)
 	@AnnotationProperty(annotation = Label.class, property = "value")
@@ -99,14 +99,14 @@ public class MethodMetadata
 		this.annotatedWithLabel = annotatedWithLabel;
 	}
 
-	public String getAlias()
+	public String getDescription()
 	{
-		return alias;
+		return description;
 	}
-
-	public void setAlias(String alias)
+	
+	public void setDescription(String description)
 	{
-		this.alias = alias;
+		this.description = description;
 	}
 
 	public String getLabel()

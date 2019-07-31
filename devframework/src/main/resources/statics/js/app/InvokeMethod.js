@@ -4,15 +4,15 @@ app.InvokeMethod = {
 	init: function () {	
 		
 		// atualiza os elementos da pagina com o nome da classe e do metodo
-    	var data = app.storage.get("methodList");        	
-		$('#breadcrumbClassName').text(data['clazz']);
-		$('#headerClassName').text(app.utils.clazzSimpleName(data['clazz']));
+    	var classDesc = app.storage.get("classDescriptor");        	
+		$('#breadcrumbClassName').text(classDesc.qualifiedName);
+		$('#headerClassName').text(classDesc.label);
 		
-		var method = app.storage.get("methodInvoke");  
-		$('#breadcrumbMethodName').text(app.utils.methodSignature(method));
-		$('#headerMethodName').text(method.returnType + " " + method.name + "()");
+		var methodDesc = app.storage.get("methodDescriptor");  
+		$('#breadcrumbMethodName').text(app.utils.methodSignature(methodDesc));
+		$('#headerMethodName').text(methodDesc.label);
 
-		app.InvokeMethod.createForm(method.parameters);
+		app.InvokeMethod.createForm(methodDesc.parameters);
 	},
 	
 	// cria o Form para a entrada dos valores do metodo a ser invocado

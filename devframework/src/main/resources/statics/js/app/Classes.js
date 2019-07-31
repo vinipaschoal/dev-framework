@@ -47,14 +47,16 @@ app.Classes = {
                 success: function (data) {
                     console.log(data);
                     if (data.success){
-                    	var $classList = data.clazzes;
+                    	var classList = data.clazzes;
                         
                         // armazena as classes recebidas no storage
-                        app.storage.put("classList", $classList);
+                        app.storage.put("classList", classList);
                     	
-	                    $.each($classList, function( i, classe ) {
+	                    $.each(classList, function( i, classe ) {
 	                    	app.Classes.tableClass.row.add([
-								classe.name, "<a href='#' onclick='app.Classes.listMethods(" + i + ")'>" + classe.qualifiedName + "</a>"]).draw( false );
+								classe.label, 
+								"<a href='#' onclick='app.Classes.listMethods(" + i + ")'>" + classe.qualifiedName + "</a>",
+								classe.description]).draw( false );
 	                   	});
                     }else{
                     	alertBt({
@@ -81,16 +83,19 @@ app.Classes = {
 		// carrega os metodos da classe selecionada
 		listMethods: function(index){
 			
-			// recupera a lista de classes do storage
-			var $classList = app.storage.get("classList");
-    		var obj = new Object();
-    		obj.clazz = $classList[index].qualifiedName;
+			// recupera o descritor da classe escolhida
+    		var classDesc = app.storage.get("classList")[index];
+
+			// JSON de request
+    		var jsonReq = new Object();
+    		jsonReq.clazz = classDesc.qualifiedName;
+    		
     		
     		$.ajax({
     			url: 'listMethods.op',
     			type: 'POST',
     			dataType: 'json',
-    			data: JSON.stringify(obj),
+    			data: JSON.stringify(jsonReq),
     			contentType: 'application/json',
     			mimeType: 'application/json',
     			success: function (data) {
@@ -98,6 +103,9 @@ app.Classes = {
     				
     				// apaga o storage atual
     				app.storage.clear();
+    				
+    				// armazena o descritor da classe selecionada
+    				app.storage.put("classDescriptor", classDesc);
     				
     				// armazena o objeto recebido no storage
     				app.storage.put("methodList", data);

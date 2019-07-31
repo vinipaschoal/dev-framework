@@ -110,7 +110,7 @@ app.utils = {
            	var $count = 0;
        	  	$.each(methodJson.parameters, function (p, parameter) {
 	  			$count++;
-	  			$parameters = $parameters + parameter.dataType + " " + parameter.name + (($count < methodJson.parameters.length ? ", " : ""));
+	  			$parameters = $parameters + parameter.dataType + " " + parameter.label + (($count < methodJson.parameters.length ? ", " : ""));
                 
 	  		});
        	  	
@@ -144,7 +144,7 @@ app.utils = {
 					$type = 'string';
 			}
 			
-			return { type: $type, title: parameterJson.name + ' (' + parameterJson.dataType + ')' };
+			return { type: $type, title: parameterJson.label + ' (' + parameterJson.dataType + ')' };
 		}
 }
 

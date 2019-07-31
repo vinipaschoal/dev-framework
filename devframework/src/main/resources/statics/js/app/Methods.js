@@ -12,9 +12,9 @@ app.Methods = {
 		init: function () {
 			
 			// atualiza os elementos da pagina com o nome da classe
-        	var data = app.storage.get("methodList");        	
-			$('#breadcrumbClassName').text(data['clazz']);
-			$('#headerClassName').text(app.utils.clazzSimpleName(data['clazz']));
+        	var classDesc = app.storage.get("classDescriptor");        	
+			$('#breadcrumbClassName').text(classDesc.qualifiedName);
+			$('#headerClassName').text(classDesc.label);
 			
 			app.settings.loading.show();
 			
@@ -28,14 +28,13 @@ app.Methods = {
         	app.Methods.methodClass.rows().remove().draw();
         	
 			// recupera a lista de metodos do storage
-        	var data = app.storage.get("methodList");
-        	var $clazz = data.clazz;
-        	var $methodList = data.methods;
-            $.each($methodList, function (i, method) {
+        	var methodList = app.storage.get("methodList").methods;
+            $.each(methodList, function (i, method) {
            	 
             	app.Methods.methodClass.row.add([
-					"<a href='#' onclick='app.Methods.invokeMethod(" + i + ")'>" + app.utils.methodSignature(method) + "</a>"
-					]).draw( false );
+            		method.label,
+					"<a href='#' onclick='app.Methods.invokeMethod(" + i + ")'>" + app.utils.methodSignature(method) + "</a>",
+					method.description]).draw( false );
            	});
             app.settings.loading.hide();
 		},
@@ -43,11 +42,11 @@ app.Methods = {
 		//  metodo selecionado para ser invocado
 		invokeMethod: function(index){
 			
-			// obtem o metodo selecionado
-			var $method = app.storage.get("methodList").methods[index];
+			// recupera o descritor do metodo escolhido
+    		var methodDesc = app.storage.get("methodList").methods[index];
 			
 			// armazena  recebido no storage
-			app.storage.put("methodInvoke", $method);
+			app.storage.put("methodDescriptor", methodDesc);
 			
 			// redireciona para a pagina de invocao de metodos
 			app.callPage("invokeMethod.jsp");

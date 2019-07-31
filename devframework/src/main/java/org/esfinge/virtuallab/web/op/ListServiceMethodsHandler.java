@@ -24,29 +24,28 @@ public class ListServiceMethodsHandler implements IJsonRequestHandler
 	public JsonObject handleAsync(HttpServletRequest request) throws FileNotFoundException
 	{
 		Gson gson = new GsonBuilder().create();
-		JsonObject jsonObject = new JsonObject();
+		JsonObject jsonReturn = new JsonObject();
 
 		try
 		{
 			// obtem o objeto JSON do request
-			JsonNode jsonClass = this.getJsonParameter(request);
+			JsonNode jsonReq = this.getJsonParameter(request);
 
 			// obtem a lista de servicos validos da classe informada
-			String clazzQualifiedName = jsonClass.get("clazz").asText();
+			String clazzQualifiedName = jsonReq.get("clazz").asText();
 			List<MethodDescriptor> methodList = PersistenceService.getInstance().listServiceMethods(clazzQualifiedName);
 
 			if (!Utils.isNullOrEmpty(methodList))
 			{
 				JsonArray jarray = gson.toJsonTree(methodList).getAsJsonArray();
-				jsonObject.add("methods", jarray);
-				jsonObject.addProperty("clazz", clazzQualifiedName);
-				jsonObject.addProperty("message", "");
-				jsonObject.addProperty("success", true);
+				jsonReturn.add("methods", jarray);
+				jsonReturn.addProperty("message", "");
+				jsonReturn.addProperty("success", true);
 			}
 			else
 			{
-				jsonObject.addProperty("message", "Classe pesquisada não encontrada!");
-				jsonObject.addProperty("success", false);
+				jsonReturn.addProperty("message", "Classe pesquisada não encontrada!");
+				jsonReturn.addProperty("success", false);
 			}
 		}
 		catch (Exception e)
@@ -54,11 +53,11 @@ public class ListServiceMethodsHandler implements IJsonRequestHandler
 			// TODO: debug..
 			e.printStackTrace();
 			
-			jsonObject.addProperty("message", "Erro: " + e.toString());
-			jsonObject.addProperty("success", false);
+			jsonReturn.addProperty("message", "Erro: " + e.toString());
+			jsonReturn.addProperty("success", false);
 		}
 
-		return jsonObject;
+		return jsonReturn;
 
 	}
 }
