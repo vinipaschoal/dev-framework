@@ -1,14 +1,10 @@
+import java.util.ArrayList;
 import java.util.List;
 
-import org.esfinge.virtuallab.domain.TarefaInvalida;
+import org.esfinge.virtuallab.annotations.ServiceClass;
+import org.esfinge.virtuallab.annotations.ServiceMethod;
+import org.esfinge.virtuallab.annotations.TableReturn;
 import org.esfinge.virtuallab.metadata.MetadataHelper;
-import org.esfinge.virtuallab.metadata.ParameterMetadata;
-import org.esfinge.virtuallab.metadata.processor.ProcessParameters;
-
-import net.sf.esfinge.metadata.annotation.container.ContainerFor;
-import net.sf.esfinge.metadata.annotation.container.ElementName;
-import net.sf.esfinge.metadata.annotation.container.ProcessMethods;
-import net.sf.esfinge.metadata.container.ContainerTarget;
 
 public class Main
 {
@@ -34,69 +30,26 @@ public class Main
 			      
 			System.out.println("------------------------");
 		}
-		*/		
-		
-		MetadataHelper.getInstance().getClassMetadata(TarefaInvalida.class);
+		*/
+		MetadataHelper.getInstance().getClassMetadata(Service.class);
 //		MetadataHelper.getInstance().getMethodMetadata(Tarefa.class.getDeclaredMethod("getPrioridade", String.class));
 	}
 	
-	@ContainerFor(ContainerTarget.TYPE)
-	public static class ClassContainer
+	@ServiceClass
+	public static class Service
 	{
-		@ElementName
-		String name;
-		
-		@ProcessMethods
-		List<MethodContainer> metodos;
-		
-		public String getName()
+		@ServiceMethod
+		@TableReturn(fields={"endereco", "idade", "nome"})
+		public List<Pessoa> getPessoas()
 		{
-			return name;
-		}
-
-		public void setName(String name)
-		{
-			this.name = name;
-		}
-
-		public List<MethodContainer> getMetodos()
-		{
-			return metodos;
-		}
-
-		public void setMetodos(List<MethodContainer> metodos)
-		{
-			this.metodos = metodos;
+			return new ArrayList<Pessoa>();
 		}
 	}
 	
-	@ContainerFor(ContainerTarget.METHODS)
-	public static class MethodContainer
+	public static class Pessoa
 	{
-		@ElementName
-		String name;
-		
-		@ProcessParameters
-		List<ParameterMetadata> parameters;
-
-		public String getName()
-		{
-			return name;
-		}
-
-		public void setName(String name)
-		{
-			this.name = name;
-		}
-
-		public List<ParameterMetadata> getParameters()
-		{
-			return parameters;
-		}
-
-		public void setParameters(List<ParameterMetadata> parameters)
-		{
-			this.parameters = parameters;
-		}
+		private String nome;
+		private String endereco;
+		private int idade;
 	}
 }

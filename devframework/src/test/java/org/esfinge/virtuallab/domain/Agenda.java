@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.esfinge.virtuallab.annotations.TableReturn;
 import org.esfinge.virtuallab.annotations.JsonReturn;
 import org.esfinge.virtuallab.annotations.Label;
 import org.esfinge.virtuallab.annotations.ServiceClass;
 import org.esfinge.virtuallab.annotations.ServiceMethod;
+import org.esfinge.virtuallab.annotations.TableReturn;
 
 @ServiceClass
 public class Agenda {
@@ -32,11 +32,12 @@ public class Agenda {
 	}
 
 	@ServiceMethod
-	public String getPessoaComParametro(@Label(name="nomePessoa")String a, int b) {
+	public String getPessoaComParametro(@Label("nomePessoa")String a, int b) {
 		return "pessoa com parametro String " +a+" e parametro int "+b;
 	}
 	
-	@ServiceMethod(alias="getPessoaComParametroStringLong")
+	@ServiceMethod
+	@Label("getPessoaComParametroStringLong")
 	public String getPessoaComParametro(String a, long b) {
 		return "pessoa com parametro String e long anotada com alias";
 	}

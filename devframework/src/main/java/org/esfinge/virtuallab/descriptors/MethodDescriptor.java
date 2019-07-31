@@ -32,6 +32,14 @@ public class MethodDescriptor
 
 	
 	/**
+	 * Construtor padrao.
+	 */
+	public MethodDescriptor()
+	{
+		
+	}
+	
+	/**
 	 * Construtor a partir dos metadados de um metodo.
 	 */
 	public MethodDescriptor(MethodMetadata methodMetadata)

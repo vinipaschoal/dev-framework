@@ -5,14 +5,14 @@ import java.util.Date;
 import org.esfinge.virtuallab.annotations.TableReturn;
 import org.esfinge.virtuallab.annotations.Label;
 
-@Label(name="Pessoa com Label")
+@Label("Pessoa com Label")
 public class PessoaInvalida {
 	
 	private String nome;
 	private int idade;
 	private String endereco;
 	
-	@Label(name="Data de Nascimento")
+	@Label("Data de Nascimento")
 	private Date dataNascimento;
 
 	public PessoaInvalida(String nome, int idade, String endereco, Date dataNascimento) {

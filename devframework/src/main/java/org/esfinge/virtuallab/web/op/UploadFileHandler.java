@@ -22,24 +22,24 @@ public class UploadFileHandler implements IJsonRequestHandler
 {
 	public JsonObject handleAsync(HttpServletRequest request)
 	{
-		JsonObject jsonObject = new JsonObject();
+		JsonObject jsonReturn = new JsonObject();
 
 		try
 		{
 			String fileName = this.saveFile(request);
-			jsonObject.addProperty("message", "Arquivo " + fileName + " carregado com sucesso!");
-			jsonObject.addProperty("success", true);
+			jsonReturn.addProperty("message", "Arquivo " + fileName + " carregado com sucesso!");
+			jsonReturn.addProperty("success", true);
 		}
 		catch ( Exception e )
 		{
 			// TODO: debug..
 			e.printStackTrace();
 			
-			jsonObject.addProperty("message", "Erro: " + e.toString());
-			jsonObject.addProperty("success", false);
+			jsonReturn.addProperty("message", "Erro: " + e.toString());
+			jsonReturn.addProperty("success", false);
 		}
 		
-		return jsonObject;
+		return jsonReturn;
 	}
 	
 	/**

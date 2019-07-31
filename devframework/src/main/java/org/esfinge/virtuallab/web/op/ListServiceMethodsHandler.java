@@ -7,10 +7,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.esfinge.virtuallab.descriptors.MethodDescriptor;
 import org.esfinge.virtuallab.services.PersistenceService;
+import org.esfinge.virtuallab.utils.JsonUtils;
 import org.esfinge.virtuallab.utils.Utils;
 import org.esfinge.virtuallab.web.IJsonRequestHandler;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -28,11 +28,11 @@ public class ListServiceMethodsHandler implements IJsonRequestHandler
 
 		try
 		{
-			// obtem o objeto JSON do request
-			JsonNode jsonReq = this.getJsonParameter(request);
+			// obtem a string do objeto JSON do request
+			String jsonString = this.getJsonParameter(request);
 
 			// obtem a lista de servicos validos da classe informada
-			String clazzQualifiedName = jsonReq.get("clazz").asText();
+			String clazzQualifiedName = JsonUtils.getProperty(jsonString, "clazz");
 			List<MethodDescriptor> methodList = PersistenceService.getInstance().listServiceMethods(clazzQualifiedName);
 
 			if (!Utils.isNullOrEmpty(methodList))
@@ -58,6 +58,5 @@ public class ListServiceMethodsHandler implements IJsonRequestHandler
 		}
 
 		return jsonReturn;
-
 	}
 }

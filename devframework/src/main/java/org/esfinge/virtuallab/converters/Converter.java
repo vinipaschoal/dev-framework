@@ -13,5 +13,5 @@ public interface Converter<E>
 	/**
 	 * Restaura uma entidade da sua representacao em String.
 	 */
-	public E fromStrig(String value);
+	public E fromString(String value);
 }

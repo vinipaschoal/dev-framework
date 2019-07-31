@@ -1,6 +1,5 @@
 package org.esfinge.virtuallab.metadata;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import net.sf.esfinge.metadata.AnnotationReader;
@@ -50,13 +49,5 @@ public class MetadataHelper
 	public MethodMetadata getMethodMetadata(Method method) throws Exception
 	{
 		return reader.readingAnnotationsTo(method, MethodMetadata.class);	
-	}
-	
-	/**
-	 * Retorna as informacoes de metadado do atributo informado.
-	 */
-	public FieldMetadata getFieldMetadata(Field field) throws Exception
-	{
-		return reader.readingAnnotationsTo(field, FieldMetadata.class);	
 	}
 }

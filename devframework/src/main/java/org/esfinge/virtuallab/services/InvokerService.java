@@ -48,6 +48,9 @@ public class InvokerService
 		return method.invoke(clazz.newInstance(), paramValues);
 	}
 	
+	/**
+	 * Procura pelo metodo na classe.
+	 */
 	private Method searchMatchingMethod(Class<?> clazz, MethodDescriptor methodDescriptor)
 	{
 		for (Method m : clazz.getMethods())

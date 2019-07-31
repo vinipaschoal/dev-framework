@@ -144,7 +144,7 @@ app.utils = {
 					$type = 'string';
 			}
 			
-			return { type: $type, title: parameterJson.label + ' (' + parameterJson.dataType + ')' };
+			return { type: $type, required: parameterJson.required, title: parameterJson.label + ' (' + parameterJson.dataType + ')' };
 		}
 }
 

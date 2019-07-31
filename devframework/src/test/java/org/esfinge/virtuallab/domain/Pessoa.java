@@ -3,17 +3,15 @@ package org.esfinge.virtuallab.domain;
 import java.util.Date;
 
 import org.esfinge.virtuallab.annotations.Label;
-import org.esfinge.virtuallab.annotations.TableStructure;
 
-@Label(name="Pessoa com Label")
-@TableStructure(fields={"idade","endereco","dataNascimento"})
+@Label("Pessoa com Label")
 public class Pessoa {
 	
 	private String nome;
 	private int idade;
 	private String endereco;
 	
-	@Label(name="Data de Nascimento")
+	@Label("Data de Nascimento")
 	private Date dataNascimento;
 
 	public Pessoa(String nome, int idade, String endereco, Date dataNascimento) {

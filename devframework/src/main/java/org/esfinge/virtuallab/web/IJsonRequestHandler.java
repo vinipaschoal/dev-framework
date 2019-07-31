@@ -1,15 +1,14 @@
 package org.esfinge.virtuallab.web;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.IOUtils;
+
 import com.google.gson.JsonObject;
 
 /**
@@ -23,13 +22,13 @@ public interface IJsonRequestHandler extends IRequestHandler {
 			throws ServletException, IOException {
 		// executa a logica da funcionalidade requisitada e obtem o objeto JSON de
 		// resposta
-		JsonObject jsonObj = this.handleAsync(request);
+		JsonObject jsonReturn = this.handleAsync(request);
 
 		// seta o retorno como sendo do tipo JSON
 		response.setContentType("application/json;charset=UTF-8");
 
 		// retorna o objeto JSON para a pagina processa-lo de forma assincrona
-		response.getOutputStream().print(jsonObj.toString());
+		response.getOutputStream().print(jsonReturn.toString());
 	}
 
 	/**
@@ -42,31 +41,12 @@ public interface IJsonRequestHandler extends IRequestHandler {
 	}
 	
 	/**
-	 * Retorna o objeto JSON enviado como parametro na requisicao.
+	 * Retorna a string representando o objeto JSON enviado como parametro na requisicao.
 	 */
-	public default JsonNode getJsonParameter(HttpServletRequest request) throws Exception
+	@SuppressWarnings("deprecation")
+	public default String getJsonParameter(HttpServletRequest request) throws Exception
 	{
-		// obtem o objeto JSON do request
-		BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream()));			
-		String jsonString = reader.readLine();
-
-		ObjectMapper mapper = new ObjectMapper();
-		
-		return mapper.readTree(jsonString);
-	}
-	
-	/**
-	 * Retorna o objeto JSON enviado como parametro na requisicao no formato da classe informada.
-	 */
-	public default <T> T getJsonParameter(HttpServletRequest request, Class<T> typeClass) throws Exception
-	{
-		// obtem o objeto JSON do request
-		BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream()));			
-		String jsonString = reader.readLine();
-
-		ObjectMapper mapper = new ObjectMapper();
-		
-		return mapper.readValue(jsonString, typeClass);
+		return IOUtils.readLines(request.getInputStream()).stream().collect(Collectors.joining(" "));
 	}
 
 	/**

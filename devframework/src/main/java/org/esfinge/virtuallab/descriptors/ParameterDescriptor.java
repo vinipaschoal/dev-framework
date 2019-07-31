@@ -6,20 +6,31 @@ import org.esfinge.virtuallab.utils.Utils;
 /**
  * Descritor de parametros de metodos.
  */
-public class ParameterDescriptor
+public class ParameterDescriptor implements Comparable<ParameterDescriptor>
 {
 	// nome do parametro
 	private String name;
-	
+
 	// label do parametro
 	private String label;
-	
+
 	// tipo do parametro
 	private String dataType;
-	
+
+	// se o parametro eh obrigatorio ou nao
+	private boolean required;
+
 	// posicao do parametro no metodo
 	private int index;
 
+	
+	/**
+	 * Construtor padrao.
+	 */
+	public ParameterDescriptor()
+	{
+		
+	}
 	
 	/**
 	 * Construtor a partir dos metadados de uma classe.
@@ -27,12 +38,12 @@ public class ParameterDescriptor
 	public ParameterDescriptor(ParameterMetadata parameterMetadata)
 	{
 		this.name = parameterMetadata.getParameterName();
-		this.dataType = parameterMetadata.getParameter().getType().getCanonicalName();		
+		this.dataType = parameterMetadata.getParameter().getType().getCanonicalName();
+		this.required = !parameterMetadata.isAnnotatedWithNotRequired();
 		this.index = parameterMetadata.getIndex();
-		
+
 		// verifica se foi informado um label para o parametro
-		this.label = Utils.isNullOrEmpty(parameterMetadata.getLabel()) ?
-				this.name : parameterMetadata.getLabel();
+		this.label = Utils.isNullOrEmpty(parameterMetadata.getLabel()) ? this.name : parameterMetadata.getLabel();
 	}
 
 	public String getName()
@@ -44,12 +55,12 @@ public class ParameterDescriptor
 	{
 		this.name = name;
 	}
-	
+
 	public String getLabel()
 	{
 		return label;
 	}
-	
+
 	public void setLabel(String label)
 	{
 		this.label = label;
@@ -64,6 +75,16 @@ public class ParameterDescriptor
 	{
 		this.dataType = dataType;
 	}
+	
+	public boolean isRequired()
+	{
+		return required;
+	}
+
+	public void setRequired(boolean required)
+	{
+		this.required = required;
+	}
 
 	public int getIndex()
 	{
@@ -73,5 +94,11 @@ public class ParameterDescriptor
 	public void setIndex(int index)
 	{
 		this.index = index;
+	}
+
+	@Override
+	public int compareTo(ParameterDescriptor o)
+	{
+		return Integer.valueOf(this.index).compareTo(o.index);
 	}
 }

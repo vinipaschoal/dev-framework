@@ -5,14 +5,12 @@ import java.util.List;
 import org.esfinge.virtuallab.annotations.Label;
 import org.esfinge.virtuallab.annotations.ServiceClass;
 import org.esfinge.virtuallab.annotations.ServiceMethod;
-import org.esfinge.virtuallab.annotations.TableStructure;
 
 import net.sf.esfinge.metadata.annotation.container.AllMethodsWith;
 import net.sf.esfinge.metadata.annotation.container.AnnotationProperty;
 import net.sf.esfinge.metadata.annotation.container.ContainerFor;
 import net.sf.esfinge.metadata.annotation.container.ContainsAnnotation;
 import net.sf.esfinge.metadata.annotation.container.ElementName;
-import net.sf.esfinge.metadata.annotation.container.ProcessFields;
 import net.sf.esfinge.metadata.annotation.container.ReflectionReference;
 import net.sf.esfinge.metadata.container.ContainerTarget;
 
@@ -30,18 +28,10 @@ public class ClassMetadata
 	@ContainsAnnotation(Label.class)
 	private boolean annotatedWithLabel;
 
-	// indica se a classe contem a anotacao @TableStructure
-	@ContainsAnnotation(TableStructure.class)
-	private boolean annotatedWithTableStructure;
-
 	// lista dos metodos anotados com @ServiceMethod
 	@AllMethodsWith(ServiceMethod.class)
 	private List<MethodMetadata> methodsWithServiceMethod;
 
-	// atributos da classe
-	@ProcessFields
-	private List<FieldMetadata> fields;
-	
 	// texto informativo sobre a classe
 	@AnnotationProperty(annotation=ServiceClass.class, property = "description")
 	private String description;
@@ -49,10 +39,6 @@ public class ClassMetadata
 	// informacoes da anotacao @Label (se utilizada)
 	@AnnotationProperty(annotation = Label.class, property = "value")
 	private String label;
-
-	// informacoes da anotacao @TableStructure (se utilizada)
-	@AnnotationProperty(annotation = TableStructure.class, property = "fields")
-	private String[] fieldsNameTableStructure;
 
 	// classe da classe
 	@ReflectionReference
@@ -83,16 +69,6 @@ public class ClassMetadata
 		this.annotatedWithLabel = annotatedWithLabel;
 	}
 
-	public boolean isAnnotatedWithTableStructure()
-	{
-		return annotatedWithTableStructure;
-	}
-
-	public void setAnnotatedWithTableStructure(boolean annotatedWithTableStructure)
-	{
-		this.annotatedWithTableStructure = annotatedWithTableStructure;
-	}
-
 	public List<MethodMetadata> getMethodsWithServiceMethod()
 	{
 		return methodsWithServiceMethod;
@@ -103,16 +79,6 @@ public class ClassMetadata
 		this.methodsWithServiceMethod = methodsWithServiceMethod;
 	}
 
-	public List<FieldMetadata> getFields()
-	{
-		return fields;
-	}
-
-	public void setFields(List<FieldMetadata> fields)
-	{
-		this.fields = fields;
-	}
-	
 	public String getDescription()
 	{
 		return description;
@@ -131,16 +97,6 @@ public class ClassMetadata
 	public void setLabel(String label)
 	{
 		this.label = label;
-	}
-
-	public String[] getFieldsNameTableStructure()
-	{
-		return fieldsNameTableStructure;
-	}
-
-	public void setFieldsNameTableStructure(String[] fieldsNameTableStructure)
-	{
-		this.fieldsNameTableStructure = fieldsNameTableStructure;
 	}
 
 	public Class<?> getClazz()

@@ -33,11 +33,37 @@ app.InvokeMethod = {
 		        	      alertType: "danger"
 		        	    });
 				} else {
-					alertBt({
-	   	        	      messageText: "Objeto Json a ser submetido:<br/>" + JSON.stringify(values, null, 2),
-	   	        	      headerText: "Alerta",
-	   	        	      alertType: "success"
-	   	        	    });					
+					// recupera o descritor do metodo 
+					var methodDesc = app.storage.get("methodDescriptor");  
+
+					// JSON de request
+		    		var jsonReq = new Object();
+		    		jsonReq.text="Some text";
+		    		jsonReq.integer=300;
+		    		jsonReq.float=11.22;
+		    		jsonReq.methodDescriptor = methodDesc;
+		    		jsonReq.paramValues = values
+		    		
+		    		$.ajax({
+		    			url: 'invokeMethod.op',
+		    			type: 'POST',
+		    			dataType: 'json',
+		    			data: JSON.stringify(jsonReq),
+		    			contentType: 'application/json',
+		    			mimeType: 'application/json',
+		    			success: function (data) {
+		    				console.log(data);
+		    				
+							alertBt({
+			   	        	      messageText: "Resposta:<br/>" + JSON.stringify(data, null, 2),
+			   	        	      headerText: "Alerta",
+			   	        	      alertType: "success"
+			   	        	    });					
+		    	        },
+		    			error:function(data,status,er) {
+		    				alert("error");
+		    			}
+		    		});
 				}
 			}
 		});

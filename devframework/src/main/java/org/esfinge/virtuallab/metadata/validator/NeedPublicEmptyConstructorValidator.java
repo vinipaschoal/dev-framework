@@ -22,8 +22,6 @@ public class NeedPublicEmptyConstructorValidator implements AnnotationValidator
 	{
 		try
 		{
-			System.out.println(annotated);
-			
 			// tenta criar uma instancia da classe utilizando o construtor padrao
 			((Class<?>) annotated).newInstance();
 		}

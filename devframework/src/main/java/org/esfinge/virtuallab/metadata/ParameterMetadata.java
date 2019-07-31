@@ -3,6 +3,7 @@ package org.esfinge.virtuallab.metadata;
 import java.lang.reflect.Parameter;
 
 import org.esfinge.virtuallab.annotations.Label;
+import org.esfinge.virtuallab.annotations.NotRequired;
 import org.esfinge.virtuallab.metadata.processor.ElementNameParameter;
 import org.esfinge.virtuallab.metadata.processor.ReflectionReferenceParameter;
 
@@ -15,11 +16,15 @@ import net.sf.esfinge.metadata.container.ContainerTarget;
  * Extrai informacoes de metadados dos parametros dos metodos.
  */
 @ContainerFor(ContainerTarget.PARAMETER)
-public class ParameterMetadata
+public class ParameterMetadata implements Comparable<ParameterMetadata>
 {
-	// indica se o metodo contem a anotacao @Label
+	// indica se o parametro contem a anotacao @Label
 	@ContainsAnnotation(Label.class)
 	private boolean annotatedWithLabel;
+	
+	// indica se o parametro contem a anotacao @NotRequired
+	@ContainsAnnotation(NotRequired.class)
+	private boolean annotatedWithNotRequired;
 
 	// informacoes da anotacao @Label (se utilizada)
 	@AnnotationProperty(annotation = Label.class, property = "value")
@@ -45,6 +50,21 @@ public class ParameterMetadata
 	public void setAnnotatedWithLabel(boolean annotatedWithLabel)
 	{
 		this.annotatedWithLabel = annotatedWithLabel;
+	}
+	
+	public boolean isAnnotatedWithNotRequired()
+	{
+		return annotatedWithNotRequired;
+	}
+
+	public void setAnnotatedWithNotRequired(boolean annotatedWithNotRequired)
+	{
+		this.annotatedWithNotRequired = annotatedWithNotRequired;
+	}
+
+	public void setIndex(int index)
+	{
+		this.index = index;
 	}
 
 	public String getLabel()
@@ -94,5 +114,11 @@ public class ParameterMetadata
 	public int getIndex()
 	{
 		return index;
+	}
+
+	@Override
+	public int compareTo(ParameterMetadata o)
+	{
+		return Integer.valueOf(this.index).compareTo(o.index);
 	}
 }

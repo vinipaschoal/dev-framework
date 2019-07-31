@@ -22,6 +22,14 @@ public class ClassDescriptor
 
 	
 	/**
+	 * Construtor padrao.
+	 */
+	public ClassDescriptor()
+	{
+		
+	}
+	
+	/**
 	 * Construtor a partir dos metadados de uma classe.
 	 */
 	public ClassDescriptor(ClassMetadata classMetadata)

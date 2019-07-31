@@ -7,21 +7,16 @@ import org.esfinge.virtuallab.annotations.ServiceMethod;
 @ServiceClass(description="Disponibiliza serviços relacionados a tarefas, no estilo TO-DO.")
 @Label("ToDo")
 public class Tarefa {
-	
-	private String nome = "compromissos";
+	private String tarefas = "Nenhuma tarefa cadastrada!";
 
 	@ServiceMethod(description="Retorna o nome da tarefa")
 	public String getNome() {
-		return nome;
+		return tarefas;
 	}
 
-	public void setNome(String nome) {
-		this.nome = nome;
-	}	
-	
 	@ServiceMethod
-	@Label("Obter prioridade")
-	public int getPrioridade(@Label("Categoria") String categoria, @Label("Prioridade") int prioridade) {
-		return 1;
+	@Label("Cadastrar tarefa")
+	public String setTask(@Label("Tarefa") String nomeTarefa, @Label("Prioridade") int priorTarefa) {
+		return String.format("Tarefa '{}' cadastrada com prioridade '{}'", nomeTarefa, priorTarefa);
 	}
 }
