@@ -1,13 +1,26 @@
 app.InvokeMethod = {
+		
+	// funcao de inicializacao 
 	init: function () {	
-		app.InvokeMethod.list();
+		
+		// atualiza os elementos da pagina com o nome da classe e do metodo
+    	var data = app.storage.get("methodList");        	
+		$('#breadcrumbClassName').text(data['clazz']);
+		$('#headerClassName').text(app.utils.clazzSimpleName(data['clazz']));
+		
+		var method = app.storage.get("methodInvoke");  
+		$('#breadcrumbMethodName').text(app.utils.methodSignature(method));
+		$('#headerMethodName').text(method.returnType + " " + method.name + "()");
 
+		app.InvokeMethod.createForm(method.parameters);
 	},
-	createForm: function (fields){
+	
+	// cria o Form para a entrada dos valores do metodo a ser invocado
+	createForm: function (parameters){
 		
 		var $form = {};
-		$.each(fields, function (f, field) {			
-			$form[field.name] = field.attribute;
+		$.each(parameters, function (p, parameter) {			
+			$form[parameter.name] = app.utils.jsonformType(parameter);
 		});
 		
 		$('form').jsonForm({
@@ -28,43 +41,6 @@ app.InvokeMethod = {
 				}
 			}
 		});
-	},
-	list: function(){
-			
-		var url = window.location.href.slice(window.location.href.indexOf('?') + 1);
-		
-    	$.ajax({
-            type: "GET",
-            url: $('#formParam').data("url"),
-            data: url,
-            processData: true,
-            contentType: false,
-            cache: false,
-            timeout: 600000,
-            success: function (data) {
-                if (data.success){                    
-                	app.InvokeMethod.createForm(data.parameters.fields);
-                    app.settings.loading.hide();
-                }else{
-                	alertBt({
-   	        	      messageText: data.message,
-   	        	      headerText: "Alerta",
-   	        	      alertType: "danger"
-   	        	    });
-                	app.settings.loading.hide();
-                }
-            },
-            error: function (e) {
-            	var $msg = $(e.responseText).filter('title').text();
-            	if ($msg == '') $msg = "Ocorreu um erro.<br/>";
-                alertBt({
-        	      messageText: $msg,
-        	      headerText: "Erro",
-        	      alertType: "danger"
-        	    });
-                app.settings.loading.hide();
-            }
-        });
 	}
 };
 

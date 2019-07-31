@@ -1,10 +1,16 @@
 app.Classes = {
 		validExts: new Array(".class",".jar"),
 		tableClass: $('#classTable').DataTable({"language": app.settings.languagePtBr }),
+		
+		// funcao de inicializacao 
 		init: function () {
-
+			
 			app.settings.loading.show();
 			
+			// apaga o storage atual
+			app.storage.clear();
+
+			// lista as classes
 			app.Classes.list();
 	    	
 	    	var validExts = new Array(".class",".jar");
@@ -24,8 +30,9 @@ app.Classes = {
 				event.preventDefault();                
 				app.Classes.save();
 	        });
-	    	
 		},
+		
+		// carrega a lista de classes
 		list: function(){
 			
         	app.Classes.tableClass.rows().remove().draw();
@@ -40,12 +47,14 @@ app.Classes = {
                 success: function (data) {
                     console.log(data);
                     if (data.success){
-	                    var $classList = data.clazzes;                    
+                    	var $classList = data.clazzes;
+                        
+                        // armazena as classes recebidas no storage
+                        app.storage.put("classList", $classList);
+                    	
 	                    $.each($classList, function( i, classe ) {
 	                    	app.Classes.tableClass.row.add([
-								classe.name
-								,"<a href='methods.jsp?clazz=" + classe.qualifiedName + "'>" + classe.qualifiedName + "</a>"
-								]).draw( false );
+								classe.name, "<a href='#' onclick='app.Classes.listMethods(" + i + ")'>" + classe.qualifiedName + "</a>"]).draw( false );
 	                   	});
                     }else{
                     	alertBt({
@@ -68,6 +77,41 @@ app.Classes = {
                 }
             });
 		},
+		
+		// carrega os metodos da classe selecionada
+		listMethods: function(index){
+			
+			// recupera a lista de classes do storage
+			var $classList = app.storage.get("classList");
+    		var obj = new Object();
+    		obj.clazz = $classList[index].qualifiedName;
+    		
+    		$.ajax({
+    			url: 'listMethods.op',
+    			type: 'POST',
+    			dataType: 'json',
+    			data: JSON.stringify(obj),
+    			contentType: 'application/json',
+    			mimeType: 'application/json',
+    			success: function (data) {
+    				console.log(data);
+    				
+    				// apaga o storage atual
+    				app.storage.clear();
+    				
+    				// armazena o objeto recebido no storage
+    				app.storage.put("methodList", data);
+    				
+    				// redireciona para a pagina de metodos
+    				app.callPage("methods.jsp");
+    	        },
+    			error:function(data,status,er) {
+    				alert("error");
+    			}
+    		});
+		},
+		
+		// faz o upload do arquivo (classe/jar) selecionado 
 		save: function () {
 
 			var $form = $('#fileUploadForm');

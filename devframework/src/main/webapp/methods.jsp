@@ -16,13 +16,13 @@
 			    		<i class="fas fa-angle-right mx-2" aria-hidden="true"></i>
 			    		
 			    	</li>
-			    	<li class="breadcrumb-item active" aria-current="page">${ param['clazz'] }</li>
+			    	<li class="breadcrumb-item active" aria-current="page" id="breadcrumbClassName"/>
 				</ol>
 			</nav>
 
 			<section class="jumbotron text-center">
 				<div class="container">
-					<h1 class="jumbotron-heading">Métodos da Classe: <strong>${ param['clazz'] }</strong> </h1>
+					<h1 class="jumbotron-heading">Métodos da Classe: <strong id="headerClassName"></strong></h1>
 				</div>
 			</section>
 	
@@ -30,7 +30,7 @@
 				<div class="row">
 					<div class="col-md-12">
 						<div class="listClass load">
-							<table id="methodTable" class="table table-striped table-bordered" data-url="listMethods.op" data-clazz="${param['clazz']}">
+							<table id="methodTable" class="table table-striped table-bordered">
 								<thead>
 									<tr>
 										<th>Métodos</th>

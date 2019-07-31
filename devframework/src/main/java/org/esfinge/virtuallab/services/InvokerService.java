@@ -5,11 +5,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
-import org.esfinge.virtuallab.annotations.container.ClassContainer;
-import org.esfinge.virtuallab.annotations.container.ContainerFactory;
-import org.esfinge.virtuallab.annotations.container.MethodContainer;
-import org.esfinge.virtuallab.annotations.container.TypeContainer;
-import org.esfinge.virtuallab.domain.ClassDescriptor;
+import org.esfinge.virtuallab.descriptors.ClassDescriptor;
+import org.esfinge.virtuallab.metadata.ClassMetadata;
+import org.esfinge.virtuallab.metadata.ContainerFactory;
+import org.esfinge.virtuallab.metadata.MethodMetadata;
+import org.esfinge.virtuallab.metadata.TypeContainer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -24,9 +24,9 @@ public class InvokerService extends ClassLoader {
 		if (classDesc != null) {
 			Class<?> clazz = classDesc.getClassClass();
 			Object instanceOfClass = clazz.newInstance();
-			List<MethodContainer> methods = searchMatchingMethod(clazz, methodName, allParameters.keySet());
+			List<MethodMetadata> methods = searchMatchingMethod(clazz, methodName, allParameters.keySet());
 			if (methods != null && !methods.isEmpty()) {
-				MethodContainer selectedMethod = checkParameterCompatibility(methods, allParameters);
+				MethodMetadata selectedMethod = checkParameterCompatibility(methods, allParameters);
 				return callMethodWithSpecificReturn(selectedMethod, instanceOfClass);
 			}
 			throw new Exception("erro ao executar metodo");
@@ -34,9 +34,9 @@ public class InvokerService extends ClassLoader {
 		throw new Exception("erro ao executar metodo");
 	}
 
-	private MethodContainer checkParameterCompatibility(List<MethodContainer> methods,
+	private MethodMetadata checkParameterCompatibility(List<MethodMetadata> methods,
 			LinkedHashMap<String, Object> allParameters) {
-		for (MethodContainer methodContainer : methods) {
+		for (MethodMetadata methodContainer : methods) {
 			List<String> parameterNames = methodContainer.getLabeledParameterNames();
 			boolean errorOccurred = false;
 			convertedValues.clear();
@@ -63,11 +63,11 @@ public class InvokerService extends ClassLoader {
 		return null;
 	}
 
-	private List<MethodContainer> searchMatchingMethod(Class<?> clazz, String methodName, Set<String> parameterNames)
+	private List<MethodMetadata> searchMatchingMethod(Class<?> clazz, String methodName, Set<String> parameterNames)
 			throws Exception {
-		List<MethodContainer> methodsContainer = new ArrayList<MethodContainer>();
-		ClassContainer classContainer = ContainerFactory.create(clazz, TypeContainer.CLASS_CONTAINER);
-		for (MethodContainer methodContainer : classContainer.getMethodsWithServiceMethod()) {
+		List<MethodMetadata> methodsContainer = new ArrayList<MethodMetadata>();
+		ClassMetadata classContainer = ContainerFactory.create(clazz, TypeContainer.CLASS_CONTAINER);
+		for (MethodMetadata methodContainer : classContainer.getMethodsWithServiceMethod()) {
 			if (methodContainer.getMethodName().equals(methodName)
 					&& methodContainer.getMethod().getParameterCount() == parameterNames.size()
 					&& matchingParameterNames(methodContainer.getLabeledParameterNames(), parameterNames)) {
@@ -94,7 +94,7 @@ public class InvokerService extends ClassLoader {
 		return true;
 	}
 
-	private Object callMethodWithSpecificReturn(MethodContainer methodContainer, Object instanceOfClass)
+	private Object callMethodWithSpecificReturn(MethodMetadata methodContainer, Object instanceOfClass)
 			throws JsonProcessingException, Exception {
 		Object returnValue;
 		if (methodContainer.getNumberOfParameters() > 0) {

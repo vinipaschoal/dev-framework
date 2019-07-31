@@ -6,7 +6,7 @@
   <display-name>Archetype Created Web Application</display-name>
   <servlet>
   	<servlet-name>FrontControllerServlet</servlet-name>
-  	<servlet-class>org.esfinge.virtuallab.servlet.FrontControllerServlet</servlet-class>
+  	<servlet-class>org.esfinge.virtuallab.web.FrontControllerServlet</servlet-class>
   </servlet>
   <servlet-mapping>
   	<servlet-name>FrontControllerServlet</servlet-name>

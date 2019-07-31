@@ -11,26 +11,28 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.esfinge.virtuallab.web.op.InvokeMethodHandler;
-import org.esfinge.virtuallab.web.op.ListClassesHandler;
-import org.esfinge.virtuallab.web.op.ListMethodsHandler;
+import org.esfinge.virtuallab.web.op.ListServiceClassesHandler;
+import org.esfinge.virtuallab.web.op.ListServiceMethodsHandler;
 import org.esfinge.virtuallab.web.op.UploadFileHandler;
 
 /**
  * Servlet principal da aplicacao.
  */
-public class FrontControllerServlet extends HttpServlet {
+public class FrontControllerServlet extends HttpServlet
+{
 	private static final long serialVersionUID = 1L;
 	private Map<String, IRequestHandler> handlerMap;
 
 	@Override
-	public void init(ServletConfig config) throws ServletException {
+	public void init(ServletConfig config) throws ServletException
+	{
 		super.init(config);
 
 		// inicialia o mapa de tratamento de requisicao
 		this.handlerMap = new HashMap<String, IRequestHandler>();
 		this.handlerMap.put("uploadFile.op", new UploadFileHandler());
-		this.handlerMap.put("listClasses.op", new ListClassesHandler());
-		this.handlerMap.put("listMethods.op", new ListMethodsHandler());
+		this.handlerMap.put("listClasses.op", new ListServiceClassesHandler());
+		this.handlerMap.put("listMethods.op", new ListServiceMethodsHandler());
 		this.handlerMap.put("invokeMethod.op", new InvokeMethodHandler());
 	}
 
@@ -38,13 +40,19 @@ public class FrontControllerServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		try {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
+		try
+		{
 			// obtem a classe que trata a requisicao
 			IRequestHandler handler = this.getHandler(request);
 			handler.handleRequest(request, response);
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
+			//TODO: debug..
+			e.printStackTrace();
+			
 			// redireciona para a pagina de erro
 			new ErrorRequestHandler(e.getMessage()).handleRequest(request, response);
 		}
@@ -54,8 +62,8 @@ public class FrontControllerServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
 		// redireciona para o metodo doPost()
 		doGet(request, response);
 	}
@@ -63,7 +71,8 @@ public class FrontControllerServlet extends HttpServlet {
 	/**
 	 * Retorna a classe responsavel em tratar a requisicao.
 	 */
-	private IRequestHandler getHandler(HttpServletRequest request) {
+	private IRequestHandler getHandler(HttpServletRequest request)
+	{
 		// obtem a requisicao
 		String requisicao = request.getRequestURI().substring(this.getServletContext().getContextPath().length() + 1);
 
@@ -79,15 +88,19 @@ public class FrontControllerServlet extends HttpServlet {
 	 * Redireciona para a pagina de erro em caso de requisicoes invalidas ou erros
 	 * no processamento da requisicao.
 	 */
-	private class ErrorRequestHandler implements IRequestHandler {
+	private class ErrorRequestHandler implements IRequestHandler
+	{
+		// mensagem de erro
 		private String errorMsg;
 
-		public ErrorRequestHandler(String errorMsg) {
+		public ErrorRequestHandler(String errorMsg)
+		{
 			this.errorMsg = errorMsg;
 		}
 
 		public void handleRequest(HttpServletRequest request, HttpServletResponse response)
-				throws ServletException, IOException {
+				throws ServletException, IOException
+		{
 			// armazena os objetos que serao utilizados na pagina de resposta
 			request.setAttribute("erro", errorMsg);
 

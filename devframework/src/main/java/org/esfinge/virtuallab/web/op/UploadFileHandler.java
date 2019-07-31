@@ -32,7 +32,9 @@ public class UploadFileHandler implements IJsonRequestHandler
 		}
 		catch ( Exception e )
 		{
+			// TODO: debug..
 			e.printStackTrace();
+			
 			jsonObject.addProperty("message", "Erro: " + e.toString());
 			jsonObject.addProperty("success", false);
 		}
@@ -72,7 +74,7 @@ public class UploadFileHandler implements IJsonRequestHandler
     			String fileName = FilenameUtils.getName(item.getName());
     			
     			// tenta salvar o arquivo
-    			boolean saved = PersistenceService.getInstance().save(item.getInputStream(), fileName);
+    			boolean saved = PersistenceService.getInstance().saveUploadedFile(item.getInputStream(), fileName);
     			
     			if (saved)
     				return fileName;

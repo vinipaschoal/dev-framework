@@ -1,8 +1,8 @@
 package org.esfinge.virtuallab.services;
 
-import org.esfinge.virtuallab.annotations.container.ClassContainer;
-import org.esfinge.virtuallab.annotations.container.ContainerFactory;
-import org.esfinge.virtuallab.annotations.container.TypeContainer;
+import org.esfinge.virtuallab.metadata.ClassMetadata;
+import org.esfinge.virtuallab.metadata.ContainerFactory;
+import org.esfinge.virtuallab.metadata.TypeContainer;
 
 import com.fasterxml.jackson.databind.introspect.AnnotatedField;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
@@ -14,7 +14,7 @@ public class CustomAnnotationIntrospector extends JacksonAnnotationIntrospector 
 	public boolean hasIgnoreMarker(AnnotatedMember m) {
 		if (m instanceof AnnotatedField) {
 			try {
-				ClassContainer classContainer = ContainerFactory.create(((AnnotatedField) m).getDeclaringClass(),
+				ClassMetadata classContainer = ContainerFactory.create(((AnnotatedField) m).getDeclaringClass(),
 						TypeContainer.CLASS_CONTAINER);
 				if (classContainer.isAnnotatedWithTableStructure()
 						&& !containsNameOnTableStructure(classContainer.getFieldsNameTableStructure(), m.getName())) {

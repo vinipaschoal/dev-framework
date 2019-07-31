@@ -7,79 +7,50 @@ app.Methods = {
 					"ordering": false,
 			        "info":     false
 				}),
+				
+		// funcao de inicializacao 
 		init: function () {
+			
+			// atualiza os elementos da pagina com o nome da classe
+        	var data = app.storage.get("methodList");        	
+			$('#breadcrumbClassName').text(data['clazz']);
+			$('#headerClassName').text(app.utils.clazzSimpleName(data['clazz']));
+			
 			app.settings.loading.show();
+			
+			// lista os metodos
 			app.Methods.list();
 		},
+		
+		// carrega a lista de metodos
 		list: function(){
 			
         	app.Methods.methodClass.rows().remove().draw();
         	
-        	$.ajax({
-                type: "GET",
-                url: $('#methodTable').data("url"),
-                data: {
-                	clazz: $('#methodTable').data("clazz")
-                },
-                processData: true,
-                contentType: false,
-                cache: false,
-                timeout: 600000,
-                success: function (data) {
-                    console.log(data);
-                    if (data.success){
-                    	var $clazz = data.clazz;
-                    	var $methodList = data.clazz.methods;
-	                    $.each($methodList, function (i, method) {
-	                    	
-	                    	jMethod = {};
-	                    	jMethod.methodName = method.name;
-	                    	jMethod.methodReturnType = method.returnType;
-	                    	jMethod.parameters = [];
-	                    	
-	                    	var $parameters = "";
-	                    	var $parametersUrl = "";
-		                   	var $count = 0;
-	                   	  	$.each(method.parameters, function (p, parameter) {
-	            	  			$count++;
-	            	  			$parameters = $parameters + parameter.dataType + " " + parameter.name + (($count < method.parameters.length ? ", " : ""));
-
-	            	  			param = {};
-	            	  			param.name = parameter.name;
-	            	  			param.dataType = parameter.dataType;
-	            	  			jMethod.parameters.push(param);
-	     	                    
-	            	  		});
-	                   	  	$parameters = "(" + $parameters + ")";
-	                   	  	
-	                   	  	var $methodQuery = jQuery.param(jMethod);
-	                   	 
-	                    	app.Methods.methodClass.row.add([
-								"<a href='invokeMethod.jsp?clazz=" + $clazz.qualifiedName + "&" + $methodQuery + "'>" + method.returnType + " " + method.name + $parameters + "</a>"
-								]).draw( false );
-	                   	});
-	                    app.settings.loading.hide();
-	                    
-                    }else{
-                    	alertBt({
-       	        	      messageText: data.message,
-       	        	      headerText: "Alerta",
-       	        	      alertType: "danger"
-       	        	    });
-                    	app.settings.loading.hide();
-                    }
-                },
-                error: function (e) {
-                	var $msg = $(e.responseText).filter('title').text();
-                	if ($msg == '') $msg = "Ocorreu um erro.<br/>";
-                    alertBt({
-   	        	      messageText: $msg,
-   	        	      headerText: "Erro",
-   	        	      alertType: "danger"
-   	        	    });
-                    app.settings.loading.hide();
-                }
-            });
+			// recupera a lista de metodos do storage
+        	var data = app.storage.get("methodList");
+        	var $clazz = data.clazz;
+        	var $methodList = data.methods;
+            $.each($methodList, function (i, method) {
+           	 
+            	app.Methods.methodClass.row.add([
+					"<a href='#' onclick='app.Methods.invokeMethod(" + i + ")'>" + app.utils.methodSignature(method) + "</a>"
+					]).draw( false );
+           	});
+            app.settings.loading.hide();
+		},
+		
+		//  metodo selecionado para ser invocado
+		invokeMethod: function(index){
+			
+			// obtem o metodo selecionado
+			var $method = app.storage.get("methodList").methods[index];
+			
+			// armazena  recebido no storage
+			app.storage.put("methodInvoke", $method);
+			
+			// redireciona para a pagina de invocao de metodos
+			app.callPage("invokeMethod.jsp");
 		}
 };
 

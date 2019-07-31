@@ -4,6 +4,7 @@
 <tags:_Layout>
 
 	<jsp:attribute name="css_custom">
+		<link rel="stylesheet" type="text/css" href="webjars/chartjs/2.8.0/Chart.min.css">
 	</jsp:attribute>
 	
 	<jsp:attribute name="content">
@@ -17,18 +18,16 @@
 			    		
 			    	</li>
 			    	<li class="breadcrumb-item active" aria-current="page">
-			    		<a href="methods.jsp?clazz=${ param['clazz'] }">${ param['clazz'] }</a>
+			    		<a href="methods.jsp" id="breadcrumbClassName"/></a>
 			    		<i class="fas fa-angle-right mx-2" aria-hidden="true"></i>
 			    	</li>
-			    	<li class="breadcrumb-item active" aria-current="page">
-			    		${ param['methodReturnType'] } ${ param['methodName'] }
-			    	</li>
+			    	<li class="breadcrumb-item active" aria-current="page" id="breadcrumbMethodName"/>
 				</ol>
 			</nav>
 
 			<section class="jumbotron text-center">
 				<div class="container">
-					<h3 class="jumbotron-heading">Método <strong>"${ param['methodReturnType'] } ${ param['methodName'] }"</strong> da Classe: <strong>${ param['clazz'] }</strong> </h1>
+					<h1 class="jumbotron-heading">Método: <strong id="headerMethodName"></strong> da Classe: <strong id="headerClassName"></strong> </h1>
 				</div>
 			</section>
 	
@@ -44,12 +43,17 @@
 					</div>
 				</div>
 			</div>
+			<div>
+				
+			</div>
 	
 		</main>
 		
 	</jsp:attribute>
 	
 	<jsp:attribute name="js_custom">
+		<!-- load chartjs library -->
+		<script type="text/javascript" src="webjars/chartjs/2.8.0/Chart.min.js"></script>
 		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/app/InvokeMethod.js"></script>
 	</jsp:attribute>
 </tags:_Layout>

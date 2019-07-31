@@ -19,6 +19,7 @@
 				</div>
 			</section>
 	
+			<!-- CARREGA A LISTA DE CLASSES COM SERVICOS -->
 			<div class="container">
 				<div class="row">
 					<div class="col-md-12">
@@ -58,7 +59,7 @@
 					</div>
 					<div class="modal-body">
 					
-						<!-- FORM PARA ENVIO DE NOVAS CLASSES -->
+						<!-- FORM PARA ENVIO DE NOVAS CLASSES/JAR -->
 						<form method="post" action="uploadFile.op" enctype="multipart/form-data" id="fileUploadForm">
 							<div class="row">
 								<div class="col-md-12">

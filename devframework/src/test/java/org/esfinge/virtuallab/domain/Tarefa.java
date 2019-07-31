@@ -1,5 +1,6 @@
 package org.esfinge.virtuallab.domain;
 
+import org.esfinge.virtuallab.annotations.Label;
 import org.esfinge.virtuallab.annotations.ServiceClass;
 import org.esfinge.virtuallab.annotations.ServiceMethod;
 
@@ -18,7 +19,7 @@ public class Tarefa {
 	}	
 	
 	@ServiceMethod
-	public int getPrioridade(String categoria) {
+	public int getPrioridade(@Label("meu_label") String categoria, int idade) {
 		return 1;
 	}
 }

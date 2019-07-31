@@ -7,82 +7,98 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.esfinge.virtuallab.annotations.container.ClassContainer;
-import org.esfinge.virtuallab.annotations.container.ContainerFactory;
-import org.esfinge.virtuallab.annotations.container.TypeContainer;
-import org.esfinge.virtuallab.utils.ClassLoaderUtils;
+import org.esfinge.virtuallab.metadata.ClassMetadata;
+import org.esfinge.virtuallab.metadata.MetadataHelper;
+import org.esfinge.virtuallab.utils.Utils;
 
 /**
- * Validator de classes.
+ * Responsavel em validar as classes e servicos.
  */
-public final class ValidationService {
+public final class ValidationService
+{
 	// instancia unica da classe
 	private static ValidationService _instance;
 
 	/**
 	 * Construtor interno.
 	 */
-	private ValidationService() {
+	private ValidationService()
+	{
 	}
 
 	/**
 	 * Singleton.
 	 */
-	public synchronized static ValidationService getInstance() {
-		if (_instance == null) {
+	public synchronized static ValidationService getInstance()
+	{
+		if (_instance == null)
 			_instance = new ValidationService();
-		}
+
 		return _instance;
 	}
 
 	/**
 	 * Retorna a classe se ela for valida.
 	 */
-	public Class<?> isValidClass(String classFilePath) throws Exception {
-		return this.isValidClass(FileUtils.openInputStream(new File(classFilePath)),
+	public Class<?> checkClass(String classFilePath) throws Exception
+	{
+		return this.checkClass(FileUtils.openInputStream(new File(classFilePath)),
 				FilenameUtils.getName(classFilePath));
 	}
 
 	/**
 	 * Retorna a classe se ela for valida.
 	 */
-	public Class<?> isValidClass(InputStream classFileStream, String fileName) throws Exception {
-		List<Class<?>> classList = this.isValidInternal(classFileStream, fileName);
+	public Class<?> checkClass(InputStream classFileStream, String fileName) throws Exception
+	{
+		List<Class<?>> classList = this.validateInternal(classFileStream, fileName);
 
-		return (classList != null ? classList.get(0) : null);
+		return (Utils.isNullOrEmpty(classList) ? null : classList.get(0));
 	}
 
 	/**
 	 * Retorna as classes validas do arquivo jar.
 	 */
-	public List<Class<?>> isValidJar(String jarFilePath) throws Exception {
-		return this.isValidJar(FileUtils.openInputStream(new File(jarFilePath)), FilenameUtils.getName(jarFilePath));
+	public List<Class<?>> checkJar(String jarFilePath) throws Exception
+	{
+		return this.checkJar(FileUtils.openInputStream(new File(jarFilePath)), FilenameUtils.getName(jarFilePath));
 	}
 
 	/**
 	 * Retorna as classes validas do arquivo jar.
 	 */
-	public List<Class<?>> isValidJar(InputStream jarFileStream, String fileName) throws Exception {
-		return this.isValidInternal(jarFileStream, fileName);
+	public List<Class<?>> checkJar(InputStream jarFileStream, String fileName) throws Exception
+	{
+		return this.validateInternal(jarFileStream, fileName);
 	}
 
 	/**
-	 * Carrega as classes validas.
+	 * Retorna as classes validas.
 	 */
-	private List<Class<?>> isValidInternal(InputStream fileStream, String fileName) throws Exception {
-		List<Class<?>> classList = new ArrayList<Class<?>>();
-		List<Class<?>> validClasses = new ArrayList<Class<?>>();
-		if (fileName.endsWith(".jar")) {
-			classList.addAll(ClassLoaderUtils.getInstance().loadJar(fileStream));
-		} else {
-			classList.add(ClassLoaderUtils.getInstance().loadClass(fileStream, fileName));
-		}
-		for (Class<?> clazz : classList) {
-			ClassContainer container = ContainerFactory.create(clazz, TypeContainer.CLASS_CONTAINER);
-			if (container.isAnnotatedWithServiceClass() && !container.getMethodsWithServiceMethod().isEmpty()) {
+	private List<Class<?>> validateInternal(InputStream fileStream, String fileName) throws Exception
+	{
+		List<Class<?>> classList = new ArrayList<>();
+		List<Class<?>> validClasses = new ArrayList<>();
+		
+		// carrega as classes do jar
+		if (fileName.endsWith(".jar"))
+			classList.addAll(ClassLoaderService.getInstance().loadJar(fileStream));
+		else
+			classList.add(ClassLoaderService.getInstance().loadClass(fileStream, fileName));
+
+		// 
+		MetadataHelper metadataHelper = MetadataHelper.getInstance();
+		
+		for (Class<?> clazz : classList)
+		{
+			// obtem os metadados da classe
+			ClassMetadata metadata = metadataHelper.getClassMetadata(clazz);
+			
+			// verifica se esta anotada com @ClassService e possui metodos @ServiceMethod
+			if (metadata.isAnnotatedWithServiceClass() && !Utils.isNullOrEmpty(metadata.getMethodsWithServiceMethod()))
 				validClasses.add(clazz);
-			}
 		}
+		
 		return (validClasses.size() == 0 ? null : validClasses);
 	}
 

@@ -1,9 +1,9 @@
 package org.esfinge.virtuallab.services;
 
-import org.esfinge.virtuallab.annotations.container.ClassContainer;
-import org.esfinge.virtuallab.annotations.container.ContainerFactory;
-import org.esfinge.virtuallab.annotations.container.FieldContainer;
-import org.esfinge.virtuallab.annotations.container.TypeContainer;
+import org.esfinge.virtuallab.metadata.ClassMetadata;
+import org.esfinge.virtuallab.metadata.ContainerFactory;
+import org.esfinge.virtuallab.metadata.FieldMetadata;
+import org.esfinge.virtuallab.metadata.TypeContainer;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.cfg.MapperConfig;
@@ -16,7 +16,7 @@ public class LabeledPropertyNamingStrategy extends PropertyNamingStrategy {
 
 	@Override
 	public String nameForField(MapperConfig<?> config, AnnotatedField field, String defaultName) {
-		FieldContainer fieldContainer;
+		FieldMetadata fieldContainer;
 		try {
 			fieldContainer = ContainerFactory.create(field.getAnnotated(), TypeContainer.FIELD_CONTAINER);
 			return fieldContainer.getLabeledFieldName();
@@ -29,9 +29,9 @@ public class LabeledPropertyNamingStrategy extends PropertyNamingStrategy {
 	@Override
 	public String nameForGetterMethod(MapperConfig config, AnnotatedMethod method, String defaultName) {
 		try {
-			ClassContainer classContainer = ContainerFactory.create(method.getAnnotated().getDeclaringClass(),
+			ClassMetadata classContainer = ContainerFactory.create(method.getAnnotated().getDeclaringClass(),
 					TypeContainer.CLASS_CONTAINER);
-			FieldContainer fieldContainer = classContainer.getDeclaredField(defaultName);
+			FieldMetadata fieldContainer = classContainer.getDeclaredField(defaultName);
 			if (fieldContainer != null) {
 				return fieldContainer.getLabeledFieldName();
 			} else {

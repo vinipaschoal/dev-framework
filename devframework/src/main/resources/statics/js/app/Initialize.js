@@ -43,6 +43,8 @@ app.settings = {
 			
 			app.settings.setLoad();
 			
+			$('.menu-link').bigSlide();
+			
 	        $(".date, .dateNotpicker").mask("99/99/9999");
 	        $(".zipcode").mask("99999-999");
 	        $(".cnpj").mask("99.999.999/9999-99");
@@ -67,6 +69,85 @@ app.settings = {
 	        });
 		}
 };
+
+// funcoes para trabalhar com SessionStorage
+app.storage = {
+		
+		// limpa a sessao
+		clear: function() {
+			sessionStorage.clear();
+		},
+		
+		// armazena um objeto na sessao
+		put: function(key, value) {
+			sessionStorage.setItem(key, JSON.stringify(value));
+		},
+		
+		// recupera um objeto da sessao
+		get: function(key) {
+			return JSON.parse(sessionStorage.getItem(key));
+		},
+		
+		// remove um objeto da sessao
+		remove: function(key) {
+			sessionStorage.removeItem(key);
+		}		
+};
+
+// redireciona para pagina por caminho relativo
+app.callPage = function (page){
+	  location.pathname = location.pathname.replace(/(.*)\/[^/]*/, "$1/"+page);
+};
+
+// funcoes utilitarias
+app.utils = {
+		clazzSimpleName: function(clazzName) {
+			return clazzName.substring(clazzName.lastIndexOf('.') + 1);
+		},
+		
+		methodSignature: function(methodJson) {
+        	var $parameters = "";
+           	var $count = 0;
+       	  	$.each(methodJson.parameters, function (p, parameter) {
+	  			$count++;
+	  			$parameters = $parameters + parameter.dataType + " " + parameter.name + (($count < methodJson.parameters.length ? ", " : ""));
+                
+	  		});
+       	  	
+       	  	return methodJson.returnType + " " + methodJson.name + "(" + $parameters + ")";
+		},
+		
+		jsonformType: function(parameterJson) {
+			var $type = "";
+			
+			switch(parameterJson.dataType)
+			{
+				case "byte":
+				case "java.lang.Byte":
+				case "short": 
+				case "java.lang.Short":
+				case "int": 
+				case "java.lang.Integer":
+				case "long": 
+				case "java.lang.Long":
+				case "float": 
+				case "java.lang.Float":
+				case "double":
+				case "java.lang.Double":
+				case "java.lang.Number":
+					$type = 'number';
+					break;
+				case "boolean":
+					$type = 'boolean';
+					break;
+				default:
+					$type = 'string';
+			}
+			
+			return { type: $type, title: parameterJson.name + ' (' + parameterJson.dataType + ')' };
+		}
+}
+
 
 $(function() {
     app.settings.init();

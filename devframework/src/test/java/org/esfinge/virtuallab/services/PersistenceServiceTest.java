@@ -10,9 +10,9 @@ import org.apache.commons.io.FileDeleteStrategy;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.esfinge.virtuallab.TestUtils;
+import org.esfinge.virtuallab.descriptors.ClassDescriptor;
 import org.esfinge.virtuallab.domain.Agenda;
 import org.esfinge.virtuallab.domain.AgendaInvalida;
-import org.esfinge.virtuallab.domain.ClassDescriptor;
 import org.esfinge.virtuallab.domain.Pessoa;
 import org.esfinge.virtuallab.domain.Tarefa;
 import org.esfinge.virtuallab.domain.TarefaInvalida;
@@ -225,7 +225,7 @@ public class PersistenceServiceTest {
 		// classe: Agenda.class
 		InputStream classStream = this.createStreamForUploadClass(Agenda.class);
 
-		Assert.assertTrue(PersistenceService.getInstance().save(classStream, "Agenda.class"));
+		Assert.assertTrue(PersistenceService.getInstance().saveUploadedFile(classStream, "Agenda.class"));
 	}
 
 	@Test
@@ -234,7 +234,7 @@ public class PersistenceServiceTest {
 		// classe: Pessoa.class
 		InputStream classStream = this.createStreamForUploadClass(Pessoa.class);
 
-		Assert.assertFalse(PersistenceService.getInstance().save(classStream, "Pessoa.class"));
+		Assert.assertFalse(PersistenceService.getInstance().saveUploadedFile(classStream, "Pessoa.class"));
 	}
 
 	@Test
@@ -244,7 +244,7 @@ public class PersistenceServiceTest {
 		InputStream jarStream = this.createStreamForUploadJar("jarValido.jar", Agenda.class, TarefaInvalida.class,
 				Pessoa.class);
 
-		Assert.assertTrue(PersistenceService.getInstance().save(jarStream, "jarValido.jar"));
+		Assert.assertTrue(PersistenceService.getInstance().saveUploadedFile(jarStream, "jarValido.jar"));
 	}
 
 	@Test
@@ -254,7 +254,7 @@ public class PersistenceServiceTest {
 		InputStream jarStream = this.createStreamForUploadJar("jarInvalido.jar", AgendaInvalida.class,
 				TarefaInvalida.class, Pessoa.class);
 
-		Assert.assertFalse(PersistenceService.getInstance().save(jarStream, "jarInvalido.jar"));
+		Assert.assertFalse(PersistenceService.getInstance().saveUploadedFile(jarStream, "jarInvalido.jar"));
 	}
 
 	@Test

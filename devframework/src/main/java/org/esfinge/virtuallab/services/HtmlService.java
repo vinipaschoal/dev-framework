@@ -3,10 +3,10 @@ package org.esfinge.virtuallab.services;
 import java.lang.reflect.Field;
 import java.util.List;
 
-import org.esfinge.virtuallab.annotations.container.ClassContainer;
-import org.esfinge.virtuallab.annotations.container.ContainerFactory;
-import org.esfinge.virtuallab.annotations.container.FieldContainer;
-import org.esfinge.virtuallab.annotations.container.TypeContainer;
+import org.esfinge.virtuallab.metadata.ClassMetadata;
+import org.esfinge.virtuallab.metadata.ContainerFactory;
+import org.esfinge.virtuallab.metadata.FieldMetadata;
+import org.esfinge.virtuallab.metadata.TypeContainer;
 
 public class HtmlService {
 
@@ -25,8 +25,8 @@ public class HtmlService {
 		String data = "";
 		for(Object object: objects) {
 			data+="<tr>";
-			ClassContainer container = ContainerFactory.create(object.getClass(), TypeContainer.CLASS_CONTAINER);
-			for (FieldContainer fieldContainer : container.getFields()) {
+			ClassMetadata container = ContainerFactory.create(object.getClass(), TypeContainer.CLASS_CONTAINER);
+			for (FieldMetadata fieldContainer : container.getFields()) {
 				data+="<td>";
 				Field field =fieldContainer.getField(); 
 				field.setAccessible(true);
@@ -40,10 +40,10 @@ public class HtmlService {
 
 	private String addHeader(Class<?> clazz) throws Exception {
 		String header = "<tr><th>";
-		ClassContainer container = ContainerFactory.create(clazz, TypeContainer.CLASS_CONTAINER);
+		ClassMetadata container = ContainerFactory.create(clazz, TypeContainer.CLASS_CONTAINER);
 		header += container.getLabeledClassName();
 		header += "</th></tr><tr>";
-		for (FieldContainer fieldContainer :container.getFields()) {
+		for (FieldMetadata fieldContainer :container.getFields()) {
 			header += "<th>";
 			header += fieldContainer.getLabeledFieldName();
 			header += "</th>";

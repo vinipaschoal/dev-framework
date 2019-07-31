@@ -1,11 +1,15 @@
 package org.esfinge.virtuallab.web;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 
 /**
@@ -35,6 +39,34 @@ public interface IJsonRequestHandler extends IRequestHandler {
 	public default void callPage(String page, HttpServletRequest request, HttpServletResponse response)
 			throws UnsupportedOperationException {
 		throw new UnsupportedOperationException("Page redirect is not allowed to asynchronous handlers!");
+	}
+	
+	/**
+	 * Retorna o objeto JSON enviado como parametro na requisicao.
+	 */
+	public default JsonNode getJsonParameter(HttpServletRequest request) throws Exception
+	{
+		// obtem o objeto JSON do request
+		BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream()));			
+		String jsonString = reader.readLine();
+
+		ObjectMapper mapper = new ObjectMapper();
+		
+		return mapper.readTree(jsonString);
+	}
+	
+	/**
+	 * Retorna o objeto JSON enviado como parametro na requisicao no formato da classe informada.
+	 */
+	public default <T> T getJsonParameter(HttpServletRequest request, Class<T> typeClass) throws Exception
+	{
+		// obtem o objeto JSON do request
+		BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream()));			
+		String jsonString = reader.readLine();
+
+		ObjectMapper mapper = new ObjectMapper();
+		
+		return mapper.readValue(jsonString, typeClass);
 	}
 
 	/**
