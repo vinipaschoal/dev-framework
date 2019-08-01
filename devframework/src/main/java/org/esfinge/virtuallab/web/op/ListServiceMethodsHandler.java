@@ -7,14 +7,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.esfinge.virtuallab.descriptors.MethodDescriptor;
 import org.esfinge.virtuallab.services.PersistenceService;
+import org.esfinge.virtuallab.utils.JsonArray;
+import org.esfinge.virtuallab.utils.JsonObject;
 import org.esfinge.virtuallab.utils.JsonUtils;
 import org.esfinge.virtuallab.utils.Utils;
 import org.esfinge.virtuallab.web.IJsonRequestHandler;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
 /**
  * Trata as requisicoes de listar os metodos de servicos das classes salvas.
@@ -23,7 +20,6 @@ public class ListServiceMethodsHandler implements IJsonRequestHandler
 {
 	public JsonObject handleAsync(HttpServletRequest request) throws FileNotFoundException
 	{
-		Gson gson = new GsonBuilder().create();
 		JsonObject jsonReturn = new JsonObject();
 
 		try
@@ -37,8 +33,8 @@ public class ListServiceMethodsHandler implements IJsonRequestHandler
 
 			if (!Utils.isNullOrEmpty(methodList))
 			{
-				JsonArray jarray = gson.toJsonTree(methodList).getAsJsonArray();
-				jsonReturn.add("methods", jarray);
+				JsonArray<MethodDescriptor> jarray = new JsonArray<>(methodList);
+				jsonReturn.addProperty("methods", jarray);
 				jsonReturn.addProperty("message", "");
 				jsonReturn.addProperty("success", true);
 			}

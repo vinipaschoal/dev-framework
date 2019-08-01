@@ -10,10 +10,9 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.esfinge.virtuallab.services.PersistenceService;
+import org.esfinge.virtuallab.utils.JsonObject;
 import org.esfinge.virtuallab.utils.Utils;
 import org.esfinge.virtuallab.web.IJsonRequestHandler;
-
-import com.google.gson.JsonObject;
 
 /**
  * Trata as requisicoes de upload de novas classes/jar.

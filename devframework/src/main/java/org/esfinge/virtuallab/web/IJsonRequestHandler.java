@@ -8,8 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
-
-import com.google.gson.JsonObject;
+import org.esfinge.virtuallab.utils.JsonObject;
 
 /**
  * Interface para tratar requisicoes assincronas.

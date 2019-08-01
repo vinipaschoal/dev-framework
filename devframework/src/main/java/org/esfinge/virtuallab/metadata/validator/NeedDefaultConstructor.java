@@ -12,7 +12,7 @@ import net.sf.esfinge.metadata.annotation.validator.ToValidate;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
-@ToValidate(NeedPublicEmptyConstructorValidator.class)
-public @interface NeedPublicEmptyConstructor
+@ToValidate(NeedDefaultConstructorValidator.class)
+public @interface NeedDefaultConstructor
 {
 }

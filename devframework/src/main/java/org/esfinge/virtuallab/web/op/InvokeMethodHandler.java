@@ -10,12 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import org.esfinge.virtuallab.converters.ConverterHelper;
 import org.esfinge.virtuallab.descriptors.MethodDescriptor;
 import org.esfinge.virtuallab.services.InvokerService;
+import org.esfinge.virtuallab.utils.JsonObject;
 import org.esfinge.virtuallab.utils.JsonUtils;
 import org.esfinge.virtuallab.web.IJsonRequestHandler;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 
 /**
  * Trata as requisicoes para invocar um metodo de servico.
@@ -24,8 +21,6 @@ public class InvokeMethodHandler implements IJsonRequestHandler
 {
 	public JsonObject handleAsync(HttpServletRequest request) throws FileNotFoundException
 	{
-
-		Gson gson = new GsonBuilder().create();
 		JsonObject jsonReturn = new JsonObject();
 
 		try
@@ -49,7 +44,7 @@ public class InvokeMethodHandler implements IJsonRequestHandler
 			// invoca o metodo
 			Object result = InvokerService.getInstance().call(methodDescriptor, values.toArray());
 		
-			jsonReturn.addProperty("result", gson.toJson(result));
+			jsonReturn.addProperty("result", JsonUtils.stringify(result));
 			jsonReturn.addProperty("message", "");
 			jsonReturn.addProperty("success", true);
 			

@@ -17,6 +17,6 @@ public class Tarefa {
 	@ServiceMethod
 	@Label("Cadastrar tarefa")
 	public String setTask(@Label("Tarefa") String nomeTarefa, @Label("Prioridade") int priorTarefa) {
-		return String.format("Tarefa '{}' cadastrada com prioridade '{}'", nomeTarefa, priorTarefa);
+		return String.format("Tarefa '%s' cadastrada com prioridade '%d'", nomeTarefa, priorTarefa);
 	}
 }

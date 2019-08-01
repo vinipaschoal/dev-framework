@@ -7,9 +7,9 @@ import net.sf.esfinge.metadata.AnnotationValidationException;
 import net.sf.esfinge.metadata.AnnotationValidator;
 
 /**
- * Verifica se a classe anotada com @ServiceClass possui um construtor vazio publico.
+ * Verifica se a classe anotada com @ServiceClass possui um construtor publico padrao (sem argumentos).
  */
-public class NeedPublicEmptyConstructorValidator implements AnnotationValidator
+public class NeedDefaultConstructorValidator implements AnnotationValidator
 {
 
 	@Override
@@ -27,7 +27,7 @@ public class NeedPublicEmptyConstructorValidator implements AnnotationValidator
 		}
 		catch ( Exception e )
 		{
-			throw new AnnotationValidationException("A classe '" + ((Class<?>) annotated).getCanonicalName() + "' não possui um construtor público vazio");
+			throw new AnnotationValidationException("A classe '" + ((Class<?>) annotated).getCanonicalName() + "' não possui um construtor público padrão (sem argumentos)");
 		}
 	}
 }

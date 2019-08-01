@@ -6,7 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Collection;
 
-import net.sf.esfinge.metadata.annotation.validator.Prohibits;
+import org.esfinge.virtuallab.metadata.validator.UniqueReturn;
+
 import net.sf.esfinge.metadata.annotation.validator.method.ValidMethodReturn;
 
 /**
@@ -15,7 +16,7 @@ import net.sf.esfinge.metadata.annotation.validator.method.ValidMethodReturn;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @ValidMethodReturn(validTypesToReturn = { Collection.class })
-@Prohibits(JsonReturn.class)
+@UniqueReturn
 public @interface TableReturn
 {
 	// os campos do item da colecao que serao utilizados
