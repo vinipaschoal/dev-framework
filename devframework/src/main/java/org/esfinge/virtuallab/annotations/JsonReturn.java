@@ -15,4 +15,11 @@ import org.esfinge.virtuallab.metadata.validator.UniqueReturn;
 @UniqueReturn
 public @interface JsonReturn
 {
+	// os campos da classe retornada que serao utilizados
+	// por padrao pega todos os atributos da classe 
+	String[] fields() default {};
+	
+	// os labels para os campos da classe retornada
+	// por padrao usa o nome do atributo
+	String[] labels() default {};
 }
