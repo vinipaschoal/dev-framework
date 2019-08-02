@@ -19,8 +19,8 @@ app.InvokeMethod = {
 	createForm: function (parameters){
 		
 		var $form = {};
-		$.each(parameters, function (p, parameter) {			
-			$form[parameter.name] = app.utils.jsonformType(parameter);
+		$.each(parameters, function (p, paramDesc) {			
+			$form[paramDesc.name] = app.utils.jsonformType(paramDesc);
 		});
 		
 		$('form').jsonForm({
@@ -38,9 +38,6 @@ app.InvokeMethod = {
 
 					// JSON de request
 		    		var jsonReq = new Object();
-		    		jsonReq.text="Some text";
-		    		jsonReq.integer=300;
-		    		jsonReq.float=11.22;
 		    		jsonReq.methodDescriptor = methodDesc;
 		    		jsonReq.paramValues = values
 		    		
@@ -51,11 +48,11 @@ app.InvokeMethod = {
 		    			data: JSON.stringify(jsonReq),
 		    			contentType: 'application/json',
 		    			mimeType: 'application/json',
-		    			success: function (data) {
-		    				console.log(data);
+		    			success: function (result) {
+		    				console.log(result);
 		    				
 							alertBt({
-			   	        	      messageText: "Resposta:<br/>" + JSON.stringify(data, null, 2),
+			   	        	      messageText: "Resposta:<br/>" + JSON.stringify(result, null, 2),
 			   	        	      headerText: "Alerta",
 			   	        	      alertType: "success"
 			   	        	    });					

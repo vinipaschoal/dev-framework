@@ -1,6 +1,5 @@
 package org.esfinge.virtuallab.web.op;
 
-import java.io.FileNotFoundException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -8,34 +7,33 @@ import javax.servlet.http.HttpServletRequest;
 import org.esfinge.virtuallab.descriptors.ClassDescriptor;
 import org.esfinge.virtuallab.services.PersistenceService;
 import org.esfinge.virtuallab.utils.JsonArray;
-import org.esfinge.virtuallab.utils.JsonObject;
 import org.esfinge.virtuallab.web.IJsonRequestHandler;
+import org.esfinge.virtuallab.web.JsonReturn;
 
 /**
  * Trata as requisicoes de listar as classes com servicos validos.
  */
 public class ListServiceClassesHandler implements IJsonRequestHandler
 {
-	public JsonObject handleAsync(HttpServletRequest request) throws FileNotFoundException
+	public JsonReturn handleAsync(HttpServletRequest request)
 	{
 		// obtem a lista de classes validas
 		List<ClassDescriptor> classesList = PersistenceService.getInstance().listServiceClasses();
-		JsonObject jsonReturn = new JsonObject();
+		JsonReturn jsonReturn = new JsonReturn();
 
 		try
 		{
-			JsonArray<ClassDescriptor> jarray = new JsonArray<>(classesList);
-			jsonReturn.addProperty("clazzes", jarray);
-			jsonReturn.addProperty("message", "");
-			jsonReturn.addProperty("success", true);
+			jsonReturn.setData(new JsonArray<ClassDescriptor>(classesList));
+			jsonReturn.setSuccess(true);
+			jsonReturn.setMessage("");
 		} 
 		catch (Exception e)
 		{
 			// TODO: debug..
 			e.printStackTrace();
 
-			jsonReturn.addProperty("message", "Erro: " + e.toString());
-			jsonReturn.addProperty("success", false);
+			jsonReturn.setSuccess(false);
+			jsonReturn.setMessage("Erro: " + e.toString());
 		}
 
 		return jsonReturn;

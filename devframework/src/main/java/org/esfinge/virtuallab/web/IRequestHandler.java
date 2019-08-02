@@ -13,8 +13,7 @@ public interface IRequestHandler {
 	/**
 	 * Executa a requisicao encaminhada pelo FrontControllerServlet.
 	 */
-	public void handleRequest(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException;
+	public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception;
 
 	/**
 	 * Redireciona para a pagina informada.

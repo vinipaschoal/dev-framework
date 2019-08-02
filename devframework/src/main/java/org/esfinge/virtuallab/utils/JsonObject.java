@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonAnySetter;
 /**
  * Classe representando objetos JSON.
  */
-public class JsonObject
+public class JsonObject extends JsonData
 {
 	// armazena os elementos que serao transformados em JSON
 	private Map<String,Object> jsonObject;
@@ -21,9 +21,9 @@ public class JsonObject
 	{
 		this.jsonObject = new HashMap<>();
 	}
-	
+
 	/**
-	 * Adiciona uma propriedade no objeto JSON.
+	 * Adiciona uma propriedade ao objeto JSON.
 	 */
 	@JsonAnySetter
 	public void addProperty(String name, Object value)
@@ -59,15 +59,8 @@ public class JsonObject
 	/**
 	 * Retorna a representacao string desse objeto JSON.
 	 */
-	public String toString()
+	protected String toJsonString()
 	{
-		try
-		{
-			return JsonUtils.stringify(this.jsonObject);
-		}
-		catch ( Exception e )
-		{
-			throw new RuntimeException(e);
-		}
+		return JsonUtils.stringify(this.jsonObject);
 	}
 }

@@ -28,13 +28,13 @@ app.Methods = {
         	app.Methods.methodClass.rows().remove().draw();
         	
 			// recupera a lista de metodos do storage
-        	var methodList = app.storage.get("methodList").methods;
-            $.each(methodList, function (i, method) {
+        	var methodList = app.storage.get("methodList");
+            $.each(methodList, function (i, methodDesc) {
            	 
             	app.Methods.methodClass.row.add([
-            		method.label,
-					"<a href='#' onclick='app.Methods.invokeMethod(" + i + ")'>" + app.utils.methodSignature(method) + "</a>",
-					method.description]).draw( false );
+            		methodDesc.label,
+					"<a href='#' onclick='app.Methods.invokeMethod(" + i + ")'>" + app.utils.methodSignature(methodDesc) + "</a>",
+					methodDesc.description]).draw( false );
            	});
             app.settings.loading.hide();
 		},
@@ -43,7 +43,7 @@ app.Methods = {
 		invokeMethod: function(index){
 			
 			// recupera o descritor do metodo escolhido
-    		var methodDesc = app.storage.get("methodList").methods[index];
+    		var methodDesc = app.storage.get("methodList")[index];
 			
 			// armazena  recebido no storage
 			app.storage.put("methodDescriptor", methodDesc);

@@ -1,6 +1,5 @@
 package org.esfinge.virtuallab.web.op;
 
-import java.io.FileNotFoundException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -8,19 +7,19 @@ import javax.servlet.http.HttpServletRequest;
 import org.esfinge.virtuallab.descriptors.MethodDescriptor;
 import org.esfinge.virtuallab.services.PersistenceService;
 import org.esfinge.virtuallab.utils.JsonArray;
-import org.esfinge.virtuallab.utils.JsonObject;
 import org.esfinge.virtuallab.utils.JsonUtils;
 import org.esfinge.virtuallab.utils.Utils;
 import org.esfinge.virtuallab.web.IJsonRequestHandler;
+import org.esfinge.virtuallab.web.JsonReturn;
 
 /**
  * Trata as requisicoes de listar os metodos de servicos das classes salvas.
  */
 public class ListServiceMethodsHandler implements IJsonRequestHandler
 {
-	public JsonObject handleAsync(HttpServletRequest request) throws FileNotFoundException
+	public JsonReturn handleAsync(HttpServletRequest request)
 	{
-		JsonObject jsonReturn = new JsonObject();
+		JsonReturn jsonReturn = new JsonReturn();
 
 		try
 		{
@@ -33,24 +32,23 @@ public class ListServiceMethodsHandler implements IJsonRequestHandler
 
 			if (!Utils.isNullOrEmpty(methodList))
 			{
-				JsonArray<MethodDescriptor> jarray = new JsonArray<>(methodList);
-				jsonReturn.addProperty("methods", jarray);
-				jsonReturn.addProperty("message", "");
-				jsonReturn.addProperty("success", true);
+				jsonReturn.setData(new JsonArray<MethodDescriptor>(methodList));
+				jsonReturn.setSuccess(true);
+				jsonReturn.setMessage("");
 			}
 			else
 			{
-				jsonReturn.addProperty("message", "Classe pesquisada não encontrada!");
-				jsonReturn.addProperty("success", false);
+				jsonReturn.setSuccess(false);
+				jsonReturn.setMessage("Nenhum serviço encontrado para a classe: " + clazzQualifiedName);
 			}
 		}
 		catch (Exception e)
 		{
 			// TODO: debug..
 			e.printStackTrace();
-			
-			jsonReturn.addProperty("message", "Erro: " + e.toString());
-			jsonReturn.addProperty("success", false);
+
+			jsonReturn.setSuccess(false);
+			jsonReturn.setMessage("Erro: " + e.toString());
 		}
 
 		return jsonReturn;

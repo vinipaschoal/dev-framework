@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.esfinge.virtuallab.annotations.JsonReturn;
+import org.esfinge.virtuallab.annotations.CustomReturn;
 import org.esfinge.virtuallab.annotations.Label;
 import org.esfinge.virtuallab.annotations.ServiceClass;
 import org.esfinge.virtuallab.annotations.ServiceMethod;
@@ -16,7 +16,7 @@ public class Agenda {
 	private int idade = 50;
 
 	@ServiceMethod
-	@JsonReturn
+	@CustomReturn
 	public Pessoa getPessoaJson() {
 		return new Pessoa("José", 50, "rua das acacias",new Date());
 	}

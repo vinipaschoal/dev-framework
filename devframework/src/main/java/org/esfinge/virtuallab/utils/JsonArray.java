@@ -8,9 +8,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
- * Classe representando objetos JSON do tipo array.
+ * Classe representando arrays JSON.
  */
-public class JsonArray<E>
+public class JsonArray<E> extends JsonData
 {
 	// armazena os elementos que serao transformados em JSON
 	private List<E> jsonArray;
@@ -35,6 +35,9 @@ public class JsonArray<E>
 		this.add(values);
 	}
 	
+	/**
+	 * Adiciona os elementos ao array JSON.
+	 */
 	public JsonArray(Collection<E> values)
 	{
 		this();
@@ -87,15 +90,8 @@ public class JsonArray<E>
 	/**
 	 * Retorna a representacao string desse array JSON.
 	 */
-	public String toString()
+	protected String toJsonString()
 	{
-		try
-		{
-			return JsonUtils.stringify(this.jsonArray);
-		}
-		catch ( Exception e )
-		{
-			throw new RuntimeException(e);
-		}
+		return JsonUtils.stringify(this.jsonArray);
 	}
 }

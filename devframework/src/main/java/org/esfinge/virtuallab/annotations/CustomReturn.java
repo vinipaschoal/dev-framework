@@ -8,12 +8,12 @@ import java.lang.annotation.Target;
 import org.esfinge.virtuallab.metadata.validator.UniqueReturn;
 
 /**
- * Indica que o retorno de um servico sera no formato JSON.
+ * Permite customizar o retorno de um servico.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @UniqueReturn
-public @interface JsonReturn
+public @interface CustomReturn
 {
 	// os campos da classe retornada que serao utilizados
 	// por padrao pega todos os atributos da classe 

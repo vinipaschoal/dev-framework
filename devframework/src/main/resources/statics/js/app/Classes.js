@@ -44,23 +44,23 @@ app.Classes = {
                 contentType: false,
                 cache: false,
                 timeout: 600000,
-                success: function (data) {
-                    console.log(data);
-                    if (data.success){
-                    	var classList = data.clazzes;
+                success: function (result) {
+                    console.log(result);
+                    if (result.success){
+                    	var classList = result.data;
                         
                         // armazena as classes recebidas no storage
                         app.storage.put("classList", classList);
                     	
-	                    $.each(classList, function( i, classe ) {
+	                    $.each(classList, function( i, classDesc ) {
 	                    	app.Classes.tableClass.row.add([
-								classe.label, 
-								"<a href='#' onclick='app.Classes.listMethods(" + i + ")'>" + classe.qualifiedName + "</a>",
-								classe.description]).draw( false );
+	                    		classDesc.label, 
+								"<a href='#' onclick='app.Classes.listMethods(" + i + ")'>" + classDesc.qualifiedName + "</a>",
+								classDesc.description]).draw( false );
 	                   	});
                     }else{
                     	alertBt({
-       	        	      messageText: data.message,
+       	        	      messageText: result.message,
        	        	      headerText: "Alerta",
        	        	      alertType: "danger"
        	        	    });
@@ -98,8 +98,8 @@ app.Classes = {
     			data: JSON.stringify(jsonReq),
     			contentType: 'application/json',
     			mimeType: 'application/json',
-    			success: function (data) {
-    				console.log(data);
+    			success: function (result) {
+    				console.log(result);
     				
     				// apaga o storage atual
     				app.storage.clear();
@@ -108,7 +108,7 @@ app.Classes = {
     				app.storage.put("classDescriptor", classDesc);
     				
     				// armazena o objeto recebido no storage
-    				app.storage.put("methodList", data);
+    				app.storage.put("methodList", result.data);
     				
     				// redireciona para a pagina de metodos
     				app.callPage("methods.jsp");
@@ -158,23 +158,23 @@ app.Classes = {
                 contentType: false,
                 cache: false,
                 timeout: 600000,
-                success: function (data) {
-                    console.log(data);
+                success: function (result) {
+                    console.log(result);
                     $("#btnSubmit").attr("disabled", false);
                     
-                    if (data.success){
+                    if (result.success){
                     	$('#uploadFile').replaceWith($('#uploadFile').val('').clone(true));
                         $("#inputGroupFile01").text("Selecione uma classe java");
                         $('#classModal').modal('hide');
                         alertBt({
-       	        	      messageText: data.message,
+       	        	      messageText: result.message,
        	        	      headerText: "Confirmação",
        	        	      alertType: "success"
        	        	    });
                         app.Classes.list();
                     }else{
                     	alertBt({
-         	        	      messageText: data.message,
+         	        	      messageText: result.message,
          	        	      headerText: "Alerta",
          	        	      alertType: "warning"
          	        	    });

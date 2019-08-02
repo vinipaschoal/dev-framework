@@ -3,7 +3,7 @@ package org.esfinge.virtuallab.metadata;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import org.esfinge.virtuallab.annotations.JsonReturn;
+import org.esfinge.virtuallab.annotations.CustomReturn;
 import org.esfinge.virtuallab.annotations.Label;
 import org.esfinge.virtuallab.annotations.ServiceMethod;
 import org.esfinge.virtuallab.annotations.TableReturn;
@@ -27,7 +27,7 @@ public class MethodMetadata
 	private boolean annotatedWithServiceMethod;
 
 	// indica se o metodo contem a anotacao @JsonReturn
-	@ContainsAnnotation(JsonReturn.class)
+	@ContainsAnnotation(CustomReturn.class)
 	private boolean annotatedWithJsonReturn;
 
 	// indica se o metodo contem a anotacao @HtmlTableReturn

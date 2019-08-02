@@ -1,6 +1,5 @@
 package org.esfinge.virtuallab.web.op;
 
-import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -10,18 +9,18 @@ import javax.servlet.http.HttpServletRequest;
 import org.esfinge.virtuallab.converters.ConverterHelper;
 import org.esfinge.virtuallab.descriptors.MethodDescriptor;
 import org.esfinge.virtuallab.services.InvokerService;
-import org.esfinge.virtuallab.utils.JsonObject;
 import org.esfinge.virtuallab.utils.JsonUtils;
 import org.esfinge.virtuallab.web.IJsonRequestHandler;
+import org.esfinge.virtuallab.web.JsonReturn;
 
 /**
  * Trata as requisicoes para invocar um metodo de servico.
  */
 public class InvokeMethodHandler implements IJsonRequestHandler
 {
-	public JsonObject handleAsync(HttpServletRequest request) throws FileNotFoundException
+	public JsonReturn handleAsync(HttpServletRequest request) 
 	{
-		JsonObject jsonReturn = new JsonObject();
+		JsonReturn jsonReturn = new JsonReturn();
 
 		try
 		{
@@ -32,7 +31,7 @@ public class InvokeMethodHandler implements IJsonRequestHandler
 			MethodDescriptor methodDescriptor = JsonUtils.getPropertyAs(jsonString, "methodDescriptor", MethodDescriptor.class);
 			
 			// obtem os valores dos parametros
-			Map<String,String> paramValues = JsonUtils.convertToMap(JsonUtils.getProperty(jsonString, "paramValues"));
+			Map<String,String> paramValues = JsonUtils.getPropertyAsMap(jsonString, "paramValues");
 			
 			// converte os valores para a ordem e tipos corretos
 			List<Object> values = methodDescriptor.getParameters()
@@ -43,19 +42,18 @@ public class InvokeMethodHandler implements IJsonRequestHandler
 			
 			// invoca o metodo
 			Object result = InvokerService.getInstance().call(methodDescriptor, values.toArray());
-		
-			jsonReturn.addProperty("result", JsonUtils.stringify(result));
-			jsonReturn.addProperty("message", "");
-			jsonReturn.addProperty("success", true);
 			
+			jsonReturn.setData(JsonUtils.fromObjectToJsonData(result));
+			jsonReturn.setSuccess(true);
+			jsonReturn.setMessage("");
 		}
 		catch (Exception e)
 		{
 			// TODO: debug..
 			e.printStackTrace();
-			
-			jsonReturn.addProperty("message", "Erro: " + e.toString());
-			jsonReturn.addProperty("success", false);
+
+			jsonReturn.setSuccess(false);
+			jsonReturn.setMessage("Erro: " + e.toString());
 		}
 
 		return jsonReturn;

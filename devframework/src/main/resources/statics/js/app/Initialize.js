@@ -101,26 +101,26 @@ app.callPage = function (page){
 
 // funcoes utilitarias
 app.utils = {
-		clazzSimpleName: function(clazzName) {
-			return clazzName.substring(clazzName.lastIndexOf('.') + 1);
+		simpleClassName: function(className) {
+			return className.substring(className.lastIndexOf('.') + 1);
 		},
 		
-		methodSignature: function(methodJson) {
+		methodSignature: function(methodDesc) {
         	var $parameters = "";
            	var $count = 0;
-       	  	$.each(methodJson.parameters, function (p, parameter) {
+       	  	$.each(methodDesc.parameters, function (p, paramDesc) {
 	  			$count++;
-	  			$parameters = $parameters + parameter.dataType + " " + parameter.label + (($count < methodJson.parameters.length ? ", " : ""));
+	  			$parameters = $parameters + paramDesc.dataType + " " + paramDesc.label + (($count < methodDesc.parameters.length ? ", " : ""));
                 
 	  		});
        	  	
-       	  	return methodJson.returnType + " " + methodJson.name + "(" + $parameters + ")";
+       	  	return methodDesc.returnType + " " + methodDesc.name + "(" + $parameters + ")";
 		},
 		
-		jsonformType: function(parameterJson) {
+		jsonformType: function(paramDesc) {
 			var $type = "";
 			
-			switch(parameterJson.dataType)
+			switch(paramDesc.dataType)
 			{
 				case "byte":
 				case "java.lang.Byte":
@@ -144,7 +144,7 @@ app.utils = {
 					$type = 'string';
 			}
 			
-			return { type: $type, required: parameterJson.required, title: parameterJson.label + ' (' + parameterJson.dataType + ')' };
+			return { type: $type, required: paramDesc.required, title: paramDesc.label + ' (' + paramDesc.dataType + ')' };
 		}
 }
 

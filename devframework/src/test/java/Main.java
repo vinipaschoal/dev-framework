@@ -1,11 +1,12 @@
 import java.util.ArrayList;
 import java.util.List;
 
-import org.esfinge.virtuallab.annotations.JsonReturn;
+import org.esfinge.virtuallab.annotations.CustomReturn;
 import org.esfinge.virtuallab.annotations.ServiceClass;
 import org.esfinge.virtuallab.annotations.ServiceMethod;
 import org.esfinge.virtuallab.annotations.TableReturn;
-import org.esfinge.virtuallab.metadata.MetadataHelper;
+import org.esfinge.virtuallab.utils.JsonPrimitive;
+import org.esfinge.virtuallab.utils.JsonUtils;
 
 public class Main
 {
@@ -32,7 +33,25 @@ public class Main
 			System.out.println("------------------------");
 		}
 		*/
-		MetadataHelper.getInstance().getClassMetadata(Service.class);
+		
+		Pessoa p = new Pessoa();
+		p.nome = "Meu nome";
+		p.endereco = "Meu endereco";
+		p.idade = 35;
+		
+		Object[] primitivos = { "Uma string qualquer", true, -70, Long.MAX_VALUE, 20.2f, -30.3, null };
+		
+		System.out.println(JsonUtils.fromObjectToJsonData(p));
+		System.out.println(JsonUtils.fromObjectToJsonData(primitivos));
+		
+		for (int i = 0; i < primitivos.length; i++)
+			System.out.println(JsonUtils.fromObjectToJsonData(primitivos[i]));
+		
+		System.out.println(new JsonPrimitive(null));
+		
+		
+		
+//		MetadataHelper.getInstance().getClassMetadata(Service.class);
 //		MetadataHelper.getInstance().getMethodMetadata(Tarefa.class.getDeclaredMethod("getPrioridade", String.class));
 	}	
 	
@@ -48,7 +67,7 @@ public class Main
 		
 		@ServiceMethod
 		@TableReturn
-		@JsonReturn
+		@CustomReturn
 		public List<String> doThing()
 		{
 			return new ArrayList<>();

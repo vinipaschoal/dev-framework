@@ -10,32 +10,32 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.esfinge.virtuallab.services.PersistenceService;
-import org.esfinge.virtuallab.utils.JsonObject;
 import org.esfinge.virtuallab.utils.Utils;
 import org.esfinge.virtuallab.web.IJsonRequestHandler;
+import org.esfinge.virtuallab.web.JsonReturn;
 
 /**
  * Trata as requisicoes de upload de novas classes/jar.
  */
 public class UploadFileHandler implements IJsonRequestHandler
 {
-	public JsonObject handleAsync(HttpServletRequest request)
+	public JsonReturn handleAsync(HttpServletRequest request)
 	{
-		JsonObject jsonReturn = new JsonObject();
+		JsonReturn jsonReturn = new JsonReturn();
 
 		try
 		{
 			String fileName = this.saveFile(request);
-			jsonReturn.addProperty("message", "Arquivo " + fileName + " carregado com sucesso!");
-			jsonReturn.addProperty("success", true);
+			jsonReturn.setSuccess(true);
+			jsonReturn.setMessage("Arquivo " + fileName + " carregado com sucesso!");
 		}
 		catch ( Exception e )
 		{
 			// TODO: debug..
 			e.printStackTrace();
-			
-			jsonReturn.addProperty("message", "Erro: " + e.toString());
-			jsonReturn.addProperty("success", false);
+
+			jsonReturn.setSuccess(false);
+			jsonReturn.setMessage("Erro: " + e.toString());
 		}
 		
 		return jsonReturn;
