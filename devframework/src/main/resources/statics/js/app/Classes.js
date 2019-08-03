@@ -26,7 +26,7 @@ app.Classes = {
 	        });
 	    	
 	    	//https://hmkcode.github.io/java-servlet-send-receive-json-using-jquery-ajax/
-	    		    	
+	    	/*	    	
 	    	$('#classTable').on('click', 'tbody > tr > td > a', function (e) {
 	    		e.preventDefault();
 	    		
@@ -52,6 +52,7 @@ app.Classes = {
 	    		});
 	    		
 			});
+			*/
 	    	
 		},
 		list: function(){
