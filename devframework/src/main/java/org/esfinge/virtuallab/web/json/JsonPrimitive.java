@@ -1,4 +1,6 @@
-package org.esfinge.virtuallab.utils;
+package org.esfinge.virtuallab.web.json;
+
+import org.esfinge.virtuallab.utils.JsonUtils;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;

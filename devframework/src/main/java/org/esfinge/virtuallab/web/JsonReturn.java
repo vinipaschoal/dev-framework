@@ -1,6 +1,6 @@
 package org.esfinge.virtuallab.web;
 
-import org.esfinge.virtuallab.utils.JsonData;
+import org.esfinge.virtuallab.web.json.JsonData;
 
 /**
  * Armazena as informacoes de resposta para as requisicoes, 

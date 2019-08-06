@@ -1,6 +1,8 @@
-package org.esfinge.virtuallab.utils;
+package org.esfinge.virtuallab.web.json;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.esfinge.virtuallab.utils.JsonUtils;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;

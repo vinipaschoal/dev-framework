@@ -6,9 +6,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.esfinge.virtuallab.descriptors.ClassDescriptor;
 import org.esfinge.virtuallab.services.PersistenceService;
-import org.esfinge.virtuallab.utils.JsonArray;
 import org.esfinge.virtuallab.web.IJsonRequestHandler;
 import org.esfinge.virtuallab.web.JsonReturn;
+import org.esfinge.virtuallab.web.json.JsonArray;
 
 /**
  * Trata as requisicoes de listar as classes com servicos validos.

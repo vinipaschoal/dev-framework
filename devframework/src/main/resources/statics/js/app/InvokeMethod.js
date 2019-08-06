@@ -21,6 +21,8 @@ app.InvokeMethod = {
 		var $form = {};
 		$.each(parameters, function (p, paramDesc) {			
 			$form[paramDesc.name] = app.utils.jsonformType(paramDesc);
+//			$form[paramDesc.name] = paramDesc.jsonSchema;
+//			console.log(paramDesc.jsonSchema);
 		});
 		
 		$('form').jsonForm({
@@ -34,7 +36,7 @@ app.InvokeMethod = {
 		        	    });
 				} else {
 					// recupera o descritor do metodo 
-					var methodDesc = app.storage.get("methodDescriptor");  
+					var methodDesc = app.storage.get("methodDescriptor");
 
 					// JSON de request
 		    		var jsonReq = new Object();

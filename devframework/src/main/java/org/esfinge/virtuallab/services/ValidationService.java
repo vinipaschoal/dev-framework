@@ -97,6 +97,8 @@ public final class ValidationService
 			// verifica se esta anotada com @ClassService e possui metodos @ServiceMethod
 			if (metadata.isAnnotatedWithServiceClass() && !Utils.isNullOrEmpty(metadata.getMethodsWithServiceMethod()))
 				validClasses.add(clazz);
+			
+			// TODO: verificar se os parametros sao dos tipos validos (primitivos: integer, number, boolean, string, Array, Collection, objeto simples!)
 		}
 		
 		return (validClasses.size() == 0 ? null : validClasses);

@@ -1,4 +1,4 @@
-package org.esfinge.virtuallab.utils;
+package org.esfinge.virtuallab.web.json;
 
 /**
  * Excecao relacionada ao processamento de dados JSON.

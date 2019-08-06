@@ -4,12 +4,12 @@ import java.lang.reflect.Parameter;
 
 import org.esfinge.virtuallab.annotations.Label;
 import org.esfinge.virtuallab.annotations.NotRequired;
-import org.esfinge.virtuallab.metadata.processor.ElementNameParameter;
-import org.esfinge.virtuallab.metadata.processor.ReflectionReferenceParameter;
 
 import net.sf.esfinge.metadata.annotation.container.AnnotationProperty;
 import net.sf.esfinge.metadata.annotation.container.ContainerFor;
 import net.sf.esfinge.metadata.annotation.container.ContainsAnnotation;
+import net.sf.esfinge.metadata.annotation.container.ElementName;
+import net.sf.esfinge.metadata.annotation.container.ReflectionReference;
 import net.sf.esfinge.metadata.container.ContainerTarget;
 
 /**
@@ -31,11 +31,11 @@ public class ParameterMetadata implements Comparable<ParameterMetadata>
 	private String label;
 
 	// parametro
-	@ReflectionReferenceParameter
+	@ReflectionReference
 	private Parameter parameter;
 	
 	// nome do parametro
-	@ElementNameParameter
+	@ElementName
 	private String parameterName;
 	
 	// posicao do parametro no metodo

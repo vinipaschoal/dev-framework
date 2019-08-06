@@ -1,6 +1,7 @@
 package org.esfinge.virtuallab.descriptors;
 
 import org.esfinge.virtuallab.metadata.ParameterMetadata;
+import org.esfinge.virtuallab.utils.JsonUtils;
 import org.esfinge.virtuallab.utils.Utils;
 
 /**
@@ -16,12 +17,15 @@ public class ParameterDescriptor implements Comparable<ParameterDescriptor>
 
 	// tipo do parametro
 	private String dataType;
-
+	
 	// se o parametro eh obrigatorio ou nao
 	private boolean required;
 
 	// posicao do parametro no metodo
 	private int index;
+	
+	// formato JSON Schema para o parametro (utilizado pelo jsonform)
+	private String jsonSchema;
 
 	
 	/**
@@ -44,6 +48,9 @@ public class ParameterDescriptor implements Comparable<ParameterDescriptor>
 
 		// verifica se foi informado um label para o parametro
 		this.label = Utils.isNullOrEmpty(parameterMetadata.getLabel()) ? this.name : parameterMetadata.getLabel();
+		
+		this.jsonSchema = JsonUtils.getJsonSchema(parameterMetadata.getParameter().getType()).toString();
+		System.out.println(this.jsonSchema);
 	}
 
 	public String getName()
@@ -94,6 +101,16 @@ public class ParameterDescriptor implements Comparable<ParameterDescriptor>
 	public void setIndex(int index)
 	{
 		this.index = index;
+	}
+	
+	public String getJsonSchema()
+	{
+		return jsonSchema;
+	}
+
+	public void setJsonSchema(String jsonSchema)
+	{
+		this.jsonSchema = jsonSchema;
 	}
 
 	@Override
