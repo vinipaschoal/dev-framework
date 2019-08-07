@@ -6,6 +6,7 @@ import org.esfinge.virtuallab.utils.JsonUtils;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Classe representando objetos JSON.
@@ -13,6 +14,7 @@ import com.fasterxml.jackson.annotation.JsonAnySetter;
 public class JsonObject extends JsonData
 {
 	// armazena os elementos que serao transformados em JSON
+	@JsonIgnore
 	private Map<String,Object> jsonObject;
 	
 	

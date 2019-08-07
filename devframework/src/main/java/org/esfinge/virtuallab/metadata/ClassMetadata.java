@@ -1,5 +1,6 @@
 package org.esfinge.virtuallab.metadata;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.esfinge.virtuallab.annotations.Label;
@@ -48,6 +49,14 @@ public class ClassMetadata
 	@ElementName
 	private String className;
 	
+	
+	/**
+	 * Construtor padrao.
+	 */
+	public ClassMetadata()
+	{
+		this.methodsWithServiceMethod = new ArrayList<>();
+	}
 	
 	public boolean isAnnotatedWithServiceClass()
 	{

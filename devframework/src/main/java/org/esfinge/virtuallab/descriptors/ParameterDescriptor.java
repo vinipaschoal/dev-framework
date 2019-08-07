@@ -3,6 +3,8 @@ package org.esfinge.virtuallab.descriptors;
 import org.esfinge.virtuallab.metadata.ParameterMetadata;
 import org.esfinge.virtuallab.utils.JsonUtils;
 import org.esfinge.virtuallab.utils.Utils;
+import org.esfinge.virtuallab.web.json.JsonSchemaElement;
+
 
 /**
  * Descritor de parametros de metodos.
@@ -49,8 +51,12 @@ public class ParameterDescriptor implements Comparable<ParameterDescriptor>
 		// verifica se foi informado um label para o parametro
 		this.label = Utils.isNullOrEmpty(parameterMetadata.getLabel()) ? this.name : parameterMetadata.getLabel();
 		
-		this.jsonSchema = JsonUtils.getJsonSchema(parameterMetadata.getParameter().getType()).toString();
-		System.out.println(this.jsonSchema);
+		// recupera o schema JSON do tipo o parametro
+		JsonSchemaElement schema = (JsonSchemaElement) JsonUtils.getJsonSchema(parameterMetadata.getParameter().getType());
+		schema.setTitle(String.format("%s (%s)", Utils.isNullOrEmpty(this.label) ? this.name : this.label, this.dataType));
+		
+		// 
+		this.jsonSchema = schema.toString();
 	}
 
 	public String getName()

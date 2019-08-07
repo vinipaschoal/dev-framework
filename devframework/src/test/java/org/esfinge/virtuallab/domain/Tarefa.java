@@ -1,33 +1,50 @@
 package org.esfinge.virtuallab.domain;
 
-import org.esfinge.virtuallab.annotations.Label;
-import org.esfinge.virtuallab.annotations.ServiceClass;
-import org.esfinge.virtuallab.annotations.ServiceMethod;
-
-@ServiceClass(description = "Disponibiliza serviços relacionados a tarefas, no estilo ToDo.")
-@Label("Tarefas / ToDo")
 public class Tarefa
 {
-	private String task = "Nenhuma tarefa cadastrada!";
-
-	@ServiceMethod(description = "Retorna o nome da tarefa")
-	@Label("Obter tarefa")
-	public String getTask()
+	private int id;
+	private int prioridade;
+	private String nome;
+	private boolean completada;
+	
+	
+	public int getId()
 	{
-		return task;
+		return id;
 	}
 
-	@ServiceMethod
-	@Label("Cadastrar tarefa")
-	public String setTask(@Label("Tarefa") String name, @Label("Prioridade") int priority)
+	public void setId(int id)
 	{
-		return String.format("Tarefa %s cadastrada com prioridade %d", name, priority);
+		this.id = id;
 	}
 
-	@ServiceMethod(description = "Retorna os valores de prioridade permitidos")
-	@Label("Listar prioridades")
-	public int[] getPriorityRange()
+	public int getPrioridade()
 	{
-		return new int[] { 1, 2, 3, 4, 5 };
+		return prioridade;
+	}
+
+	public void setPrioridade(int prioridade)
+	{
+		this.prioridade = prioridade;
+	}
+
+	public String getNome()
+	{
+		return nome;
+	}
+
+	public void setNome(String nome)
+	{
+		this.nome = nome;
+	}
+
+	public boolean isCompletada()
+	{
+		return completada;
+	}
+
+	public void setCompletada(boolean completada)
+	{
+		this.completada = completada;
 	}
 }

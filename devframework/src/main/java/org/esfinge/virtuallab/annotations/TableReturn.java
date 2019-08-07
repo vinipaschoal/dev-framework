@@ -6,17 +6,18 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Collection;
 
+import org.esfinge.virtuallab.annotations.processors.TableReturnProcessor;
 import org.esfinge.virtuallab.metadata.validator.UniqueReturn;
 
 import net.sf.esfinge.metadata.annotation.validator.method.ValidMethodReturn;
 
 /**
- * Indica que o retorno de um servico sera apresentado como uma tabela.
+ * Indica que o retorno de um metodo sera apresentado como uma tabela.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @ValidMethodReturn(validTypesToReturn = { Collection.class })
-@UniqueReturn
+@UniqueReturn(processor = TableReturnProcessor.class)
 public @interface TableReturn
 {
 	// os campos do item da colecao que serao utilizados

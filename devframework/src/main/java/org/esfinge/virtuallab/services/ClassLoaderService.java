@@ -27,6 +27,7 @@ public class ClassLoaderService
 
 	// instancia unica da classe
 	private static ClassLoaderService _instance;
+	
 
 	/**
 	 * Singleton.
@@ -84,7 +85,8 @@ public class ClassLoaderService
 	{
 		try (
 				// abre o arquivo jar
-				JarFile jarFile = new JarFile(jarFilePath);)
+				JarFile jarFile = new JarFile(jarFilePath);
+			)
 		{
 			// corrige para o nome qualificado da classe
 			String className = this.fixClassName(classQualifiedName);
@@ -129,7 +131,8 @@ public class ClassLoaderService
 	{
 		try (
 				// abre o arquivo jar
-				JarFile jarFile = new JarFile(jarFilePath);)
+				JarFile jarFile = new JarFile(jarFilePath);
+			)
 		{
 			// lista das classes contidas no jar
 			List<Class<?>> classList = new ArrayList<Class<?>>();
@@ -174,7 +177,7 @@ public class ClassLoaderService
 			FileUtils.deleteQuietly(tempJarFile);
 		}
 	}
-
+	
 	/**
 	 * Carrega a classe.
 	 */

@@ -19,10 +19,8 @@ app.InvokeMethod = {
 	createForm: function (parameters){
 		
 		var $form = {};
-		$.each(parameters, function (p, paramDesc) {			
-			$form[paramDesc.name] = app.utils.jsonformType(paramDesc);
-//			$form[paramDesc.name] = paramDesc.jsonSchema;
-//			console.log(paramDesc.jsonSchema);
+		$.each(parameters, function (p, paramDesc) {
+			$form[paramDesc.name] = JSON.parse(paramDesc.jsonSchema);
 		});
 		
 		$('form').jsonForm({
@@ -42,6 +40,7 @@ app.InvokeMethod = {
 		    		var jsonReq = new Object();
 		    		jsonReq.methodDescriptor = methodDesc;
 		    		jsonReq.paramValues = values
+		    		console.log(values);
 		    		
 		    		$.ajax({
 		    			url: 'invokeMethod.op',

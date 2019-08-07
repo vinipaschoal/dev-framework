@@ -5,14 +5,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.esfinge.virtuallab.annotations.processors.CustomReturnProcessor;
 import org.esfinge.virtuallab.metadata.validator.UniqueReturn;
 
 /**
- * Permite customizar o retorno de um servico.
+ * Permite customizar o retorno de um metodo.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@UniqueReturn
+@UniqueReturn(processor = CustomReturnProcessor.class)
 public @interface CustomReturn
 {
 	// os campos da classe retornada que serao utilizados

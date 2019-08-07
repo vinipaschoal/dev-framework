@@ -115,36 +115,6 @@ app.utils = {
 	  		});
        	  	
        	  	return methodDesc.returnType + " " + methodDesc.name + "(" + $parameters + ")";
-		},
-		
-		jsonformType: function(paramDesc) {
-			var $type = "";
-			
-			switch(paramDesc.dataType)
-			{
-				case "byte":
-				case "java.lang.Byte":
-				case "short": 
-				case "java.lang.Short":
-				case "int": 
-				case "java.lang.Integer":
-				case "long": 
-				case "java.lang.Long":
-				case "float": 
-				case "java.lang.Float":
-				case "double":
-				case "java.lang.Double":
-				case "java.lang.Number":
-					$type = 'number';
-					break;
-				case "boolean":
-					$type = 'boolean';
-					break;
-				default:
-					$type = 'string';
-			}
-			
-			return { type: $type, required: paramDesc.required, title: paramDesc.label + ' (' + paramDesc.dataType + ')' };
 		}
 }
 

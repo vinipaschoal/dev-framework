@@ -1,6 +1,7 @@
 package org.esfinge.virtuallab.metadata;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.esfinge.virtuallab.annotations.CustomReturn;
@@ -26,21 +27,21 @@ public class MethodMetadata
 	@ContainsAnnotation(ServiceMethod.class)
 	private boolean annotatedWithServiceMethod;
 
-	// indica se o metodo contem a anotacao @JsonReturn
-	@ContainsAnnotation(CustomReturn.class)
-	private boolean annotatedWithJsonReturn;
-
-	// indica se o metodo contem a anotacao @HtmlTableReturn
-	@ContainsAnnotation(TableReturn.class)
-	private boolean annotatedWithHtmlTableReturn;
-	
-	// texto informativo sobre o metodo
-	@AnnotationProperty(annotation=ServiceMethod.class, property = "description")
-	private String description;
-
 	// indica se o metodo contem a anotacao @Label
 	@ContainsAnnotation(Label.class)
 	private boolean annotatedWithLabel;
+	
+	// indica se o metodo contem a anotacao @CustomReturn
+	@ContainsAnnotation(CustomReturn.class)
+	private boolean annotatedWithCustomReturn;
+
+	// indica se o metodo contem a anotacao @HtmlTableReturn
+	@ContainsAnnotation(TableReturn.class)
+	private boolean annotatedWithTableReturn;
+
+	// texto informativo sobre o metodo
+	@AnnotationProperty(annotation=ServiceMethod.class, property = "description")
+	private String description;
 
 	// informacoes da anotacao @Label (se utilizada)
 	@AnnotationProperty(annotation = Label.class, property = "value")
@@ -57,8 +58,16 @@ public class MethodMetadata
 	// parametros do metodo
 	@ProcessParameters
 	private List<ParameterMetadata> parameters;
-
 	
+	
+	/**
+	 * Construtor padrao.
+	 */
+	public MethodMetadata()
+	{
+		this.parameters = new ArrayList<>();
+	}
+
 	public boolean isAnnotatedWithServiceMethod()
 	{
 		return annotatedWithServiceMethod;
@@ -67,26 +76,6 @@ public class MethodMetadata
 	public void setAnnotatedWithServiceMethod(boolean annotatedWithServiceMethod)
 	{
 		this.annotatedWithServiceMethod = annotatedWithServiceMethod;
-	}
-
-	public boolean isAnnotatedWithJsonReturn()
-	{
-		return annotatedWithJsonReturn;
-	}
-
-	public void setAnnotatedWithJsonReturn(boolean annotatedWithJsonReturn)
-	{
-		this.annotatedWithJsonReturn = annotatedWithJsonReturn;
-	}
-
-	public boolean isAnnotatedWithHtmlTableReturn()
-	{
-		return annotatedWithHtmlTableReturn;
-	}
-
-	public void setAnnotatedWithHtmlTableReturn(boolean annotatedWithHtmlTableReturn)
-	{
-		this.annotatedWithHtmlTableReturn = annotatedWithHtmlTableReturn;
 	}
 
 	public boolean isAnnotatedWithLabel()
@@ -99,11 +88,31 @@ public class MethodMetadata
 		this.annotatedWithLabel = annotatedWithLabel;
 	}
 
+	public boolean isAnnotatedWithCustomReturn()
+	{
+		return annotatedWithCustomReturn;
+	}
+
+	public void setAnnotatedWithCustomReturn(boolean annotatedWithCustomReturn)
+	{
+		this.annotatedWithCustomReturn = annotatedWithCustomReturn;
+	}
+
+	public boolean isAnnotatedWithTableReturn()
+	{
+		return annotatedWithTableReturn;
+	}
+
+	public void setAnnotatedWithTableReturn(boolean annotatedWithTableReturn)
+	{
+		this.annotatedWithTableReturn = annotatedWithTableReturn;
+	}
+
 	public String getDescription()
 	{
 		return description;
 	}
-	
+
 	public void setDescription(String description)
 	{
 		this.description = description;

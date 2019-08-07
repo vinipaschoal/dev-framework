@@ -7,86 +7,14 @@ import org.esfinge.virtuallab.annotations.CustomReturn;
 import org.esfinge.virtuallab.annotations.ServiceClass;
 import org.esfinge.virtuallab.annotations.ServiceMethod;
 import org.esfinge.virtuallab.annotations.TableReturn;
-import org.esfinge.virtuallab.domain.Matematica;
-import org.esfinge.virtuallab.domain.Ponto;
-import org.esfinge.virtuallab.utils.JsonUtils;
+import org.esfinge.virtuallab.domain.Tarefa;
+import org.esfinge.virtuallab.domain.TarefaService;
 
 public class Main
 {
 	public static void main(String... args) throws Exception
 	{
-		/*
-		AnnotationReader reader = new AnnotationReader();
-		ClassContainer cc = reader.readingAnnotationsTo(Tarefa.class, ClassContainer.class);
-		System.out.println("Classe: " + cc.name);
-		for (MethodContainer mc : cc.metodos )
-		{
-			System.out.println("Metodo: " + mc.name);
-			
-			for ( ParameterMetadata pc : mc.parameters )
-			{
-				System.out.println("Parametro: " + pc.getParameterName());
-				System.out.println("Has Label: " + pc.isAnnotatedWithLabel());
-				System.out.println("Label: " + pc.getLabel());
-				System.out.println("Reflection: " + pc.getParameter().getClass());
-				System.out.println("Posicao: " + pc.getIndex());
-			}
-			
-			System.out.println("------------------------");
-		}
-		*/
-		
-		// JSON DATA
-		/*
-		Endereco e = new Endereco();
-		e.cep = "12000-000";
-		e.rua = "Minha rua";
-		e.numero = 500;
-		Pessoa p = new Pessoa();
-		p.nome = "Meu nome";
-		p.endereco = e;
-		p.idade = 35;
-		
-		Object[] primitivos = { "Uma string qualquer", true, -70, Long.MAX_VALUE, 20.2f, -30.3, null };
-		Pessoa[] pessoas = {p};
-		
-		System.out.println(JsonUtils.fromObjectToJsonData(p));
-		System.out.println(JsonUtils.fromObjectToJsonData(primitivos));
-		System.out.println(JsonUtils.fromObjectToJsonData(pessoas));
-
-		
-		for (int i = 0; i < primitivos.length; i++)
-			System.out.println(JsonUtils.fromObjectToJsonData(primitivos[i]));
-		
-		System.out.println(new JsonPrimitive(null));
-		*/
-		
-		// JSON SCHEMA
-		int[] aInt = new int[] {};
-		Pessoa[] aPessoa = new Pessoa[] {};
-		List<Integer> lInt = new ArrayList<>();
-		lInt.add(20);
-		
-//		System.out.println(JsonUtils.getJsonSchema(Pessoa.class));
-//		System.out.println(JsonUtils.getJsonSchema(int.class));
-//		System.out.println(JsonUtils.getJsonSchema(double.class));
-//		System.out.println(JsonUtils.getJsonSchema(boolean.class));
-//		System.out.println(JsonUtils.getJsonSchema(java.util.Date.class));
-//		System.out.println(JsonUtils.getJsonSchema(aInt.getClass()));
-//		System.out.println(JsonUtils.getJsonSchema(aPessoa.getClass()));
-//		System.out.println(JsonUtils.getJsonSchema(lInt.toArray(new Integer[]{}).getClass()));
-//		*/
-
-		System.out.println(JsonUtils.getJsonSchema(aInt.getClass()));
-		System.out.println(JsonUtils.getJsonSchema(Pessoa.class));
-		System.out.println(JsonUtils.getJsonSchema(aPessoa.getClass()));
-//		System.out.println(JsonUtils.stringifySchema(aPessoa.getClass()));
-		
-		
-//		MetadataHelper.getInstance().getClassMetadata(Service.class);
-//		MetadataHelper.getInstance().getMethodMetadata(Tarefa.class.getDeclaredMethod("getPrioridade", String.class));
-		
-		TestUtils.createJar("matematica.jar", Matematica.class, Ponto.class);
+		TestUtils.createJar("tarefa.jar", TarefaService.class, Tarefa.class);
 	}	
 	
 	@ServiceClass
@@ -199,7 +127,8 @@ public class Main
 	public static class Regiao
 	{
 		private String cidade;
-		private String estado;
+		protected String estado;
+		
 		public String getCidade()
 		{
 			return cidade;
@@ -208,6 +137,7 @@ public class Main
 		{
 			this.cidade = cidade;
 		}
+		/*
 		public String getEstado()
 		{
 			return estado;
@@ -216,5 +146,23 @@ public class Main
 		{
 			this.estado = estado;
 		}
+		*/
+	}
+	
+	public static class RegiaoExtension extends Regiao
+	{
+		private boolean rural;
+
+		/*
+		public boolean isRural()
+		{
+			return rural;
+		}
+
+		public void setRural(boolean rural)
+		{
+			this.rural = rural;
+		}
+		*/
 	}
 }

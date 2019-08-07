@@ -42,6 +42,13 @@ public class ParameterMetadata implements Comparable<ParameterMetadata>
 	private int index = -1;
 
 	
+	/**
+	 * Construtor padrao.
+	 */
+	public ParameterMetadata()
+	{
+	}
+
 	public boolean isAnnotatedWithLabel()
 	{
 		return annotatedWithLabel;

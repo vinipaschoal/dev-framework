@@ -18,8 +18,6 @@ public class UniqueReturnValidator implements AnnotationValidator
 	@Override
 	public void initialize(Annotation self)
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override

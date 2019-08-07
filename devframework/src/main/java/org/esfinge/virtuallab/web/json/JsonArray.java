@@ -7,6 +7,7 @@ import java.util.List;
 import org.esfinge.virtuallab.utils.JsonUtils;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
@@ -15,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public class JsonArray<E> extends JsonData
 {
 	// armazena os elementos que serao transformados em JSON
+	@JsonIgnore
 	private List<E> jsonArray;
 
 	

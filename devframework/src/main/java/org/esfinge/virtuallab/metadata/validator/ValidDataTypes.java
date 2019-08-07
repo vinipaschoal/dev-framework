@@ -8,13 +8,13 @@ import java.lang.annotation.Target;
 import net.sf.esfinge.metadata.annotation.validator.ToValidate;
 
 /**
- * Utilizado nas anotacoes que manipulam o retorno de metodos, como por exemplo @TableReturn.
- * Nao pode exister mais do que um manipulador de retorno para um metodo. 
+ * Utilizado na anotacao @ServiceMethod para verificar 
+ * se os tipos dos parametros e do retorno sao validos.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
-@ToValidate(UniqueReturnValidator.class)
-public @interface UniqueReturn
+@ToValidate(ValidDataTypesValidator.class)
+public @interface ValidDataTypes
 {
-	Class<? extends org.esfinge.virtuallab.annotations.processors.ReturnProcessor<?>> processor();
+
 }

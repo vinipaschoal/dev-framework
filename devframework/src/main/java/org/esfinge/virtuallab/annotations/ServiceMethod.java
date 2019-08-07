@@ -6,6 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.esfinge.virtuallab.metadata.validator.NeedServiceClass;
+import org.esfinge.virtuallab.metadata.validator.ValidDataTypes;
 
 import net.sf.esfinge.metadata.annotation.validator.method.ForbiddenMethodReturn;
 import net.sf.esfinge.metadata.annotation.validator.method.MethodVisibilityRequired;
@@ -16,6 +17,7 @@ import net.sf.esfinge.metadata.annotation.validator.method.MethodVisibilityRequi
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @NeedServiceClass
+@ValidDataTypes
 @ForbiddenMethodReturn(invalidTypesToReturn = { void.class })
 @MethodVisibilityRequired(itNeedsToHaveThisVisibility = "public")
 public @interface ServiceMethod

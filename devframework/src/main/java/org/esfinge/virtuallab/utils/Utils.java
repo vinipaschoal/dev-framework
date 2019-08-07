@@ -10,6 +10,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
+import org.springframework.util.ObjectUtils;
 
 /**
  * Classe com metodos utilitarios para a aplicacao.
@@ -124,18 +125,10 @@ public class Utils
 	}
 	
 	/**
-	 * Retorna se a String eh nula ou vazia.
+	 * Retorna se o objeto eh null, ou se a colecao, mapa, array ou string eh vazia.
 	 */
-	public static boolean isNullOrEmpty(String value)
+	public static boolean isNullOrEmpty(Object value)
 	{
-		return (value == null || value.trim().length() == 0);
-	}
-	
-	/**
-	 * Retorna se a colecao eh nula ou vazia.
-	 */
-	public static boolean isNullOrEmpty(Collection<?> collection)
-	{
-		return (collection == null || collection.size() == 0);
+		return ObjectUtils.isEmpty(value);
 	}
 }

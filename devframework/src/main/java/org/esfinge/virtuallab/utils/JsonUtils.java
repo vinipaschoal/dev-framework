@@ -14,6 +14,8 @@ import org.esfinge.virtuallab.web.json.JsonSchemaArray;
 import org.esfinge.virtuallab.web.json.JsonSchemaElement;
 import org.esfinge.virtuallab.web.json.JsonSchemaObject;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kjetland.jackson.jsonSchema.JsonSchemaGenerator;
@@ -28,6 +30,13 @@ public class JsonUtils
 	
 	// objeto responsavel pelo mapeamento de schemas JSON
 	private static final JsonSchemaGenerator _SCHEMA_MAPPER = new JsonSchemaGenerator(_JSON_MAPPER);
+	
+	static 
+	{
+		// utiliza os campos para serializar/deserializar (nao precisa de getters/setters)
+		_JSON_MAPPER.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
+	}
+	
 	
 	/**
 	 * Converte a string JSON para JsonNode.
@@ -88,18 +97,9 @@ public class JsonUtils
 	public static Map<String,String> convertToMap(String jsonString) throws JsonDataException
 	{
 		Map<String,String> map = new HashMap<>();
-		
-		// lambda nao repassa excecoes checadas
-		fromStringToJsonNode(jsonString).fieldNames().forEachRemaining((k) -> {
-			try
-			{
-				map.put(k, getProperty(jsonString, k));
-			}
-			catch (JsonDataException e)
-			{
-				throw e;
-			}
-		});
+
+		// monta o mapa com as propriedades a partir do root node
+		fromStringToJsonNode(jsonString).fieldNames().forEachRemaining((k) -> map.put(k, getProperty(jsonString, k)));
 		
 		// 
 		return map;
@@ -214,7 +214,7 @@ public class JsonUtils
 		}
 		
 		// retorna o valor convertido em string
-		return prop.asText();
+		return prop.asText();	
 	}
 	
 	/**

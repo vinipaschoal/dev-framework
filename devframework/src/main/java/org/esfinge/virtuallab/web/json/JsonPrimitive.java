@@ -3,6 +3,7 @@ package org.esfinge.virtuallab.web.json;
 import org.esfinge.virtuallab.utils.JsonUtils;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -12,6 +13,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 public class JsonPrimitive<E> extends JsonData
 {
 	// armazena o elemento que sera transformado em JSON
+	@JsonIgnore
 	private E value;
 
 	

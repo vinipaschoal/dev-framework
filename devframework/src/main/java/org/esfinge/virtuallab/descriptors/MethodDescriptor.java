@@ -36,7 +36,7 @@ public class MethodDescriptor
 	 */
 	public MethodDescriptor()
 	{
-		
+		this.parameters = new ArrayList<ParameterDescriptor>();
 	}
 	
 	/**
