@@ -5,94 +5,82 @@ import java.util.List;
 
 import org.apache.commons.lang3.RandomUtils;
 import org.esfinge.virtuallab.annotations.CustomReturn;
-import org.esfinge.virtuallab.annotations.Label;
+import org.esfinge.virtuallab.annotations.Param;
 import org.esfinge.virtuallab.annotations.ServiceClass;
 import org.esfinge.virtuallab.annotations.ServiceMethod;
 import org.esfinge.virtuallab.annotations.TableReturn;
 
-@ServiceClass(description = "Disponibiliza serviços relacionados a tarefas, no estilo ToDo.")
-@Label("Tarefas / ToDo")
+@ServiceClass(label = "Tarefas / ToDo", description = "Disponibiliza serviços relacionados a tarefas, no estilo ToDo.")
 public class TarefaService
 {
-	@ServiceMethod(description = "Cria uma nova tarefa")
-	@Label("Cadastrar tarefa (PLAIN - STRING)")
-	public String setTask(@Label("Tarefa") String name, @Label("Prioridade") int priority)
+	@ServiceMethod(label = "Cadastrar tarefa (STRING)", description = "Cria uma nova tarefa")
+	public String setTask(@Param(label="Tarefa") String name, @Param(label="Prioridade") int priority)
 	{
 		return String.format("Tarefa %s cadastrada com prioridade %d", name, priority);
 	}
 
-	@ServiceMethod(description = "Retorna os valores de prioridade permitidos")
-	@Label("Listar prioridades (PLAIN - ARRAY)")
+	@ServiceMethod(label = "Listar prioridades (ARRAY)", description = "Retorna os valores de prioridade permitidos")
 	public int[] getPriorityRange()
 	{
 		return new int[] { 1, 2, 3, 4, 5 };
 	}
 
-	@ServiceMethod(description = "Obtem uma tarefa especifica")
-	@Label("Obter tarefa (PLAIN - OBJETO)")
-	public Tarefa getTask(int id)
+	@ServiceMethod(label = "Obter tarefa (OBJETO)", description = "Obtem uma tarefa especifica")
+	public Tarefa getTask(@Param(label="Identificador") int id)
 	{
 		return newTask("Uma tarefa");
 	}
 	
-	@ServiceMethod(description = "Obtem uma tarefa especifica")
-	@Label("Obter tarefa (CUSTOM)")
+	@ServiceMethod(label = "Obter tarefa (CUSTOM)", description = "Obtem uma tarefa especifica")
 	@CustomReturn
 	public Tarefa getTaskCustom(int id)
 	{
 		return newTask("Uma tarefa");
 	}
 
-	@ServiceMethod(description = "Retorna todas as tarefas cadastradas")
-	@Label("Listar tarefas (CUSTOM - ARRAY)")
+	@ServiceMethod(label = "Listar tarefas (CUSTOM - ARRAY)", description = "Retorna todas as tarefas cadastradas")
 	@CustomReturn(fields = {"nome", "prioridade"})
 	public Tarefa[] getAllTasksCustom()
 	{
 		return this.getAllTasks().toArray(new Tarefa[] {});
 	}
 	
-	@ServiceMethod(description = "Retorna todas as tarefas cadastradas")
-	@Label("Listar tarefas (CUSTOM - COLECAO COM LABEL)")
+	@ServiceMethod(label = "Listar tarefas (CUSTOM - COLECAO COM LABEL)", description = "Retorna todas as tarefas cadastradas")
 	@CustomReturn(fields = {"nome", "completada"}, labels = {"NAME", "DONE"})
 	public List<Tarefa> getAllTasksCustomLabel()
 	{
 		return this.getAllTasks();
 	}
 
-	@ServiceMethod(description = "Retorna todas as tarefas cadastradas")
-	@Label("Listar tarefas (TABLE)")
+	@ServiceMethod(label = "Listar tarefas (TABLE)", description = "Retorna todas as tarefas cadastradas")
 	@TableReturn
 	public List<Tarefa> getAllTasks()
 	{
 		return Arrays.asList(newTask("Tarefa 1"), newTask("Tarefa 2"), newTask("Tarefa 3"));
 	}
 	
-	@ServiceMethod(description = "Retorna todas as tarefas cadastradas")
-	@Label("Listar tarefas (TABLE - COM LABEL)")
+	@ServiceMethod(label = "Listar tarefas (TABLE - COM LABEL)", description = "Retorna todas as tarefas cadastradas")
 	@TableReturn(headerLabels = {"Task ID", "Task Priority", "Task Name", "Done"})
 	public List<Tarefa> getAllTasksLabel()
 	{
 		return this.getAllTasks();
 	}
 	
-	@ServiceMethod(description = "Retorna todas as tarefas cadastradas")
-	@Label("Listar tarefas (TABLE - SEM HEADER)")
+	@ServiceMethod(label = "Listar tarefas (TABLE - SEM HEADER)", description = "Retorna todas as tarefas cadastradas")
 	@TableReturn(showHeader = false)
 	public List<Tarefa> getAllTasksNoHeader()
 	{
 		return this.getAllTasks();
 	}
 	
-	@ServiceMethod(description = "Retorna todas as tarefas cadastradas")
-	@Label("Listar tarefas (TABLE - CAMPOS CUSTOMIZADOS)")
+	@ServiceMethod(label = "Listar tarefas (TABLE - CAMPOS CUSTOMIZADOS)", description = "Retorna todas as tarefas cadastradas")
 	@TableReturn(fields = {"completada", "nome", "prioridade"})
 	public List<Tarefa> getAllTasksCustomFields()
 	{
 		return this.getAllTasks();
 	}
 
-	@ServiceMethod(description = "Retorna todas as tarefas cadastradas")
-	@Label("Listar tarefas (TABLE - CAMPOS+LABEL CUSTOMIZADOS)")
+	@ServiceMethod(label = "Listar tarefas (TABLE - CAMPOS+LABEL CUSTOMIZADOS)", description = "Retorna todas as tarefas cadastradas")
 	@TableReturn(fields = {"completada", "nome", "prioridade"}, headerLabels = {"Done", "Name", "Prior"})
 	public List<Tarefa> getAllTasksCustomFieldsAndLabels()
 	{

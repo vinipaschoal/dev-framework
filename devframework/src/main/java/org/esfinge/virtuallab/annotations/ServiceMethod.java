@@ -22,6 +22,10 @@ import net.sf.esfinge.metadata.annotation.validator.method.MethodVisibilityRequi
 @MethodVisibilityRequired(itNeedsToHaveThisVisibility = "public")
 public @interface ServiceMethod
 {
+	// rotulo para o metodo
+	// por padrao usa o nome do metodo
+	String label() default "";
+	
 	// texto informativo sobre o servico
 	String description() default "";
 }

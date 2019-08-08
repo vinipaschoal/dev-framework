@@ -18,7 +18,6 @@ import org.springframework.util.CollectionUtils;
 /**
  * Processa o retorno de um metodo customizando-o para ser apresentando na UI. 
  */
-
 public class CustomReturnProcessor implements MethodReturnProcessor<CustomReturn>
 {
 	// anotacao utilizada no metodo

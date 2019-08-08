@@ -3,7 +3,6 @@ package org.esfinge.virtuallab.metadata;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.esfinge.virtuallab.annotations.Label;
 import org.esfinge.virtuallab.annotations.ServiceClass;
 import org.esfinge.virtuallab.annotations.ServiceMethod;
 
@@ -25,21 +24,17 @@ public class ClassMetadata
 	@ContainsAnnotation(ServiceClass.class)
 	private boolean annotatedWithServiceClass;
 
-	// indica se a classe contem a anotacao @Label
-	@ContainsAnnotation(Label.class)
-	private boolean annotatedWithLabel;
-
 	// lista dos metodos anotados com @ServiceMethod
 	@AllMethodsWith(ServiceMethod.class)
 	private List<MethodMetadata> methodsWithServiceMethod;
 
+	// rotulo para a classe
+	@AnnotationProperty(annotation = ServiceClass.class, property = "label")
+	private String label;
+
 	// texto informativo sobre a classe
 	@AnnotationProperty(annotation=ServiceClass.class, property = "description")
 	private String description;
-
-	// informacoes da anotacao @Label (se utilizada)
-	@AnnotationProperty(annotation = Label.class, property = "value")
-	private String label;
 
 	// classe da classe
 	@ReflectionReference
@@ -66,16 +61,6 @@ public class ClassMetadata
 	public void setAnnotatedWithServiceClass(boolean annotatedWithServiceClass)
 	{
 		this.annotatedWithServiceClass = annotatedWithServiceClass;
-	}
-
-	public boolean isAnnotatedWithLabel()
-	{
-		return annotatedWithLabel;
-	}
-
-	public void setAnnotatedWithLabel(boolean annotatedWithLabel)
-	{
-		this.annotatedWithLabel = annotatedWithLabel;
 	}
 
 	public List<MethodMetadata> getMethodsWithServiceMethod()

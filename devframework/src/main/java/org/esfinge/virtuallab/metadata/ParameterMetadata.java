@@ -2,8 +2,8 @@ package org.esfinge.virtuallab.metadata;
 
 import java.lang.reflect.Parameter;
 
-import org.esfinge.virtuallab.annotations.Label;
-import org.esfinge.virtuallab.annotations.NotRequired;
+import org.esfinge.virtuallab.annotations.Param;
+import org.esfinge.virtuallab.annotations.ParamAttribute;
 
 import net.sf.esfinge.metadata.annotation.container.AnnotationProperty;
 import net.sf.esfinge.metadata.annotation.container.ContainerFor;
@@ -18,17 +18,21 @@ import net.sf.esfinge.metadata.container.ContainerTarget;
 @ContainerFor(ContainerTarget.PARAMETER)
 public class ParameterMetadata implements Comparable<ParameterMetadata>
 {
-	// indica se o parametro contem a anotacao @Label
-	@ContainsAnnotation(Label.class)
-	private boolean annotatedWithLabel;
+	// indica se o parametro contem a anotacao @Param
+	@ContainsAnnotation(Param.class)
+	private boolean annotatedWithParam;
 	
-	// indica se o parametro contem a anotacao @NotRequired
-	@ContainsAnnotation(NotRequired.class)
-	private boolean annotatedWithNotRequired;
-
-	// informacoes da anotacao @Label (se utilizada)
-	@AnnotationProperty(annotation = Label.class, property = "value")
+	// rotulo para o parametro
+	@AnnotationProperty(annotation = Param.class, property = "label")
 	private String label;
+
+	// metadados para os campos da classe do parametro (se houver)
+	@AnnotationProperty(annotation = Param.class, property = "fields")
+	private ParamAttribute[] fieldsMetadata;
+
+	// se o parametro eh obrigatorio ou nao
+	@AnnotationProperty(annotation = Param.class, property = "required")
+	private boolean required;
 
 	// parametro
 	@ReflectionReference
@@ -49,29 +53,14 @@ public class ParameterMetadata implements Comparable<ParameterMetadata>
 	{
 	}
 
-	public boolean isAnnotatedWithLabel()
+	public boolean isAnnotatedWithParam()
 	{
-		return annotatedWithLabel;
+		return annotatedWithParam;
 	}
 
-	public void setAnnotatedWithLabel(boolean annotatedWithLabel)
+	public void setAnnotatedWithParam(boolean annotatedWithParam)
 	{
-		this.annotatedWithLabel = annotatedWithLabel;
-	}
-	
-	public boolean isAnnotatedWithNotRequired()
-	{
-		return annotatedWithNotRequired;
-	}
-
-	public void setAnnotatedWithNotRequired(boolean annotatedWithNotRequired)
-	{
-		this.annotatedWithNotRequired = annotatedWithNotRequired;
-	}
-
-	public void setIndex(int index)
-	{
-		this.index = index;
+		this.annotatedWithParam = annotatedWithParam;
 	}
 
 	public String getLabel()
@@ -82,6 +71,26 @@ public class ParameterMetadata implements Comparable<ParameterMetadata>
 	public void setLabel(String label)
 	{
 		this.label = label;
+	}
+
+	public ParamAttribute[] getFieldsMetadata()
+	{
+		return fieldsMetadata;
+	}
+
+	public void setFieldsMetadata(ParamAttribute[] fieldsMetadata)
+	{
+		this.fieldsMetadata = fieldsMetadata;
+	}
+
+	public boolean isRequired()
+	{
+		return required;
+	}
+
+	public void setRequired(boolean required)
+	{
+		this.required = required;
 	}
 
 	public Parameter getParameter()
@@ -117,10 +126,15 @@ public class ParameterMetadata implements Comparable<ParameterMetadata>
 	{
 		this.parameterName = parameterName;
 	}
-	
+
 	public int getIndex()
 	{
 		return index;
+	}
+
+	public void setIndex(int index)
+	{
+		this.index = index;
 	}
 
 	@Override

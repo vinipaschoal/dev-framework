@@ -7,6 +7,8 @@ import org.esfinge.virtuallab.annotations.CustomReturn;
 import org.esfinge.virtuallab.annotations.ServiceClass;
 import org.esfinge.virtuallab.annotations.ServiceMethod;
 import org.esfinge.virtuallab.annotations.TableReturn;
+import org.esfinge.virtuallab.domain.Matematica;
+import org.esfinge.virtuallab.domain.Ponto;
 import org.esfinge.virtuallab.domain.Tarefa;
 import org.esfinge.virtuallab.domain.TarefaService;
 
@@ -15,6 +17,7 @@ public class Main
 	public static void main(String... args) throws Exception
 	{
 		TestUtils.createJar("tarefa.jar", TarefaService.class, Tarefa.class);
+		TestUtils.createJar("matematica.jar", Matematica.class, Ponto.class);
 	}	
 	
 	@ServiceClass

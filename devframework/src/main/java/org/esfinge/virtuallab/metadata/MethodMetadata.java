@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.esfinge.virtuallab.annotations.CustomReturn;
-import org.esfinge.virtuallab.annotations.Label;
 import org.esfinge.virtuallab.annotations.ServiceMethod;
 import org.esfinge.virtuallab.annotations.TableReturn;
 
@@ -27,10 +26,6 @@ public class MethodMetadata
 	@ContainsAnnotation(ServiceMethod.class)
 	private boolean annotatedWithServiceMethod;
 
-	// indica se o metodo contem a anotacao @Label
-	@ContainsAnnotation(Label.class)
-	private boolean annotatedWithLabel;
-	
 	// indica se o metodo contem a anotacao @CustomReturn
 	@ContainsAnnotation(CustomReturn.class)
 	private boolean annotatedWithCustomReturn;
@@ -39,14 +34,14 @@ public class MethodMetadata
 	@ContainsAnnotation(TableReturn.class)
 	private boolean annotatedWithTableReturn;
 
+	// rotulo para o metodo
+	@AnnotationProperty(annotation = ServiceMethod.class, property = "label")
+	private String label;
+	
 	// texto informativo sobre o metodo
 	@AnnotationProperty(annotation=ServiceMethod.class, property = "description")
 	private String description;
 
-	// informacoes da anotacao @Label (se utilizada)
-	@AnnotationProperty(annotation = Label.class, property = "value")
-	private String label;
-	
 	// metodo
 	@ReflectionReference
 	private Method method;
@@ -76,16 +71,6 @@ public class MethodMetadata
 	public void setAnnotatedWithServiceMethod(boolean annotatedWithServiceMethod)
 	{
 		this.annotatedWithServiceMethod = annotatedWithServiceMethod;
-	}
-
-	public boolean isAnnotatedWithLabel()
-	{
-		return annotatedWithLabel;
-	}
-
-	public void setAnnotatedWithLabel(boolean annotatedWithLabel)
-	{
-		this.annotatedWithLabel = annotatedWithLabel;
 	}
 
 	public boolean isAnnotatedWithCustomReturn()

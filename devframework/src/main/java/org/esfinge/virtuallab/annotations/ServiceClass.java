@@ -15,6 +15,10 @@ import org.esfinge.virtuallab.metadata.validator.NeedDefaultConstructor;
 @NeedDefaultConstructor
 public @interface ServiceClass
 {
+	// rotulo para a classe
+	// por padrao usa o nome da classe
+	String label() default "";
+	
 	// texto informativo sobre os tipos de servicos que a classe disponibiliza
 	String description() default "";
 }

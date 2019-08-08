@@ -85,15 +85,18 @@ public class ReflectionUtils
 	{
 		try
 		{
-			// procura inclusive nas superclasses
-			FieldUtils.getField(clazz, fieldName, true);
-			
-			return ( true );
+			return getField(clazz, fieldName) != null; 
 		}
 		catch ( Exception e )
 		{
 			return false;
 		}
+	}
+	
+	public static Field getField(Class<?> clazz, String fieldName) throws Exception
+	{
+		// procura inclusive nas superclasses
+		return FieldUtils.getField(clazz, fieldName, true);
 	}
 	
 	/**
