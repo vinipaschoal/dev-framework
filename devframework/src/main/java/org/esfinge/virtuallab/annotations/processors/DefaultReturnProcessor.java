@@ -8,8 +8,30 @@ import org.esfinge.virtuallab.web.json.JsonData;
 /**
  * Retorna o proprio objeto retornado pelo metodo.  
  */
-public class NullReturnProcessor implements ReturnProcessor<Annotation>
+public class DefaultReturnProcessor implements MethodReturnProcessor<Annotation>
 {	
+	// instancia unica da classe
+	private static DefaultReturnProcessor _instance;
+	
+	
+	/**
+	 * Singleton.
+	 */
+	public static DefaultReturnProcessor getInstance()
+	{
+		if ( _instance == null )
+			_instance = new DefaultReturnProcessor();
+		
+		return _instance;
+	}
+	
+	/**
+	 * Construtor interno.
+	 */
+	private DefaultReturnProcessor()
+	{		
+	}
+	
 	@Override
 	public void initialize(Annotation annotation)
 	{

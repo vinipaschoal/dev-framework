@@ -8,25 +8,25 @@ import org.esfinge.virtuallab.annotations.TableReturn;
 import org.esfinge.virtuallab.descriptors.MethodDescriptor;
 import org.esfinge.virtuallab.metadata.MetadataHelper;
 import org.esfinge.virtuallab.metadata.MethodMetadata;
-import org.esfinge.virtuallab.metadata.validator.UniqueReturn;
+import org.esfinge.virtuallab.metadata.validator.MethodReturn;
 import org.esfinge.virtuallab.utils.ReflectionUtils;
 
 /**
  * Responsavel em preparar os objetos retornados dos metodos para o formato a ser renderizado na UI. 
  */
-public class ReturnProcessorHelper
+public class MethodReturnProcessorHelper
 {
 	// instancia unica da classe
-	private static ReturnProcessorHelper _instance;
+	private static MethodReturnProcessorHelper _instance;
 	
 	
 	/**
 	 * Singleton.
 	 */
-	public static ReturnProcessorHelper getInstance()
+	public static MethodReturnProcessorHelper getInstance()
 	{
 		if ( _instance == null )
-			_instance = new ReturnProcessorHelper();
+			_instance = new MethodReturnProcessorHelper();
 		
 		return _instance;
 	}
@@ -34,14 +34,14 @@ public class ReturnProcessorHelper
 	/**
 	 * Construtor interno.
 	 */
-	private ReturnProcessorHelper()
+	private MethodReturnProcessorHelper()
 	{		
 	}
 	
 	/**
 	 * Retorna o processador apropriado para o retorno do metodo. 
 	 */
-	public ReturnProcessor<?> findProcessor(MethodDescriptor methodDescriptor) throws Exception
+	public MethodReturnProcessor<?> findProcessor(MethodDescriptor methodDescriptor) throws Exception
 	{
 		// obtem o metodo a partir do descritor
 		Method method = ReflectionUtils.getMethod(methodDescriptor);
@@ -57,18 +57,18 @@ public class ReturnProcessorHelper
 			return this.getProcessor(method, TableReturn.class);
 		
 		// processor default
-		return new NullReturnProcessor();
+		return DefaultReturnProcessor.getInstance();
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private ReturnProcessor<?> getProcessor(Method method, Class<? extends Annotation> annotationClass) throws Exception
+	private MethodReturnProcessor<?> getProcessor(Method method, Class<? extends Annotation> annotationClass) throws Exception
 	{
 		// obtem a anotacao do metodo
 		Annotation annotation = method.getAnnotation(annotationClass);
 		
 		// recupera o return processor 
-		ReturnProcessor returnProcessor = annotation.annotationType()
-				.getAnnotation(UniqueReturn.class)
+		MethodReturnProcessor returnProcessor = annotation.annotationType()
+				.getAnnotation(MethodReturn.class)
 				.processor()
 				.newInstance();
 		

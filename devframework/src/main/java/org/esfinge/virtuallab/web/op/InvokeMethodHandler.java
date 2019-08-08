@@ -5,8 +5,8 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.esfinge.virtuallab.annotations.processors.ReturnProcessor;
-import org.esfinge.virtuallab.annotations.processors.ReturnProcessorHelper;
+import org.esfinge.virtuallab.annotations.processors.MethodReturnProcessor;
+import org.esfinge.virtuallab.annotations.processors.MethodReturnProcessorHelper;
 import org.esfinge.virtuallab.descriptors.MethodDescriptor;
 import org.esfinge.virtuallab.services.InvokerService;
 import org.esfinge.virtuallab.utils.JsonUtils;
@@ -61,7 +61,7 @@ public class InvokeMethodHandler implements IJsonRequestHandler
 			Object result = InvokerService.getInstance().call(methodDescriptor, values.toArray());
 			
 			// obtem o processor apropriado para o retorno do metodo
-			ReturnProcessor<?> returnProcessor = ReturnProcessorHelper.getInstance().findProcessor(methodDescriptor);
+			MethodReturnProcessor<?> returnProcessor = MethodReturnProcessorHelper.getInstance().findProcessor(methodDescriptor);
 			
 			jsonReturn.setData(returnProcessor.process(result));
 			jsonReturn.setType(returnProcessor.getType());

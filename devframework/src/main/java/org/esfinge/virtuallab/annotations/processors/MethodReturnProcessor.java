@@ -7,7 +7,7 @@ import org.esfinge.virtuallab.web.json.JsonData;
 /**
  * Processa o retorno de um metodo adequando-o ao formato a ser apresentando na UI. 
  */
-public interface ReturnProcessor<A extends Annotation>
+public interface MethodReturnProcessor<A extends Annotation>
 {	
 	/**
 	 * Recebe a anotacao utilizada no metodo para poder processar o objeto. 

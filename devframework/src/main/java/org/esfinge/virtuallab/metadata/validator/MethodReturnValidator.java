@@ -12,7 +12,7 @@ import net.sf.esfinge.metadata.AnnotationValidator;
 /**
  * Verifica se o metodo anotado com @ServiceMethod possui mais do que um manipulador de retorno.
  */
-public class UniqueReturnValidator implements AnnotationValidator
+public class MethodReturnValidator implements AnnotationValidator
 {
 
 	@Override
@@ -23,15 +23,15 @@ public class UniqueReturnValidator implements AnnotationValidator
 	@Override
 	public void validate(Annotation toValidate, AnnotatedElement annotated) throws AnnotationValidationException
 	{
-		List<String> uniqueAnnotations = new ArrayList<>();
+		List<String> returnAnnotations = new ArrayList<>();
 		
 		for (Annotation an : ((Method) annotated).getAnnotations())
-			if (an.annotationType().isAnnotationPresent(UniqueReturn.class))
-				uniqueAnnotations.add("@" + an.annotationType().getSimpleName());
+			if (an.annotationType().isAnnotationPresent(MethodReturn.class))
+				returnAnnotations.add("@" + an.annotationType().getSimpleName());
 		
-		if (uniqueAnnotations.size() > 1)
+		if (returnAnnotations.size() > 1)
 			throw new AnnotationValidationException("O método " + ((Method) annotated).getName() + " da classe "
 					+ ((Method) annotated).getDeclaringClass().getName() + " possui mais de um manipulador de retorno: "
-					+ uniqueAnnotations.toString());
+					+ returnAnnotations.toString());
 	}
 }

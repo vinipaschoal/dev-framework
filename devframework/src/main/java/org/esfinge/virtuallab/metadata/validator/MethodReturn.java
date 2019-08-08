@@ -13,8 +13,8 @@ import net.sf.esfinge.metadata.annotation.validator.ToValidate;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
-@ToValidate(UniqueReturnValidator.class)
-public @interface UniqueReturn
+@ToValidate(MethodReturnValidator.class)
+public @interface MethodReturn
 {
-	Class<? extends org.esfinge.virtuallab.annotations.processors.ReturnProcessor<?>> processor();
+	Class<? extends org.esfinge.virtuallab.annotations.processors.MethodReturnProcessor<?>> processor();
 }

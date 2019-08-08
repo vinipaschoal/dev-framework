@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 import java.util.Collection;
 
 import org.esfinge.virtuallab.annotations.processors.TableReturnProcessor;
-import org.esfinge.virtuallab.metadata.validator.UniqueReturn;
+import org.esfinge.virtuallab.metadata.validator.MethodReturn;
 
 import net.sf.esfinge.metadata.annotation.validator.method.ValidMethodReturn;
 
@@ -17,7 +17,7 @@ import net.sf.esfinge.metadata.annotation.validator.method.ValidMethodReturn;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @ValidMethodReturn(validTypesToReturn = { Collection.class })
-@UniqueReturn(processor = TableReturnProcessor.class)
+@MethodReturn(processor = TableReturnProcessor.class)
 public @interface TableReturn
 {
 	// os campos do item da colecao que serao utilizados
