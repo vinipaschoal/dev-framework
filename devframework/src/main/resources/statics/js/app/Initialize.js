@@ -39,6 +39,31 @@ app.settings = {
 		    }
 		    return vars;
 		},
+		isJson: function (str) {
+			try {
+		        JSON.parse(str);
+		    } catch (e) {
+		        return false;
+		    }
+		    return true;
+		},
+		loadScreenDescription: function () {
+			var classDesc = app.storage.get("classDescriptor");
+			if (classDesc != null){
+				if ($('#breadcrumbClassName').length) $('#breadcrumbClassName').text(classDesc.qualifiedName);
+				if ($('#headerClassName').length) $('#headerClassName').text(classDesc.label);
+				if ($('#InvokeClassName').length) $('#InvokeClassName').text(classDesc.qualifiedName + "(" + classDesc.label + ")");
+				if ($('#InvokeClassDescription').length) $('#InvokeClassDescription').text(classDesc.description);
+			}
+
+			var methodDesc = app.storage.get("methodDescriptor");
+			if (methodDesc != null){
+				if ($('#breadcrumbMethodName').length) $('#breadcrumbMethodName').text(app.utils.methodSignature(methodDesc));
+				if ($('#headerMethodName').length) $('#headerMethodName').text(methodDesc.label);
+				if ($('#InvokeMethodName').length) $('#InvokeMethodName').text(app.utils.methodSignature(methodDesc) + "(" + classDesc.methodDesc + ")");
+				if ($('#InvokeMethodDescription').length) $('#InvokeMethodDescription').text(methodDesc.description === "" ? "Sem descrição" : methodDesc.description);
+			}
+		},
 		init: function () {
 			
 			app.settings.setLoad();
@@ -85,7 +110,7 @@ app.storage = {
 		
 		// recupera um objeto da sessao
 		get: function(key) {
-			return JSON.parse(sessionStorage.getItem(key));
+			return app.settings.isJson(sessionStorage.getItem(key)) ? JSON.parse(sessionStorage.getItem(key)) : null;
 		},
 		
 		// remove um objeto da sessao

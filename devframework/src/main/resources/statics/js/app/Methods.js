@@ -11,10 +11,8 @@ app.Methods = {
 		// funcao de inicializacao 
 		init: function () {
 			
-			// atualiza os elementos da pagina com o nome da classe
-        	var classDesc = app.storage.get("classDescriptor");        	
-			$('#breadcrumbClassName').text(classDesc.qualifiedName);
-			$('#headerClassName').text(classDesc.label);
+			// atualiza os elementos da pagina com o nome da classe		
+			app.settings.loadScreenDescription();
 			
 			app.settings.loading.show();
 			

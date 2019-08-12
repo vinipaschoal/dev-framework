@@ -30,18 +30,48 @@
 					<h1 class="jumbotron-heading">Serviço: <strong id="headerMethodName"></strong> do Módulo: <strong id="headerClassName"></strong> </h1>
 				</div>
 			</section>
-	
+			<div class="clearfix my-1">&nbsp;</div>
 			<div class="container">
 				<div class="row">
-					<div class="col-md-12">
-						<form id="formParam" data-url="invokeMethod.op"></form>
+					<div class="col-md-5">
+						<div class="card">
+	  						<div class="card-header">
+								Descrição do Serviço
+							</div>
+							<div class="card-body">
+								<strong>Classe: </strong><span id="InvokeClassName"></span>
+								<br/><strong>Descrição da Classe: </strong><span id="InvokeClassDescription"></span>
+								<br/><br/>
+								<strong>Método: </strong><span id="InvokeMethodName"></span>
+								<br/><strong>Descrição do Método: </strong><span id="InvokeMethodDescription"></span>
+	  						</div>
+						</div>	
+					</div>
+					<div class="col-md-7">
+						<div class="card">
+	  						<div class="card-header">
+								Simular a execução do método <strong>"Cadastrar tarefa"</strong>
+							</div>
+							<div class="card-body">
+								<form id="formParam" data-url="invokeMethod.op"></form>
+	  						</div>
+						</div>
 					</div>
 				</div>
+				<div class="clearfix my-1">&nbsp;</div>
 				<div class="row">
 					<div class="col-md-12">
-						&nbsp;<br />&nbsp;<br />
+						<div class="card" id="tabResult">
+	  						<div class="card-header">
+								Resultado
+							</div>
+							<div class="card-body">
+								<div id="result"></div>
+	  						</div>
+						</div>
 					</div>
 				</div>
+				<div class="clearfix my-2">&nbsp;</div>
 			</div>
 			<div>
 				

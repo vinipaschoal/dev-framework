@@ -3,18 +3,13 @@ app.InvokeMethod = {
 	// funcao de inicializacao 
 	init: function () {	
 		
-		// atualiza os elementos da pagina com o nome da classe e do metodo
-    	var classDesc = app.storage.get("classDescriptor");        	
-		$('#breadcrumbClassName').text(classDesc.qualifiedName);
-		$('#headerClassName').text(classDesc.label);
+		// atualiza os elementos da pagina com o nome da classe e do metodo	  
+		app.settings.loadScreenDescription();
 		
-		var methodDesc = app.storage.get("methodDescriptor");  
-		$('#breadcrumbMethodName').text(app.utils.methodSignature(methodDesc));
-		$('#headerMethodName').text(methodDesc.label);
-
+		var methodDesc = app.storage.get("methodDescriptor");
 		app.InvokeMethod.createForm(methodDesc.parameters);
 	},
-	
+
 	// cria o Form para a entrada dos valores do metodo a ser invocado
 	createForm: function (parameters){
 		
@@ -23,8 +18,15 @@ app.InvokeMethod = {
 			$form[paramDesc.name] = JSON.parse(paramDesc.jsonSchema);
 		});
 		
-		$('form').jsonForm({
+		$('#formParam').jsonForm({
 			schema: $form,
+			form: [
+			    "*",
+			    {
+			      "type": "submit",
+			      "title": "Executar"
+			    }    
+			],
 			onSubmit: function (errors, values) {
 				if (errors) {
 					alertBt({
@@ -52,11 +54,15 @@ app.InvokeMethod = {
 		    			success: function (result) {
 		    				console.log(result);
 		    				
-							alertBt({
-			   	        	      messageText: "Resposta:<br/>" + JSON.stringify(result, null, 2),
-			   	        	      headerText: "Alerta",
-			   	        	      alertType: "success"
-			   	        	    });					
+		    				var $tabResult = $("#tabResult");
+		    				var $result = $("#result");
+		    				
+		    				$tabResult.show();
+		    				if (!app.settings.isJson(result.data)){
+		    					$result.text(result.data);
+		    				}else{
+		    					$result.text(JSON.stringify(result, null, 2));
+		    				}		    				
 		    	        },
 		    			error:function(data,status,er) {
 		    				alert("error");
