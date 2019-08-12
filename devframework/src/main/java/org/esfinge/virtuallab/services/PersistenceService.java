@@ -103,7 +103,7 @@ public class PersistenceService
 			return classMetadata.getMethodsWithServiceMethod().stream()
 					.map(m -> new MethodDescriptor(m)).collect(Collectors.toList());
 
-		return null;
+		return new ArrayList<MethodDescriptor>();
 	}
 
 	/**

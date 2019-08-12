@@ -46,17 +46,19 @@ public class ReflectionUtils
 		
 		// procura na classe o metodo que sera invocado
 		for (Method m : clazz.getMethods())
-			if (m.getParameterCount() == methodDescriptor.getParameters().size())
-				if (m.getName().equals(methodDescriptor.getName()))
-				{
-					Class<?>[] paramTypes = m.getParameterTypes();
-					for (ParameterDescriptor p : methodDescriptor.getParameters())
-						if(!p.getDataType().equals(paramTypes[p.getIndex()].getCanonicalName()))
-							break;
-					
-					// encontrou o metodo
+			if ( m.getName().equals(methodDescriptor.getName()) && 
+				 m.getParameterCount() == methodDescriptor.getParameters().size() )
+			{
+				// verifica se a ordem e os tipos dos parametros sao iguais
+				Class<?>[] paramTypes = m.getParameterTypes();
+				boolean found = true;
+				for ( ParameterDescriptor p : methodDescriptor.getParameters() )
+					found &= p.getDataType().equals(paramTypes[p.getIndex()].getCanonicalName());
+						
+				// encontrou o metodo?
+				if ( found )
 					return m;
-				}
+			}
 		
 		// nao encontrou o metodo!
 		throw new IllegalArgumentException("Metodo '" + methodDescriptor.getName() + "' não encontrado na clase '" + clazz.getCanonicalName());

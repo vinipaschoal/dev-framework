@@ -91,15 +91,24 @@ public final class ValidationService
 		
 		for (Class<?> clazz : classList)
 		{
-			// obtem os metadados da classe
-			ClassMetadata metadata = metadataHelper.getClassMetadata(clazz);
-			
-			// verifica se esta anotada com @ClassService e possui metodos @ServiceMethod
-			if (metadata.isAnnotatedWithServiceClass() && !Utils.isNullOrEmpty(metadata.getMethodsWithServiceMethod()))
-				validClasses.add(clazz);
+			try
+			{
+				// obtem os metadados da classe
+				ClassMetadata metadata = metadataHelper.getClassMetadata(clazz);
+				
+				// verifica se esta anotada com @ClassService e possui metodos @ServiceMethod
+				if (metadata.isAnnotatedWithServiceClass() && !Utils.isNullOrEmpty(metadata.getMethodsWithServiceMethod()))
+					validClasses.add(clazz);
+			}
+			catch ( Exception e )
+			{
+				// classe invalida
+				
+				// TODO: debug..
+				e.printStackTrace();
+			}
 		}
 		
 		return (validClasses.size() == 0 ? null : validClasses);
 	}
-
 }

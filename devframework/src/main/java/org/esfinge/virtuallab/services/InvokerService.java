@@ -3,6 +3,7 @@ package org.esfinge.virtuallab.services;
 import java.lang.reflect.Method;
 
 import org.esfinge.virtuallab.descriptors.MethodDescriptor;
+import org.esfinge.virtuallab.exceptions.InvocationException;
 import org.esfinge.virtuallab.utils.ReflectionUtils;
 
 /**
@@ -36,15 +37,26 @@ public class InvokerService
 	/**
 	 * Invoca o metodo com os parametros informados.
 	 */
-	public Object call(MethodDescriptor methodDescriptor, Object... paramValues) throws Exception
+	public Object call(MethodDescriptor methodDescriptor, Object... paramValues) throws InvocationException
 	{
-		// obtem o metodo a ser invocado
-		Method method = ReflectionUtils.getMethod(methodDescriptor);
+		// verifica se foi especificado um descritor de metodo
+		if ( methodDescriptor == null )
+			throw new InvocationException("O descritor do metodo a ser invocado nao pode ser nulo!");
 		
-		// cria um objeto da classe cujo metodo sera invocado
-		Object obj = ReflectionUtils.findClass(methodDescriptor.getClassName()).newInstance();
-		
-		// invoca o metodo
-		return method.invoke(obj, paramValues);
+		try
+		{
+			// obtem o metodo a ser invocado
+			Method method = ReflectionUtils.getMethod(methodDescriptor);
+			
+			// cria um objeto da classe cujo metodo sera invocado
+			Object obj = ReflectionUtils.findClass(methodDescriptor.getClassName()).newInstance();
+			
+			// invoca o metodo
+			return method.invoke(obj, paramValues);
+		}
+		catch ( Exception exc )
+		{
+			throw new InvocationException("Erro ao tentar invocar metodo!", exc);
+		}
 	}
 }
