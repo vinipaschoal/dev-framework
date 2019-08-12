@@ -1,5 +1,6 @@
 package org.esfinge.virtuallab.utils;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -7,6 +8,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -108,6 +110,28 @@ public class ReflectionUtils
 	{
 		// tenta ler o campo
 		return FieldUtils.readField(obj, fieldName, true);	
+	}
+	
+	/**
+	 * Retorna todos os campos da classe anotados com a anotacao informada, incluindo os das superclasses.
+	 */
+	public static List<Field> getAllFieldsAnnotatedWith(Class<?> clazz, Class<? extends Annotation> annotationClazz)
+	{
+		return getAllFields(clazz)
+					.stream()
+					.filter(f -> f.isAnnotationPresent(annotationClazz))
+					.collect(Collectors.toList());
+	}
+
+	/**
+	 * Retorna todos os campos da classe anotados com a anotacao informada, nao incluindo os das superclasses.
+	 */
+	public static List<Field> getDeclaredFieldsAnnotatedWith(Class<?> clazz, Class<? extends Annotation> annotationClazz)
+	{
+		return getDeclaredFields(clazz)
+				.stream()
+				.filter(f -> f.isAnnotationPresent(annotationClazz))
+				.collect(Collectors.toList());
 	}
 	
 	/**

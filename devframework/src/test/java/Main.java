@@ -1,32 +1,20 @@
-import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.esfinge.virtuallab.TestUtils;
-import org.esfinge.virtuallab.annotations.CustomReturn;
-import org.esfinge.virtuallab.annotations.ServiceClass;
-import org.esfinge.virtuallab.annotations.ServiceMethod;
-import org.esfinge.virtuallab.annotations.TableReturn;
+import org.esfinge.virtuallab.api.annotations.CustomReturn;
+import org.esfinge.virtuallab.api.annotations.ServiceClass;
+import org.esfinge.virtuallab.api.annotations.ServiceMethod;
+import org.esfinge.virtuallab.api.annotations.TableReturn;
 import org.esfinge.virtuallab.domain.Matematica;
 import org.esfinge.virtuallab.domain.Ponto;
 import org.esfinge.virtuallab.domain.Tarefa;
 import org.esfinge.virtuallab.domain.TarefaService;
-import org.esfinge.virtuallab.metadata.ClassMetadata;
-import org.esfinge.virtuallab.metadata.MetadataHelper;
-import org.esfinge.virtuallab.services.ValidationService;
-import org.esfinge.virtuallab.utils.ReflectionUtils;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.util.TraceClassVisitor;
-
-import net.sf.esfinge.classmock.ClassMock;
-import net.sf.esfinge.classmock.api.IClassReader;
-import net.sf.esfinge.classmock.api.IClassWriter;
-import net.sf.esfinge.classmock.api.enums.VisibilityEnum;
-import net.sf.esfinge.classmock.parse.ParseASM;
 
 public class Main
 {
@@ -34,33 +22,6 @@ public class Main
 	{
 		TestUtils.createJar("tarefa.jar", TarefaService.class, Tarefa.class);
 		TestUtils.createJar("matematica.jar", Matematica.class, Ponto.class);
-		
-		String className = "virtuallab.test.ValidServiceClass";
-		try
-		{
-			Class<?> clazz = ReflectionUtils.findClass(className);
-			throw new Exception("Classe ja carregada: " + clazz);
-		}
-		catch ( ClassNotFoundException cnfe )
-		{
-			cnfe.printStackTrace();
-		}
-		
-		IClassWriter classMock = ClassMock.of(className);
-		classMock.annotation(ServiceClass.class);
-		classMock.method("someService").visibility(VisibilityEnum.PUBLIC).returnType(int.class).annotation(ServiceMethod.class);
-		
-		ParseASM parserASM = new ParseASM((IClassReader) classMock);
-		String filePath = TestUtils.pathFromTestDir("ValidServiceClass.class");
-		
-		FileUtils.writeByteArrayToFile(new File(filePath), parserASM.parse());
-		
-		Class<?> clazz = ValidationService.getInstance().checkClass(filePath);
-		ClassMetadata metadata = MetadataHelper.getInstance().getClassMetadata(clazz);
-		
-		System.out.println("Class: " + clazz.getCanonicalName());
-		System.out.println("@ServiceClass: " + metadata.isAnnotatedWithServiceClass());
-		System.out.println("@ServiceMethod: " + metadata.getMethodsWithServiceMethod().size());
 	}	
 	
 	/**

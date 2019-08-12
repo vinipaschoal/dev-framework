@@ -3,8 +3,8 @@ package org.esfinge.virtuallab.metadata;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.esfinge.virtuallab.annotations.ServiceClass;
-import org.esfinge.virtuallab.annotations.ServiceMethod;
+import org.esfinge.virtuallab.api.annotations.ServiceClass;
+import org.esfinge.virtuallab.api.annotations.ServiceMethod;
 
 import net.sf.esfinge.metadata.annotation.container.AllMethodsWith;
 import net.sf.esfinge.metadata.annotation.container.AnnotationProperty;

@@ -1,9 +1,9 @@
 package org.esfinge.virtuallab.domain;
 
-import org.esfinge.virtuallab.annotations.Param;
-import org.esfinge.virtuallab.annotations.ParamAttribute;
-import org.esfinge.virtuallab.annotations.ServiceClass;
-import org.esfinge.virtuallab.annotations.ServiceMethod;
+import org.esfinge.virtuallab.api.annotations.Param;
+import org.esfinge.virtuallab.api.annotations.ParamAttribute;
+import org.esfinge.virtuallab.api.annotations.ServiceClass;
+import org.esfinge.virtuallab.api.annotations.ServiceMethod;
 
 @ServiceClass
 public class Matematica

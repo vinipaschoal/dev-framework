@@ -3,7 +3,7 @@ package org.esfinge.virtuallab.exceptions;
 /**
  * Excecao relacionada ao InvokerService.
  */
-public class InvocationException extends Exception
+public class InvocationException extends RuntimeException
 {
 	private static final long serialVersionUID = -8561294521041466259L;
 

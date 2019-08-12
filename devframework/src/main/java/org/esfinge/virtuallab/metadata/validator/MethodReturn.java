@@ -16,5 +16,5 @@ import net.sf.esfinge.metadata.annotation.validator.ToValidate;
 @ToValidate(MethodReturnValidator.class)
 public @interface MethodReturn
 {
-	Class<? extends org.esfinge.virtuallab.annotations.processors.MethodReturnProcessor<?>> processor();
+	Class<? extends org.esfinge.virtuallab.metadata.processors.MethodReturnProcessor<?>> processor();
 }

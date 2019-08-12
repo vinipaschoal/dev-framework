@@ -1,10 +1,10 @@
-package org.esfinge.virtuallab.annotations.processors;
+package org.esfinge.virtuallab.metadata.processors;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
-import org.esfinge.virtuallab.annotations.CustomReturn;
-import org.esfinge.virtuallab.annotations.TableReturn;
+import org.esfinge.virtuallab.api.annotations.CustomReturn;
+import org.esfinge.virtuallab.api.annotations.TableReturn;
 import org.esfinge.virtuallab.descriptors.MethodDescriptor;
 import org.esfinge.virtuallab.metadata.MetadataHelper;
 import org.esfinge.virtuallab.metadata.MethodMetadata;

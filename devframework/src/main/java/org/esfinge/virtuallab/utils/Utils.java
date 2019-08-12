@@ -2,6 +2,7 @@ package org.esfinge.virtuallab.utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
@@ -130,5 +131,24 @@ public class Utils
 	public static boolean isNullOrEmpty(Object value)
 	{
 		return ObjectUtils.isEmpty(value);
+	}
+
+	/**
+	 * Lanca a excecao caso o objeto seja nulo.
+	 */
+	public static <E extends Throwable> void throwIfNull(Object obj, Class<E> exception, String msg) throws E
+	{
+		if ( isNullOrEmpty(obj) )
+		{
+			try
+			{
+				throw exception.getDeclaredConstructor(String.class).newInstance(msg);
+			}
+			catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+					| InvocationTargetException | NoSuchMethodException | SecurityException e)
+			{
+				throw new RuntimeException(e);
+			}
+		}
 	}
 }

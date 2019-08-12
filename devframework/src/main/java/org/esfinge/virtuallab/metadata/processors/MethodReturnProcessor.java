@@ -1,4 +1,4 @@
-package org.esfinge.virtuallab.annotations.processors;
+package org.esfinge.virtuallab.metadata.processors;
 
 import java.lang.annotation.Annotation;
 

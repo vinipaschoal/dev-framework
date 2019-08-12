@@ -4,9 +4,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.esfinge.virtuallab.annotations.CustomReturn;
-import org.esfinge.virtuallab.annotations.ServiceMethod;
-import org.esfinge.virtuallab.annotations.TableReturn;
+import org.esfinge.virtuallab.api.annotations.CustomReturn;
+import org.esfinge.virtuallab.api.annotations.ServiceMethod;
+import org.esfinge.virtuallab.api.annotations.TableReturn;
 
 import net.sf.esfinge.metadata.annotation.container.AnnotationProperty;
 import net.sf.esfinge.metadata.annotation.container.ContainerFor;

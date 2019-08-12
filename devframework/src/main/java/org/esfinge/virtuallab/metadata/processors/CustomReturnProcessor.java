@@ -1,4 +1,4 @@
-package org.esfinge.virtuallab.annotations.processors;
+package org.esfinge.virtuallab.metadata.processors;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.esfinge.virtuallab.annotations.CustomReturn;
+import org.esfinge.virtuallab.api.annotations.CustomReturn;
 import org.esfinge.virtuallab.utils.JsonUtils;
 import org.esfinge.virtuallab.utils.ReflectionUtils;
 import org.esfinge.virtuallab.utils.Utils;

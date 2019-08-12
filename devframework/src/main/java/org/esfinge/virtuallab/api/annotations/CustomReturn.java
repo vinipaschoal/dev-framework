@@ -1,11 +1,11 @@
-package org.esfinge.virtuallab.annotations;
+package org.esfinge.virtuallab.api.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.esfinge.virtuallab.annotations.processors.CustomReturnProcessor;
+import org.esfinge.virtuallab.metadata.processors.CustomReturnProcessor;
 import org.esfinge.virtuallab.metadata.validator.MethodReturn;
 
 /**

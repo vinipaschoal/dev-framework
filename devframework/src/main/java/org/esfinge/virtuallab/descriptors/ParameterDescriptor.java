@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.esfinge.virtuallab.annotations.ParamAttribute;
+import org.esfinge.virtuallab.api.annotations.ParamAttribute;
 import org.esfinge.virtuallab.metadata.ParameterMetadata;
 import org.esfinge.virtuallab.utils.JsonUtils;
 import org.esfinge.virtuallab.utils.ReflectionUtils;

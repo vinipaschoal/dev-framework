@@ -2,8 +2,8 @@ package org.esfinge.virtuallab.metadata;
 
 import java.lang.reflect.Parameter;
 
-import org.esfinge.virtuallab.annotations.Param;
-import org.esfinge.virtuallab.annotations.ParamAttribute;
+import org.esfinge.virtuallab.api.annotations.Param;
+import org.esfinge.virtuallab.api.annotations.ParamAttribute;
 
 import net.sf.esfinge.metadata.annotation.container.AnnotationProperty;
 import net.sf.esfinge.metadata.annotation.container.ContainerFor;

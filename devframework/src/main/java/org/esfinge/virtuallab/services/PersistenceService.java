@@ -51,7 +51,7 @@ public class PersistenceService
 				// classe
 				if (FilenameUtils.isExtension(filePath, "class"))
 				{
-					Class<?> clazz = validation.checkClass(filePath);
+					Class<?> clazz = validation.checkClassFile(filePath);
 					if (clazz != null)
 						this.classCache.put(clazz.getCanonicalName(), metadataHelper.getClassMetadata(clazz));
 				}
@@ -59,7 +59,7 @@ public class PersistenceService
 				else
 				{
 					// obtem as classes validas do jar
-					List<Class<?>> jarClassList = validation.checkJar(filePath);
+					List<Class<?>> jarClassList = validation.checkJarFile(filePath);
 					if (jarClassList != null)
 						for (Class<?> clazz : jarClassList)
 							this.classCache.put(clazz.getCanonicalName(), metadataHelper.getClassMetadata(clazz));
@@ -117,8 +117,8 @@ public class PersistenceService
 		ByteArrayInputStream streamCopy = new ByteArrayInputStream(IOUtils.toByteArray(fileStream));
 
 		// verifica se o arquivo (classe/jar) eh valido
-		Object valid = fileName.endsWith(".jar") ? ValidationService.getInstance().checkJar(streamCopy, fileName)
-				: ValidationService.getInstance().checkClass(streamCopy, fileName);
+		Object valid = fileName.endsWith(".jar") ? ValidationService.getInstance().checkJarFile(streamCopy, fileName)
+				: ValidationService.getInstance().checkClassFile(streamCopy, fileName);
 
 		if (valid != null)
 		{
