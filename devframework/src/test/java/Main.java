@@ -13,6 +13,7 @@ import org.esfinge.virtuallab.domain.Matematica;
 import org.esfinge.virtuallab.domain.Ponto;
 import org.esfinge.virtuallab.domain.Tarefa;
 import org.esfinge.virtuallab.domain.TarefaService;
+import org.esfinge.virtuallab.utils.ReflectionUtils;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.util.TraceClassVisitor;
 

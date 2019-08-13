@@ -2,6 +2,7 @@ package org.esfinge.virtuallab.services;
 
 import java.lang.reflect.Method;
 
+import org.apache.commons.lang3.ClassUtils;
 import org.esfinge.virtuallab.api.InvokerProxy;
 import org.esfinge.virtuallab.descriptors.MethodDescriptor;
 import org.esfinge.virtuallab.descriptors.ParameterDescriptor;
@@ -66,7 +67,7 @@ public class InvokerService implements InvokerProxy
 			ReflectionUtils.getDeclaredFieldsAnnotatedWith(clazz, org.esfinge.virtuallab.api.annotations.InvokerProxy.class).forEach(f -> {
 				try
 				{
-					f.set(obj, InvokerService.this);
+					ReflectionUtils.setFieldValue(obj, f.getName(), InvokerService.this);
 				}
 				catch ( Exception e )
 				{
@@ -86,8 +87,8 @@ public class InvokerService implements InvokerProxy
 	}
 	
 	@Override
-	public <E> E invoke(String qualifiedClassName, String methodName, Class<E> returnType, Object... paramValues)
-			throws InvocationException
+	@SuppressWarnings("unchecked")
+	public <E> E invoke(String qualifiedClassName, String methodName, Class<E> returnType, Object... paramValues) throws InvocationException
 	{
 		// cria o descritor do metodo a ser invocado
 		MethodDescriptor md = new MethodDescriptor();
@@ -95,18 +96,22 @@ public class InvokerService implements InvokerProxy
 		md.setName(methodName);
 		
 		// monta os descritores dos parametros
-		if ( Utils.isNullOrEmpty(paramValues) )
+		if (! Utils.isNullOrEmpty(paramValues) )
 			for (int i = 0; i < paramValues.length; i++)
 			{
 				ParameterDescriptor pd = new ParameterDescriptor();
 				pd.setIndex(i);
 				pd.setDataType(paramValues[i].getClass().getCanonicalName());
+				md.getParameters().add(pd);
 			}
 		
 		// tenta invoca o metodo
 		Object result = this.call(md, paramValues);
 		
-		// cast do resultado para o tipo de retorno informado 
-		return returnType.cast(result);
+		// cast do resultado para o tipo de retorno informado
+		if ( returnType.isPrimitive() )
+			return (E) ClassUtils.primitiveToWrapper(returnType).cast(result);
+		else
+			return returnType.cast(result);
 	}
 }

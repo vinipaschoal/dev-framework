@@ -29,13 +29,22 @@ public class ReflectionUtils
 		
 		// cadastra as classes dos tipos basicos
 		basicTypesMap.put(byte.class.getCanonicalName(), byte.class);
+		basicTypesMap.put(Byte.class.getCanonicalName(), Byte.class);
 		basicTypesMap.put(short.class.getCanonicalName(), short.class);
+		basicTypesMap.put(Short.class.getCanonicalName(), Short.class);
 		basicTypesMap.put(int.class.getCanonicalName(), int.class);
+		basicTypesMap.put(Integer.class.getCanonicalName(), Integer.class);
 		basicTypesMap.put(long.class.getCanonicalName(), long.class);
+		basicTypesMap.put(Long.class.getCanonicalName(), Long.class);
 		basicTypesMap.put(float.class.getCanonicalName(), float.class);
+		basicTypesMap.put(Float.class.getCanonicalName(), Float.class);
 		basicTypesMap.put(double.class.getCanonicalName(), double.class);
+		basicTypesMap.put(Double.class.getCanonicalName(), Double.class);
 		basicTypesMap.put(boolean.class.getCanonicalName(), boolean.class);
+		basicTypesMap.put(Boolean.class.getCanonicalName(), Boolean.class);
 		basicTypesMap.put(char.class.getCanonicalName(), char.class);
+		basicTypesMap.put(Character.class.getCanonicalName(), Character.class);
+		basicTypesMap.put(String.class.getCanonicalName(), String.class);
 	}
 
 	/**
@@ -55,7 +64,7 @@ public class ReflectionUtils
 				Class<?>[] paramTypes = m.getParameterTypes();
 				boolean found = true;
 				for ( ParameterDescriptor p : methodDescriptor.getParameters() )
-					found &= p.getDataType().equals(paramTypes[p.getIndex()].getCanonicalName());
+					found &= compareDataTypes(findClass(p.getDataType()), paramTypes[p.getIndex()]);
 						
 				// encontrou o metodo?
 				if ( found )
@@ -64,6 +73,20 @@ public class ReflectionUtils
 		
 		// nao encontrou o metodo!
 		throw new IllegalArgumentException("Metodo '" + methodDescriptor.getName() + "' não encontrado na clase '" + clazz.getCanonicalName());
+	}
+	
+	/**
+	 * Verifica se os tipos informados sao iguais, considerando wrappers e primitivos.
+	 */
+	private static boolean compareDataTypes(Class<?> typeA, Class<?> typeB)
+	{
+		if ( ClassUtils.isPrimitiveOrWrapper(typeA) && ClassUtils.isPrimitiveOrWrapper(typeB) )
+		{
+			return ( typeA.isPrimitive() ? typeA : ClassUtils.wrapperToPrimitive(typeA) ) == 
+				   ( typeB.isPrimitive() ? typeB : ClassUtils.wrapperToPrimitive(typeB) );
+		}
+		
+		return typeA == typeB;
 	}
 	
 	/**
@@ -104,12 +127,20 @@ public class ReflectionUtils
 	}
 	
 	/**
-	 * Retorna o valor do campo.
+	 * Retorna o valor do campo especificado.
 	 */
 	public static Object getFieldValue(Object obj, String fieldName) throws Exception
 	{
 		// tenta ler o campo
 		return FieldUtils.readField(obj, fieldName, true);	
+	}
+	
+	/**
+	 * Atribui o valor ao campo especificado.
+	 */
+	public static void setFieldValue(Object obj, String fieldName, Object value) throws Exception
+	{
+		FieldUtils.writeField(obj, fieldName, value, true);
 	}
 	
 	/**
