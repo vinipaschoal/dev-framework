@@ -28,6 +28,14 @@ app.settings = {
 		setLoad: function () {
 			$(".Load").append(app.settings.loading);
 		},
+		setLoadSubmit: function (selector, message, disabled) {
+			message = message || '';
+			disabled = disabled || '';
+			$button = $("." + selector);
+			$button.val(message);
+			if (disabled) $button.attr('disabled',disabled);
+			else $button.removeAttr('disabled');
+		},
 		getUrlParametes: function () {
 			var vars = [], hash;
 		    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');

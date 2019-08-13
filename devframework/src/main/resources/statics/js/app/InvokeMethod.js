@@ -8,6 +8,18 @@ app.InvokeMethod = {
 		
 		var methodDesc = app.storage.get("methodDescriptor");
 		app.InvokeMethod.createForm(methodDesc.parameters);
+		
+		
+		$(".btn").after("<div class='LoadWait' style='margin-left:20px;position:relative;width: 200px;'></div>");
+		//app.settings.setLoadSubmit('btn', 'Aguarde...', 'disabled');
+		
+		
+		//////////////////////////////////////////
+		
+		
+		
+		
+		
 	},
 
 	// cria o Form para a entrada dos valores do metodo a ser invocado
@@ -28,7 +40,9 @@ app.InvokeMethod = {
 			    }    
 			],
 			onSubmit: function (errors, values) {
+				app.settings.setLoadSubmit('btn', 'Aguarde...', 'disabled');
 				if (errors) {
+					app.settings.setLoadSubmit('btn', 'Executar', '');
 					alertBt({
 		        	      messageText: "Ocorreu um erro!",
 		        	      headerText: "Erro",
@@ -58,14 +72,18 @@ app.InvokeMethod = {
 		    				var $result = $("#result");
 		    				
 		    				$tabResult.show();
+		    				$("html, body").animate({scrollTop: $result.offset().top }, 1000);
+		    						    				
 		    				if (!app.settings.isJson(result.data)){
 		    					$result.text(result.data);
 		    				}else{
 		    					$result.text(JSON.stringify(result, null, 2));
-		    				}		    				
+		    				}
+		    				app.settings.setLoadSubmit('btn', 'Executar', '');
 		    	        },
 		    			error:function(data,status,er) {
 		    				alert("error");
+		    				app.settings.setLoadSubmit('btn', 'Executar', '');
 		    			}
 		    		});
 				}
