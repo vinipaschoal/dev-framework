@@ -1,19 +1,50 @@
 package org.esfinge.virtuallab.domain;
 
-import org.esfinge.virtuallab.annotations.ServiceClass;
-import org.esfinge.virtuallab.annotations.ServiceMethod;
-
-@ServiceClass
-public class Tarefa {
+public class Tarefa
+{
+	private int id;
+	private int prioridade;
+	private String nome;
+	private boolean completada;
 	
-	private String nome = "compromissos";
+	
+	public int getId()
+	{
+		return id;
+	}
 
-	@ServiceMethod
-	public String getNome() {
+	public void setId(int id)
+	{
+		this.id = id;
+	}
+
+	public int getPrioridade()
+	{
+		return prioridade;
+	}
+
+	public void setPrioridade(int prioridade)
+	{
+		this.prioridade = prioridade;
+	}
+
+	public String getNome()
+	{
 		return nome;
 	}
 
-	public void setNome(String nome) {
+	public void setNome(String nome)
+	{
 		this.nome = nome;
-	}	
+	}
+
+	public boolean isCompletada()
+	{
+		return completada;
+	}
+
+	public void setCompletada(boolean completada)
+	{
+		this.completada = completada;
+	}
 }

@@ -1,348 +1,433 @@
 package org.esfinge.virtuallab.services;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
 import java.nio.file.Paths;
 import java.util.List;
 
-import org.apache.commons.io.FileDeleteStrategy;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.esfinge.virtuallab.TestUtils;
-import org.esfinge.virtuallab.domain.Agenda;
-import org.esfinge.virtuallab.domain.AgendaInvalida;
-import org.esfinge.virtuallab.domain.ClassDescriptor;
-import org.esfinge.virtuallab.domain.Pessoa;
-import org.esfinge.virtuallab.domain.Tarefa;
-import org.esfinge.virtuallab.domain.TarefaInvalida;
-import org.esfinge.virtuallab.junit4.RepeatTest;
-import org.esfinge.virtuallab.junit4.RepeatTestRule;
-import org.esfinge.virtuallab.services.PersistenceService;
+import org.esfinge.virtuallab.annotations.ServiceClass;
+import org.esfinge.virtuallab.annotations.ServiceMethod;
+import org.esfinge.virtuallab.descriptors.ClassDescriptor;
+import org.esfinge.virtuallab.descriptors.MethodDescriptor;
 import org.esfinge.virtuallab.utils.Utils;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
+
+import net.sf.esfinge.classmock.ClassMock;
+import net.sf.esfinge.classmock.api.IClassWriter;
 
 /**
  * Testes unitarios para a classe PersistenceService.
  */
-public class PersistenceServiceTest {
-	// numero de repeticoes dos testes
-	private static final int REP_NUM = 1;
-
+public class PersistenceServiceTest
+{
 	// diretorio padrao de upload
 	private static final String UPLOAD_DIR = Utils.getInstance().getUploadDir();
+	
+	
+	private void createClass(String name, boolean valid) throws IOException
+	{
+		// cria uma classe com a anotacao @ServiceClass
+		IClassWriter mock = ClassMock.of(name);
+		mock.annotation(ServiceClass.class);
+		
+		// adiciona um metodo valido/invalido com a anotacao @ServiceMethod
+		mock.method("method").returnType(valid ? int.class : void.class).annotation(ServiceMethod.class);
+		
+		// salva o arquivo .CLASS da classe no diretorio de testes
+		TestUtils.saveClassToTestDir((ClassMock) mock);
+	}
+	
+	private void createFile(String name) throws IOException
+	{
+		FileUtils.touch(Paths.get(TestUtils.TEST_DIR, name).toFile());
+	}
+	
+	private PersistenceService getPersistenceService() throws Exception
+	{
+		// a lista de classes eh criada no construtor privado da classe PersistenceService
+		// por isso precisamos ter acesso via reflection
+		Constructor<PersistenceService> c = PersistenceService.class.getDeclaredConstructor();
+		c.setAccessible(true);
+		return c.newInstance();
+	}
+	
+	// Metodo utilitario para testar os metodos save() da classe PersistenceService.
+	private InputStream createStreamForUploadFile(String fileName) throws Exception
+	{
+		FileUtils.moveFileToDirectory(Paths.get(TestUtils.TEST_DIR, fileName).toFile(),
+				Paths.get(TestUtils.TEST_DIR, "upload").toFile(), true);
 
-	@Rule
-	// habilita a repeticao de testes
-	public RepeatTestRule rule = new RepeatTestRule();
+		return TestUtils.streamFromTestDir(String.format("upload/%s", fileName));
+	}
+	
+	@Before
+	public void doBefore()
+	{
+		// apaga o diretorio de testes antes de cada teste
+		TestUtils.cleanTestDir();
+	}
 
 	@BeforeClass
-	public static void setUp() {
-		TestUtils.cleanTestDir();
+	public static void doBeforeClass()
+	{
 		// atribui o diretorio de testes como diretorio de upload
 		Utils.getInstance().setProperty("upload.dir", TestUtils.TEST_DIR);
 	}
 
 	@AfterClass
-	public static void cleanUp() throws IOException {
+	public static void doAfterClass() throws IOException
+	{
 		// apaga os arquivos do diretorio de teste
 		TestUtils.cleanTestDir();
+		
 		// volta o diretorio de upload original
 		Utils.getInstance().setProperty("upload.dir", UPLOAD_DIR);
 	}
 
 	@Before
-	public void cleanUploadDir() throws IOException {
+	public void cleanUploadDir() throws IOException
+	{
 		TestUtils.cleanTestDir();
 	}
 
+	
 	@Test
-	@RepeatTest(times = REP_NUM)
-	public void testeListComUploadDirVazio() {
-		Assert.assertEquals(0, FileUtils.listFiles(TestUtils.TEST_DIR_FILE, TrueFileFilter.INSTANCE, null).size());
-		Assert.assertEquals(0, PersistenceService.getInstance().list().size());
+	public void testListClassesEmptyUploadDir() throws Exception
+	{
+		TestUtils.assertTestDirIsEmpty();
+		Assert.assertEquals(0, this.getPersistenceService().listServiceClasses().size());
 	}
 
 	@Test
-	@RepeatTest(times = REP_NUM)
-	public void testeListComUploadDirComDoisArquivosClass() {
-		// copia 2 classes validas para o diretorio de upload
-		TestUtils.copyToTestDir(Agenda.class, Tarefa.class);
-		Assert.assertEquals(2, FileUtils.listFiles(TestUtils.TEST_DIR_FILE, TrueFileFilter.INSTANCE, null).size());
-
-		List<ClassDescriptor> classList = PersistenceService.getInstance().list();
-		Assert.assertEquals(2, classList.size());
-		Assert.assertTrue(classList.contains(new ClassDescriptor(Agenda.class)));
-		Assert.assertTrue(classList.contains(new ClassDescriptor(Tarefa.class)));
-	}
-
-	@Test
-	@RepeatTest(times = REP_NUM)
-	public void testeListComUploadDirComUmArquivoClassEOutroGenerico() throws Exception {
-		// copia 1 classe valida e 1 arquivo generico para o diretorio de upload
-		TestUtils.copyToTestDir(Agenda.class);
-		FileUtils.touch(Paths.get(TestUtils.TEST_DIR, "FakeClass.txt").toFile());
-		Assert.assertEquals(2, FileUtils.listFiles(TestUtils.TEST_DIR_FILE, TrueFileFilter.INSTANCE, null).size());
-
-		List<ClassDescriptor> classList = PersistenceService.getInstance().list();
-		Assert.assertEquals(1, classList.size());
-		Assert.assertTrue(classList.contains(new ClassDescriptor(Agenda.class)));
-	}
-
-	@Test
-	@RepeatTest(times = REP_NUM)
-	public void testeListComUploadDirComDoisArquivosGenericos() throws Exception {
-		// copia 2 arquivos generico para o diretorio de upload
-		FileUtils.touch(Paths.get(TestUtils.TEST_DIR, "FakeClass1.txt").toFile());
-		FileUtils.touch(Paths.get(TestUtils.TEST_DIR, "FakeClass2.txt").toFile());
-		Assert.assertEquals(2, FileUtils.listFiles(TestUtils.TEST_DIR_FILE, TrueFileFilter.INSTANCE, null).size());
-
-		// copia 2 classes invalidas para o diretorio de upload
-		TestUtils.copyToTestDir(Pessoa.class, TarefaInvalida.class);
-
-		List<ClassDescriptor> classList = PersistenceService.getInstance().list();
-		Assert.assertEquals(0, classList.size());
-	}
-
-	@Test
-	@RepeatTest(times = REP_NUM)
-	public void testeListComUploadDirComArquivoClassNoSubdiretorio() throws Exception {
-		// cria um subdiretorio com 1 classe valida dentro
-		TestUtils.copyToTestDir(Agenda.class);
-		FileUtils.moveFileToDirectory(Paths.get(TestUtils.TEST_DIR, "Agenda.class").toFile(),
-				Paths.get(TestUtils.TEST_DIR, "subdir").toFile(),true);
-		Assert.assertEquals(3, FileUtils
-				.listFilesAndDirs(TestUtils.TEST_DIR_FILE, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE).size());
-
-		// deve listar classes de subdiretorios
-		//o list() esta listando todas as classes de subdiretorios atualmente
-		Assert.assertEquals(1, PersistenceService.getInstance().list().size());
+	public void testListClassesValidClasses() throws Exception
+	{
+		TestUtils.assertTestDirIsEmpty();
 		
+		// cria 2 classes validas
+		String validClass1 = TestUtils.createMockClassName();
+		String validClass2 = TestUtils.createMockClassName();
+		
+		this.createClass(validClass1, true);
+		this.createClass(validClass2, true);
+		
+		List<ClassDescriptor> classList = this.getPersistenceService().listServiceClasses();
+		Assert.assertEquals(2, classList.size());
+		Assert.assertNotNull(Utils.getFromCollection(classList, c -> c.getQualifiedName().equals(validClass1)));
+		Assert.assertNotNull(Utils.getFromCollection(classList, c -> c.getQualifiedName().equals(validClass2)));
 	}
-
+	
 	@Test
-	@RepeatTest(times = REP_NUM)
-	public void testeListComUploadDirComClassSemAnotacaoNecessaria() {
-		// copia 2 classes invalidas para o diretorio de upload
-		TestUtils.copyToTestDir(AgendaInvalida.class, TarefaInvalida.class);
-		Assert.assertEquals(2, FileUtils.listFiles(TestUtils.TEST_DIR_FILE, TrueFileFilter.INSTANCE, null).size());
-
-		List<ClassDescriptor> classList = PersistenceService.getInstance().list();
+	public void testListClassesInvalidClasses() throws Exception
+	{
+		TestUtils.assertTestDirIsEmpty();
+		
+		// cria 2 classes invalidas
+		String invalidClass1 = TestUtils.createMockClassName();
+		String invalidClass2 = TestUtils.createMockClassName();
+		
+		this.createClass(invalidClass1, false);
+		this.createClass(invalidClass2, false);
+		Assert.assertEquals(2, TestUtils.listTestDir().size());
+		
+		List<ClassDescriptor> classList = this.getPersistenceService().listServiceClasses();
 		Assert.assertEquals(0, classList.size());
 	}
 
 	@Test
-	@RepeatTest(times = REP_NUM)
-	public void testeListComUploadDirComJarValido() {
-		// cria o arquivo jar de teste com 2 classes validas e 3 invalidas
-		TestUtils.createJar("jarValido.jar", Agenda.class, AgendaInvalida.class, Tarefa.class, TarefaInvalida.class,
-				Pessoa.class);
-		Assert.assertEquals(1, FileUtils.listFiles(TestUtils.TEST_DIR_FILE, TrueFileFilter.INSTANCE, null).size());
+	public void testListClassesInvalidFiles() throws Exception
+	{
+		TestUtils.assertTestDirIsEmpty();
+		
+		// cria 2 arquivos de texto
+		this.createFile("File1.txt");
+		this.createFile("File2.txt");
+		Assert.assertEquals(2, TestUtils.listTestDir().size());
 
-		List<ClassDescriptor> classList = PersistenceService.getInstance().list();
-		Assert.assertEquals(2, classList.size());
-		Assert.assertTrue(classList.contains(new ClassDescriptor(Agenda.class)));
-		Assert.assertTrue(classList.contains(new ClassDescriptor(Tarefa.class)));
-	}
-
-	@Test
-	@RepeatTest(times = REP_NUM)
-	public void testeListComUploadDirComJarInvalido() {
-		// cria o arquivo jar de teste com 3 classes invalidas
-		TestUtils.createJar("jarInvalido.jar", AgendaInvalida.class, TarefaInvalida.class, Pessoa.class);
-		Assert.assertEquals(1, FileUtils.listFiles(TestUtils.TEST_DIR_FILE, TrueFileFilter.INSTANCE, null).size());
-
-		List<ClassDescriptor> classList = PersistenceService.getInstance().list();
+		List<ClassDescriptor> classList = this.getPersistenceService().listServiceClasses();
 		Assert.assertEquals(0, classList.size());
 	}
-
+	
 	@Test
-	@RepeatTest(times = REP_NUM)
-	public void testeListComUploadDirComJarEClassValidos() {
-		// cria o arquivo jar de teste com 1 classe valida
-		// copia 1 classe valida para o diretorio de upload
-		TestUtils.createJar("jarValido.jar", Agenda.class);
-		TestUtils.copyToTestDir(Tarefa.class);
-		Assert.assertEquals(2, FileUtils.listFiles(TestUtils.TEST_DIR_FILE, TrueFileFilter.INSTANCE, null).size());
-
-		List<ClassDescriptor> classList = PersistenceService.getInstance().list();
+	public void testListClassesWithInvalidFiles() throws Exception
+	{
+		TestUtils.assertTestDirIsEmpty();
+		
+		// cria 2 arquivos de texto
+		this.createFile("File1.txt");
+		this.createFile("File2.txt");
+		
+		// cria 2 classes validas
+		String validClass1 = TestUtils.createMockClassName();
+		String validClass2 = TestUtils.createMockClassName();
+		
+		this.createClass(validClass1, true);
+		this.createClass(validClass2, true);
+		Assert.assertEquals(4, TestUtils.listTestDir().size());
+		
+		List<ClassDescriptor> classList = this.getPersistenceService().listServiceClasses();
 		Assert.assertEquals(2, classList.size());
-		Assert.assertTrue(classList.contains(new ClassDescriptor(Agenda.class)));
-		Assert.assertTrue(classList.contains(new ClassDescriptor(Tarefa.class)));
+		Assert.assertNotNull(Utils.getFromCollection(classList, c -> c.getQualifiedName().equals(validClass1)));
+		Assert.assertNotNull(Utils.getFromCollection(classList, c -> c.getQualifiedName().equals(validClass2)));	
 	}
-
+	
 	@Test
-	@RepeatTest(times = REP_NUM)
-	public void testeListComUploadDirComJarEClassInvalidos() {
-		// cria o arquivo jar de teste com 2 classes invalidas
-		// copia 1 classe invalida para o diretorio de upload
-		TestUtils.createJar("jarInvalido.jar", AgendaInvalida.class, TarefaInvalida.class);
-		TestUtils.copyToTestDir(Pessoa.class);
-		Assert.assertEquals(2, FileUtils.listFiles(TestUtils.TEST_DIR_FILE, TrueFileFilter.INSTANCE, null).size());
+	public void testListClassesWithInvalidClasses() throws Exception
+	{
+		TestUtils.assertTestDirIsEmpty();
+		
+		// cria 2 classes validas
+		String validClass1 = TestUtils.createMockClassName();
+		String validClass2 = TestUtils.createMockClassName();
+		
+		this.createClass(validClass1, true);
+		this.createClass(validClass2, true);
+		
+		// cria 2 classes invalidas
+		String invalidClass1 = TestUtils.createMockClassName();
+		String invalidClass2 = TestUtils.createMockClassName();
+		
+		this.createClass(invalidClass1, false);
+		this.createClass(invalidClass2, false);
+		Assert.assertEquals(4, TestUtils.listTestDir().size());
+		
+		List<ClassDescriptor> classList = this.getPersistenceService().listServiceClasses();
+		Assert.assertEquals(2, classList.size());
+		Assert.assertNotNull(Utils.getFromCollection(classList, c -> c.getQualifiedName().equals(validClass1)));
+		Assert.assertNotNull(Utils.getFromCollection(classList, c -> c.getQualifiedName().equals(validClass2)));	
+	}
+	
+	@Test
+	public void testListClassesValidJar() throws Exception
+	{
+		TestUtils.assertTestDirIsEmpty();
+		
+		// cria 2 classes validas
+		String validClass1 = TestUtils.createMockClassName();
+		String validClass2 = TestUtils.createMockClassName();
+		
+		this.createClass(validClass1, true);
+		this.createClass(validClass2, true);
+		
+		// cria 2 classes invalidas
+		String invalidClass1 = TestUtils.createMockClassName();
+		String invalidClass2 = TestUtils.createMockClassName();
+		
+		this.createClass(invalidClass1, false);
+		this.createClass(invalidClass2, false);
+		
+		// cria o jar
+		Assert.assertTrue(TestUtils.createJar("validJar.jar", validClass1, validClass2, invalidClass1, invalidClass2));
 
-		List<ClassDescriptor> classList = PersistenceService.getInstance().list();
+		// apaga as classes, ficando somente o jar
+		TestUtils.deleteFromTestDir("class");
+		Assert.assertEquals(1, TestUtils.listTestDir().size());
+		
+		List<ClassDescriptor> classList = this.getPersistenceService().listServiceClasses();
+		Assert.assertEquals(2, classList.size());
+		Assert.assertNotNull(Utils.getFromCollection(classList, c -> c.getQualifiedName().equals(validClass1)));
+		Assert.assertNotNull(Utils.getFromCollection(classList, c -> c.getQualifiedName().equals(validClass2)));	
+	}
+	
+	@Test
+	public void testListClassesInvalidJar() throws Exception
+	{
+		TestUtils.assertTestDirIsEmpty();
+		
+		// cria 2 classes invalidas
+		String invalidClass1 = TestUtils.createMockClassName();
+		String invalidClass2 = TestUtils.createMockClassName();
+		
+		this.createClass(invalidClass1, false);
+		this.createClass(invalidClass2, false);
+		
+		// cria o jar
+		Assert.assertTrue(TestUtils.createJar("invalidJar.jar", invalidClass1, invalidClass2));
+
+		// apaga as classes, ficando somente o jar
+		TestUtils.deleteFromTestDir("class");
+		Assert.assertEquals(1, TestUtils.listTestDir().size());
+		
+		List<ClassDescriptor> classList = this.getPersistenceService().listServiceClasses();
 		Assert.assertEquals(0, classList.size());
 	}
-
+	
 	@Test
-	@RepeatTest(times = REP_NUM)
-	public void testeListComUploadDirComJarValidoEClassInvalido() {
-		// cria o arquivo jar de teste com 2 classes validas
-		// copia 1 classe invalida para o diretorio de upload
-		TestUtils.createJar("jarValido.jar", Agenda.class, Tarefa.class, AgendaInvalida.class, TarefaInvalida.class);
-		TestUtils.copyToTestDir(Pessoa.class);
-		Assert.assertEquals(2, FileUtils.listFiles(TestUtils.TEST_DIR_FILE, TrueFileFilter.INSTANCE, null).size());
+	public void testListClassesAllTogether() throws Exception
+	{
+		TestUtils.assertTestDirIsEmpty();
+		
+		// cria 2 classes validas
+		String validClass1 = TestUtils.createMockClassName();
+		String validClass2 = TestUtils.createMockClassName();
+		
+		this.createClass(validClass1, true);
+		this.createClass(validClass2, true);
+		
+		// cria 2 classes invalidas
+		String invalidClass1 = TestUtils.createMockClassName();
+		String invalidClass2 = TestUtils.createMockClassName();
+		
+		this.createClass(invalidClass1, false);
+		this.createClass(invalidClass2, false);
+		
+		// cria os jars valido/invalido
+		Assert.assertTrue(TestUtils.createJar("validJar.jar", validClass1, validClass2));
+		Assert.assertTrue(TestUtils.createJar("invalidJar.jar", invalidClass1, invalidClass2));
 
-		List<ClassDescriptor> classList = PersistenceService.getInstance().list();
+		// apaga as classes, ficando somente os jars
+		TestUtils.deleteFromTestDir("class");
+		Assert.assertEquals(2, TestUtils.listTestDir().size());
+		
+		// cria +1 classe valida/invalida
+		String validClass3 = TestUtils.createMockClassName();
+		String invalidClass3 = TestUtils.createMockClassName();
+		
+		this.createClass(validClass3, true);
+		this.createClass(invalidClass3, false);
+		
+		// cria 1 arquivo de texto
+		this.createFile("File1.txt");
+		
+		// 2 jars, 2 classes, 1 arquivo texto
+		Assert.assertEquals(5, TestUtils.listTestDir().size());
+
+		List<ClassDescriptor> classList = this.getPersistenceService().listServiceClasses();
+		Assert.assertEquals(3, classList.size());
+		Assert.assertNotNull(Utils.getFromCollection(classList, c -> c.getQualifiedName().equals(validClass1)));
+		Assert.assertNotNull(Utils.getFromCollection(classList, c -> c.getQualifiedName().equals(validClass2)));
+		Assert.assertNotNull(Utils.getFromCollection(classList, c -> c.getQualifiedName().equals(validClass3)));
+	}
+	
+	@Test
+	public void testListMethodsNullClassName() throws Exception
+	{
+		TestUtils.assertTestDirIsEmpty();
+		Assert.assertEquals(0, this.getPersistenceService().listServiceMethods(null).size());
+	}
+	
+	@Test
+	public void testListMethodsInvalidClassName() throws Exception
+	{
+		TestUtils.assertTestDirIsEmpty();
+		Assert.assertEquals(0, this.getPersistenceService().listServiceMethods("a.invalid.Class").size());
+	}
+
+	@Test 
+	public void testListMethodsSimpleClassName() throws Exception
+	{
+		TestUtils.assertTestDirIsEmpty();
+		
+		// cria 1 classe valida
+		String validClass = TestUtils.createMockClassName();		
+		this.createClass("my.package." + validClass, true);
+		Assert.assertEquals(1, TestUtils.listTestDir().size());
+		
+		Assert.assertEquals(0, this.getPersistenceService().listServiceMethods(validClass).size());
+	}
+	
+	@Test 
+	public void testListMethodsValidClassName() throws Exception
+	{
+		TestUtils.assertTestDirIsEmpty();
+		
+		// cria 1 classe valida
+		String validClass = TestUtils.createMockClassName();		
+		this.createClass("my.package." + validClass, true);
+		Assert.assertEquals(1, TestUtils.listTestDir().size());
+		
+		List<MethodDescriptor> methodList = this.getPersistenceService().listServiceMethods("my.package." + validClass);
+		Assert.assertEquals(1, methodList.size());
+		Assert.assertNotNull(Utils.getFromCollection(methodList, m -> m.getName().equals("method")));
+	}
+
+	@Test 
+	public void testSaveInvalidClass() throws Exception
+	{
+		TestUtils.assertTestDirIsEmpty();
+		
+		// cria 1 classe invalida
+		String invalidClass = TestUtils.createMockClassName();
+		this.createClass(invalidClass, false);		
+		Assert.assertEquals(1, TestUtils.listTestDir().size());
+		
+		String fileName = String.format("%s.class", invalidClass);
+		Assert.assertFalse(this.getPersistenceService().saveUploadedFile(this.createStreamForUploadFile(fileName), fileName));
+		List<ClassDescriptor> classList = this.getPersistenceService().listServiceClasses();
+		Assert.assertEquals(0, classList.size());
+	}
+	
+	@Test 
+	public void testSaveValidClass() throws Exception
+	{
+		TestUtils.assertTestDirIsEmpty();
+		
+		// cria 1 classe valida
+		String validClass = TestUtils.createMockClassName();
+		this.createClass(validClass, true);		
+		Assert.assertEquals(1, TestUtils.listTestDir().size());
+
+		String fileName = String.format("%s.class", validClass);
+		Assert.assertTrue(this.getPersistenceService().saveUploadedFile(this.createStreamForUploadFile(fileName), fileName));
+		
+		List<ClassDescriptor> classList = this.getPersistenceService().listServiceClasses();
+		Assert.assertEquals(1, classList.size());
+		Assert.assertNotNull(Utils.getFromCollection(classList, c -> c.getQualifiedName().equals(validClass)));
+	}
+
+	@Test 
+	public void testSaveInvalidJar() throws Exception
+	{
+		TestUtils.assertTestDirIsEmpty();
+		
+		// cria 2 classes invalidas
+		String invalidClass1 = TestUtils.createMockClassName();
+		String invalidClass2 = TestUtils.createMockClassName();
+		
+		this.createClass(invalidClass1, false);
+		this.createClass(invalidClass2, false);
+		
+		// cria o jar
+		Assert.assertTrue(TestUtils.createJar("invalidJar.jar", invalidClass1, invalidClass2));
+		
+		// apaga as classes, ficando somente o jar
+		TestUtils.deleteFromTestDir("class");
+		Assert.assertEquals(1, TestUtils.listTestDir().size());
+		
+		Assert.assertFalse(this.getPersistenceService().saveUploadedFile(this.createStreamForUploadFile("invalidJar.jar"), "invalidJar.jar"));
+		List<ClassDescriptor> classList = this.getPersistenceService().listServiceClasses();
+		Assert.assertEquals(0, classList.size());
+	}
+	
+	@Test 
+	public void testSaveValidJar() throws Exception
+	{
+		TestUtils.assertTestDirIsEmpty();
+		
+		// cria 2 classes validas
+		String validClass1 = TestUtils.createMockClassName();
+		String validClass2 = TestUtils.createMockClassName();
+		
+		this.createClass(validClass1, true);
+		this.createClass(validClass2, true);
+		
+		// cria o jar
+		Assert.assertTrue(TestUtils.createJar("validJar.jar", validClass1, validClass2));
+		
+		// apaga as classes, ficando somente o jar
+		TestUtils.deleteFromTestDir("class");
+		Assert.assertEquals(1, TestUtils.listTestDir().size());
+		
+		Assert.assertTrue(this.getPersistenceService().saveUploadedFile(this.createStreamForUploadFile("validJar.jar"), "validJar.jar"));
+		List<ClassDescriptor> classList = this.getPersistenceService().listServiceClasses();
 		Assert.assertEquals(2, classList.size());
-		Assert.assertTrue(classList.contains(new ClassDescriptor(Agenda.class)));
-		Assert.assertTrue(classList.contains(new ClassDescriptor(Tarefa.class)));
-	}
-
-	@Test
-	@RepeatTest(times = REP_NUM)
-	public void testeListComUploadDirComJarInvalidoEClassValido() {
-		// cria o arquivo jar de teste com 1 classe invalida
-		// copia 2 classes validas para o diretorio de upload
-		TestUtils.createJar("jarInvalido.jar", Pessoa.class);
-		TestUtils.copyToTestDir(Agenda.class, Tarefa.class);
-		Assert.assertEquals(3, FileUtils.listFiles(TestUtils.TEST_DIR_FILE, TrueFileFilter.INSTANCE, null).size());
-
-		List<ClassDescriptor> classList = PersistenceService.getInstance().list();
-		Assert.assertEquals(2, classList.size());
-		Assert.assertTrue(classList.contains(new ClassDescriptor(Agenda.class)));
-		Assert.assertTrue(classList.contains(new ClassDescriptor(Tarefa.class)));
-	}
-
-	@Test
-	@RepeatTest(times = REP_NUM)
-	public void testeSaveComClassValido() throws Exception {
-		// classe: Agenda.class
-		InputStream classStream = this.createStreamForUploadClass(Agenda.class);
-
-		Assert.assertTrue(PersistenceService.getInstance().save(classStream, "Agenda.class"));
-	}
-
-	@Test
-	@RepeatTest(times = REP_NUM)
-	public void testeSaveComClassInvalida() throws Exception {
-		// classe: Pessoa.class
-		InputStream classStream = this.createStreamForUploadClass(Pessoa.class);
-
-		Assert.assertFalse(PersistenceService.getInstance().save(classStream, "Pessoa.class"));
-	}
-
-	@Test
-	@RepeatTest(times = REP_NUM)
-	public void testeSaveComJarValido() throws Exception {
-		// jar: jarValido.jar
-		InputStream jarStream = this.createStreamForUploadJar("jarValido.jar", Agenda.class, TarefaInvalida.class,
-				Pessoa.class);
-
-		Assert.assertTrue(PersistenceService.getInstance().save(jarStream, "jarValido.jar"));
-	}
-
-	@Test
-	@RepeatTest(times = REP_NUM)
-	public void testeSaveComJarInvalido() throws Exception {
-		// jar: jarInvalido.jar
-		InputStream jarStream = this.createStreamForUploadJar("jarInvalido.jar", AgendaInvalida.class,
-				TarefaInvalida.class, Pessoa.class);
-
-		Assert.assertFalse(PersistenceService.getInstance().save(jarStream, "jarInvalido.jar"));
-	}
-
-	@Test
-	@RepeatTest(times = REP_NUM)
-	public void testeGetClassComClassValido() {
-		// copia 3 classes para o diretorio de upload
-		TestUtils.copyToTestDir(Agenda.class, AgendaInvalida.class, Tarefa.class);
-		Assert.assertEquals(3, FileUtils.listFiles(TestUtils.TEST_DIR_FILE, TrueFileFilter.INSTANCE, null).size());
-
-		ClassDescriptor classDesc = PersistenceService.getInstance().getClass(Agenda.class.getCanonicalName());
-		Assert.assertNotNull(classDesc);
-		Assert.assertEquals(new ClassDescriptor(Agenda.class), classDesc);
-	}
-
-	@Test
-	@RepeatTest(times = REP_NUM)
-	public void testeGetClassComClassInvalido() {
-		// copia 3 classes para o diretorio de upload
-		TestUtils.copyToTestDir(Agenda.class, AgendaInvalida.class, Tarefa.class);
-		Assert.assertEquals(3, FileUtils.listFiles(TestUtils.TEST_DIR_FILE, TrueFileFilter.INSTANCE, null).size());
-
-		ClassDescriptor classDesc = PersistenceService.getInstance().getClass(AgendaInvalida.class.getCanonicalName());
-		Assert.assertNull(classDesc);
-	}
-
-	@Test
-	@RepeatTest(times = REP_NUM)
-	public void testeGetClassComClassInexistente() {
-		Assert.assertEquals(0, FileUtils.listFiles(TestUtils.TEST_DIR_FILE, TrueFileFilter.INSTANCE, null).size());
-
-		Assert.assertNull(PersistenceService.getInstance().getClass("my.FakeClass"));
-	}
-
-	@Test
-	@RepeatTest(times = REP_NUM)
-	public void testeGetClassComJarValido() {
-		// cria o arquivo jar de teste com 2 classes validas
-		TestUtils.createJar("jarValido.jar", Agenda.class, Tarefa.class, AgendaInvalida.class, TarefaInvalida.class);
-		Assert.assertEquals(1, FileUtils.listFiles(TestUtils.TEST_DIR_FILE, TrueFileFilter.INSTANCE, null).size());
-
-		ClassDescriptor classDesc = PersistenceService.getInstance().getClass(Agenda.class.getCanonicalName());
-		Assert.assertNotNull(classDesc);
-		Assert.assertEquals(new ClassDescriptor(Agenda.class), classDesc);
-
-		classDesc = PersistenceService.getInstance().getClass(Tarefa.class.getCanonicalName());
-		Assert.assertNotNull(classDesc);
-		Assert.assertEquals(new ClassDescriptor(Tarefa.class), classDesc);
-
-		Assert.assertNull(PersistenceService.getInstance().getClass(AgendaInvalida.class.getCanonicalName()));
-		Assert.assertNull(PersistenceService.getInstance().getClass(TarefaInvalida.class.getCanonicalName()));
-	}
-
-	@Test
-	@RepeatTest(times = REP_NUM)
-	public void testeGetClassComJarInvalido() {
-		// cria o arquivo jar de teste com 3 classes invalidas
-		TestUtils.createJar("jarInvalido.jar", AgendaInvalida.class, TarefaInvalida.class, Pessoa.class);
-		Assert.assertEquals(1, FileUtils.listFiles(TestUtils.TEST_DIR_FILE, TrueFileFilter.INSTANCE, null).size());
-
-		Assert.assertNull(PersistenceService.getInstance().getClass(AgendaInvalida.class.getCanonicalName()));
-		Assert.assertNull(PersistenceService.getInstance().getClass(TarefaInvalida.class.getCanonicalName()));
-		Assert.assertNull(PersistenceService.getInstance().getClass(Pessoa.class.getCanonicalName()));
-	}
-
-	/**
-	 * Metodo utilitario para testar os metodos save() da classe PersistenceService.
-	 */
-	private InputStream createStreamForUploadClass(Class<?> clazz) throws Exception {
-		// cria um subdiretorio temporario e move a classe para la
-		TestUtils.copyToTestDir(clazz);
-		FileUtils.moveFileToDirectory(Paths.get(TestUtils.TEST_DIR, clazz.getSimpleName() + ".class").toFile(),
-				Paths.get(TestUtils.TEST_DIR, "subdir").toFile(), true);
-
-		return FileUtils
-				.openInputStream(Paths.get(TestUtils.TEST_DIR, "subdir", clazz.getSimpleName() + ".class").toFile());
-	}
-
-	/**
-	 * Metodo utilitario para testar os metodos save() da classe PersistenceService.
-	 */
-	private InputStream createStreamForUploadJar(String jarName, Class<?>... classes) throws Exception {
-		// cria o jar no diretorio de teste
-		TestUtils.createJar(jarName, classes);
-
-		// cria um subdiretorio temporario e move o jar para la
-		FileUtils.moveFileToDirectory(Paths.get(TestUtils.TEST_DIR, jarName).toFile(),
-				Paths.get(TestUtils.TEST_DIR, "subdir").toFile(), true);
-
-		return FileUtils.openInputStream(Paths.get(TestUtils.TEST_DIR, "subdir", jarName).toFile());
+		Assert.assertNotNull(Utils.getFromCollection(classList, c -> c.getQualifiedName().equals(validClass1)));
+		Assert.assertNotNull(Utils.getFromCollection(classList, c -> c.getQualifiedName().equals(validClass2)));
 	}
 }

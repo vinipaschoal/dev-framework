@@ -2,11 +2,11 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>br.inpe.cap385</groupId>
-	<artifactId>devframework</artifactId>
+	<groupId>org.esfinge</groupId>
+	<artifactId>virtuallab</artifactId>
 	<packaging>war</packaging>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>devframework Maven Webapp</name>
+	<name>VirtualLab Maven Webapp</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
@@ -98,9 +98,9 @@
 
 		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
 		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>2.8.5</version>
+		    <groupId>org.webjars</groupId>
+		    <artifactId>chartjs</artifactId>
+		    <version>2.8.0</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload -->
@@ -178,13 +178,50 @@
 		<dependency>
 			<groupId>net.sf.esfinge</groupId>
 			<artifactId>metadata</artifactId>
-			<version>1.5.6</version>
+			<version>1.5.8</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>3.3.2</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/com.kjetland/mbknor-jackson-jsonschema -->
+		<dependency>
+		    <groupId>com.kjetland</groupId>
+		    <artifactId>mbknor-jackson-jsonschema_2.12</artifactId>
+		    <version>1.0.34</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+		<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-api</artifactId>
+		    <version>1.7.25</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-simple -->
+		<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-simple</artifactId>
+		    <version>1.7.25</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/net.sf.esfinge/classmock -->
+		<dependency>
+		    <groupId>net.sf.esfinge</groupId>
+		    <artifactId>classmock</artifactId>
+		    <version>2.3</version>
+		    <scope>test</scope>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.ow2.asm/asm-all -->
+		<dependency>
+		    <groupId>org.ow2.asm</groupId>
+		    <artifactId>asm-all</artifactId>
+		    <version>6.0_BETA</version>
+		    <scope>test</scope>
 		</dependency>
 
 	</dependencies>
@@ -211,7 +248,7 @@
 		    		<arg>-parameters</arg>
 		   			 </compilerArgs>
 					<url>http://localhost:8080/manager/text</url>
-					<path>/devframework</path>
+					<path>/virtuallab</path>
 					<!-- Set update to true to avoid exist war package can not be override 
 						error -->
 					<update>true</update>

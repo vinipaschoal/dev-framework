@@ -28,6 +28,14 @@ app.settings = {
 		setLoad: function () {
 			$(".Load").append(app.settings.loading);
 		},
+		setLoadSubmit: function (selector, message, disabled) {
+			message = message || '';
+			disabled = disabled || '';
+			$button = $("." + selector);
+			$button.val(message);
+			if (disabled) $button.attr('disabled',disabled);
+			else $button.removeAttr('disabled');
+		},
 		getUrlParametes: function () {
 			var vars = [], hash;
 		    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
@@ -38,6 +46,31 @@ app.settings = {
 		        vars[hash[0]] = hash[1];
 		    }
 		    return vars;
+		},
+		isJson: function (str) {
+			try {
+		        JSON.parse(str);
+		    } catch (e) {
+		        return false;
+		    }
+		    return true;
+		},
+		loadScreenDescription: function () {
+			var classDesc = app.storage.get("classDescriptor");
+			if (classDesc != null){
+				if ($('#breadcrumbClassName').length) $('#breadcrumbClassName').text(classDesc.qualifiedName);
+				if ($('#headerClassName').length) $('#headerClassName').text(classDesc.label);
+				if ($('#InvokeClassName').length) $('#InvokeClassName').text(classDesc.qualifiedName + "(" + classDesc.label + ")");
+				if ($('#InvokeClassDescription').length) $('#InvokeClassDescription').text(classDesc.description);
+			}
+
+			var methodDesc = app.storage.get("methodDescriptor");
+			if (methodDesc != null){
+				if ($('#breadcrumbMethodName').length) $('#breadcrumbMethodName').text(app.utils.methodSignature(methodDesc));
+				if ($('#headerMethodName').length) $('#headerMethodName').text(methodDesc.label);
+				if ($('#InvokeMethodName').length) $('#InvokeMethodName').text(app.utils.methodSignature(methodDesc) + "(" + classDesc.methodDesc + ")");
+				if ($('#InvokeMethodDescription').length) $('#InvokeMethodDescription').text(methodDesc.description === "" ? "Sem descrição" : methodDesc.description);
+			}
 		},
 		init: function () {
 			
@@ -69,6 +102,55 @@ app.settings = {
 	        });
 		}
 };
+
+// funcoes para trabalhar com SessionStorage
+app.storage = {
+		
+		// limpa a sessao
+		clear: function() {
+			sessionStorage.clear();
+		},
+		
+		// armazena um objeto na sessao
+		put: function(key, value) {
+			sessionStorage.setItem(key, JSON.stringify(value));
+		},
+		
+		// recupera um objeto da sessao
+		get: function(key) {
+			return app.settings.isJson(sessionStorage.getItem(key)) ? JSON.parse(sessionStorage.getItem(key)) : null;
+		},
+		
+		// remove um objeto da sessao
+		remove: function(key) {
+			sessionStorage.removeItem(key);
+		}		
+};
+
+// redireciona para pagina por caminho relativo
+app.callPage = function (page){
+	  location.pathname = location.pathname.replace(/(.*)\/[^/]*/, "$1/"+page);
+};
+
+// funcoes utilitarias
+app.utils = {
+		simpleClassName: function(className) {
+			return className.substring(className.lastIndexOf('.') + 1);
+		},
+		
+		methodSignature: function(methodDesc) {
+        	var $parameters = "";
+           	var $count = 0;
+       	  	$.each(methodDesc.parameters, function (p, paramDesc) {
+	  			$count++;
+	  			$parameters = $parameters + paramDesc.dataType + " " + paramDesc.label + (($count < methodDesc.parameters.length ? ", " : ""));
+                
+	  		});
+       	  	
+       	  	return methodDesc.returnType + " " + methodDesc.name + "(" + $parameters + ")";
+		}
+}
+
 
 $(function() {
     app.settings.init();

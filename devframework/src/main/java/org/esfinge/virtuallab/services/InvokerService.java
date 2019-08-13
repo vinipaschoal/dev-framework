@@ -1,114 +1,62 @@
 package org.esfinge.virtuallab.services;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Set;
+import java.lang.reflect.Method;
 
-import org.esfinge.virtuallab.annotations.container.ClassContainer;
-import org.esfinge.virtuallab.annotations.container.ContainerFactory;
-import org.esfinge.virtuallab.annotations.container.MethodContainer;
-import org.esfinge.virtuallab.annotations.container.TypeContainer;
-import org.esfinge.virtuallab.domain.ClassDescriptor;
+import org.esfinge.virtuallab.descriptors.MethodDescriptor;
+import org.esfinge.virtuallab.exceptions.InvocationException;
+import org.esfinge.virtuallab.utils.ReflectionUtils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+/**
+ * Invoca metodos em classes de servico. 
+ */
+public class InvokerService
+{
+	// instancia unica da classe
+	private static InvokerService _instance;
 
-public class InvokerService extends ClassLoader {
-
-	private TransformationService transformationService = new TransformationService();
-	private List<Object> convertedValues = new ArrayList<Object>();
-
-	public Object call(String classQualifiedName, String methodName, LinkedHashMap<String, Object> allParameters)
-			throws Exception {
-		ClassDescriptor classDesc = PersistenceService.getInstance().getClass(classQualifiedName);
-		if (classDesc != null) {
-			Class<?> clazz = classDesc.getClassClass();
-			Object instanceOfClass = clazz.newInstance();
-			List<MethodContainer> methods = searchMatchingMethod(clazz, methodName, allParameters.keySet());
-			if (methods != null && !methods.isEmpty()) {
-				MethodContainer selectedMethod = checkParameterCompatibility(methods, allParameters);
-				return callMethodWithSpecificReturn(selectedMethod, instanceOfClass);
-			}
-			throw new Exception("erro ao executar metodo");
-		}
-		throw new Exception("erro ao executar metodo");
+	
+ 	/**
+	 * Construtor interno.
+	 */
+	private InvokerService()
+	{
+		
 	}
+	
+	/**
+	 * Singleton.
+	 */
+	public static InvokerService getInstance()
+	{
+		if (_instance == null)
+			_instance = new InvokerService();
 
-	private MethodContainer checkParameterCompatibility(List<MethodContainer> methods,
-			LinkedHashMap<String, Object> allParameters) {
-		for (MethodContainer methodContainer : methods) {
-			List<String> parameterNames = methodContainer.getLabeledParameterNames();
-			boolean errorOccurred = false;
-			convertedValues.clear();
-			for (int i = 0; i < methodContainer.getMethod().getParameterCount(); i++) {
-				try {
-					if (methodContainer.getMethod().getParameters()[i].getType().isPrimitive()) {
-						TransformationService transformationService = new TransformationService();
-						convertedValues.add(transformationService.wrapperPrimitive(
-								methodContainer.getMethod().getParameters()[i].getType(),
-								String.valueOf(allParameters.get(parameterNames.get(i)))));
-					} else {
-						convertedValues.add(methodContainer.getMethod().getParameters()[i].getType()
-								.cast(allParameters.get(parameterNames.get(i))));
-					}
-				} catch (Exception e) {
-					errorOccurred = true;
-					break;
-				}
-			}
-			if (!errorOccurred) {
-				return methodContainer;
-			}
-		}
-		return null;
+		return _instance;
 	}
-
-	private List<MethodContainer> searchMatchingMethod(Class<?> clazz, String methodName, Set<String> parameterNames)
-			throws Exception {
-		List<MethodContainer> methodsContainer = new ArrayList<MethodContainer>();
-		ClassContainer classContainer = ContainerFactory.create(clazz, TypeContainer.CLASS_CONTAINER);
-		for (MethodContainer methodContainer : classContainer.getMethodsWithServiceMethod()) {
-			if (methodContainer.getMethodName().equals(methodName)
-					&& methodContainer.getMethod().getParameterCount() == parameterNames.size()
-					&& matchingParameterNames(methodContainer.getLabeledParameterNames(), parameterNames)) {
-				methodsContainer.add(methodContainer);
-			}
+	
+	/**
+	 * Invoca o metodo com os parametros informados.
+	 */
+	public Object call(MethodDescriptor methodDescriptor, Object... paramValues) throws InvocationException
+	{
+		// verifica se foi especificado um descritor de metodo
+		if ( methodDescriptor == null )
+			throw new InvocationException("O descritor do metodo a ser invocado nao pode ser nulo!");
+		
+		try
+		{
+			// obtem o metodo a ser invocado
+			Method method = ReflectionUtils.getMethod(methodDescriptor);
+			
+			// cria um objeto da classe cujo metodo sera invocado
+			Object obj = ReflectionUtils.findClass(methodDescriptor.getClassName()).newInstance();
+			
+			// invoca o metodo
+			return method.invoke(obj, paramValues);
 		}
-		if (methodsContainer.isEmpty()) {
-			return null;
-		} else {
-			return methodsContainer;
-		}
-
-	}
-
-	private boolean matchingParameterNames(List<String> methodParameters, Set<String> urlParameters) {
-		if(methodParameters.size()!=urlParameters.size()) {
-			return false;
-		}
-		for (String parametroDaUrl : urlParameters) {
-			if (!methodParameters.contains(parametroDaUrl)) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	private Object callMethodWithSpecificReturn(MethodContainer methodContainer, Object instanceOfClass)
-			throws JsonProcessingException, Exception {
-		Object returnValue;
-		if (methodContainer.getNumberOfParameters() > 0) {
-			returnValue = methodContainer.getMethod().invoke(instanceOfClass, convertedValues.toArray());
-		} else {
-			returnValue = methodContainer.getMethod().invoke(instanceOfClass);
-		}
-		if (methodContainer.isAnnotatedWithJsonReturn()) {
-			return transformationService.transformToJson(returnValue);
-		} else if (methodContainer.isAnnotatedWithHtmlTableReturn()) {
-			return transformationService.transformToHtml((List<?>) returnValue);
-		} else {
-			return returnValue;
+		catch ( Exception exc )
+		{
+			throw new InvocationException("Erro ao tentar invocar metodo!", exc);
 		}
 	}
-
 }

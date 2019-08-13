@@ -1,10 +1,16 @@
 app.Classes = {
 		validExts: new Array(".class",".jar"),
 		tableClass: $('#classTable').DataTable({"language": app.settings.languagePtBr }),
+		
+		// funcao de inicializacao 
 		init: function () {
 			
 			app.settings.loading.show();
 			
+			// apaga o storage atual
+			app.storage.clear();
+
+			// lista as classes
 			app.Classes.list();
 	    	
 	    	var validExts = new Array(".class",".jar");
@@ -24,37 +30,9 @@ app.Classes = {
 				event.preventDefault();                
 				app.Classes.save();
 	        });
-	    	
-	    	//https://hmkcode.github.io/java-servlet-send-receive-json-using-jquery-ajax/
-	    	/*	    	
-	    	$('#classTable').on('click', 'tbody > tr > td > a', function (e) {
-	    		e.preventDefault();
-	    		
-	    		var $clazz = $(this).html();
-	    		var clazz = new Object();
-	    		clazz.name = $clazz;
-	    		
-	    		
-	    		
-	    		$.ajax({
-	    			url: 'listMethods.op',
-	    			type: 'POST',
-	    			dataType: 'json',
-	    			data: JSON.stringify(clazz),
-	    			contentType: 'application/json',
-	    			mimeType: 'application/json',
-	    			success: function (data) {
-
-	    	        },
-	    			error:function(data,status,er) {
-	    				alert("error");
-	    			}
-	    		});
-	    		
-			});
-			*/
-	    	
 		},
+		
+		// carrega a lista de classes
 		list: function(){
 			
         	app.Classes.tableClass.rows().remove().draw();
@@ -66,19 +44,23 @@ app.Classes = {
                 contentType: false,
                 cache: false,
                 timeout: 600000,
-                success: function (data) {
-                    console.log(data);
-                    if (data.success){
-	                    var $classList = data.clazzes;                    
-	                    $.each($classList, function( i, classe ) {
+                success: function (result) {
+                    console.log(result);
+                    if (result.success){
+                    	var classList = result.data;
+                        
+                        // armazena as classes recebidas no storage
+                        app.storage.put("classList", classList);
+                    	
+	                    $.each(classList, function( i, classDesc ) {
 	                    	app.Classes.tableClass.row.add([
-								classe.name
-								,"<a href='methods.jsp?clazz=" + classe.qualifiedName + "'>" + classe.qualifiedName + "</a>"
-								]).draw( false );
+	                    		classDesc.label, 
+								"<a href='#' onclick='app.Classes.listMethods(" + i + ")'>" + classDesc.qualifiedName + "</a>",
+								classDesc.description]).draw( false );
 	                   	});
                     }else{
                     	alertBt({
-       	        	      messageText: data.message,
+       	        	      messageText: result.message,
        	        	      headerText: "Alerta",
        	        	      alertType: "danger"
        	        	    });
@@ -97,6 +79,47 @@ app.Classes = {
                 }
             });
 		},
+		
+		// carrega os metodos da classe selecionada
+		listMethods: function(index){
+			
+			// recupera o descritor da classe escolhida
+    		var classDesc = app.storage.get("classList")[index];
+
+			// JSON de request
+    		var jsonReq = new Object();
+    		jsonReq.clazz = classDesc.qualifiedName;
+    		
+    		
+    		$.ajax({
+    			url: 'listMethods.op',
+    			type: 'POST',
+    			dataType: 'json',
+    			data: JSON.stringify(jsonReq),
+    			contentType: 'application/json',
+    			mimeType: 'application/json',
+    			success: function (result) {
+    				console.log(result);
+    				
+    				// apaga o storage atual
+    				app.storage.clear();
+    				
+    				// armazena o descritor da classe selecionada
+    				app.storage.put("classDescriptor", classDesc);
+    				
+    				// armazena o objeto recebido no storage
+    				app.storage.put("methodList", result.data);
+    				
+    				// redireciona para a pagina de metodos
+    				app.callPage("methods.jsp");
+    	        },
+    			error:function(data,status,er) {
+    				alert("error");
+    			}
+    		});
+		},
+		
+		// faz o upload do arquivo (classe/jar) selecionado 
 		save: function () {
 
 			var $form = $('#fileUploadForm');
@@ -135,23 +158,23 @@ app.Classes = {
                 contentType: false,
                 cache: false,
                 timeout: 600000,
-                success: function (data) {
-                    console.log(data);
+                success: function (result) {
+                    console.log(result);
                     $("#btnSubmit").attr("disabled", false);
                     
-                    if (data.success){
+                    if (result.success){
                     	$('#uploadFile').replaceWith($('#uploadFile').val('').clone(true));
                         $("#inputGroupFile01").text("Selecione uma classe java");
                         $('#classModal').modal('hide');
                         alertBt({
-       	        	      messageText: data.message,
+       	        	      messageText: result.message,
        	        	      headerText: "Confirmação",
        	        	      alertType: "success"
        	        	    });
                         app.Classes.list();
                     }else{
                     	alertBt({
-         	        	      messageText: data.message,
+         	        	      messageText: result.message,
          	        	      headerText: "Alerta",
          	        	      alertType: "warning"
          	        	    });
