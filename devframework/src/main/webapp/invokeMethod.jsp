@@ -87,6 +87,7 @@
 	<jsp:attribute name="js_custom">
 		<!-- load chartjs library -->
 		<script type="text/javascript" src="webjars/chartjs/2.8.0/Chart.min.js"></script>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/app/RenderResult.js"></script>
 		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/app/InvokeMethod.js"></script>
 	</jsp:attribute>
 </tags:_Layout>

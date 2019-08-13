@@ -1,5 +1,29 @@
 app.InvokeMethod = {
+		dataChartBar: function (){
+			
+		var color = Chart.helpers.color;
+		var barChartData = {
+	        labels: ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho'],
+	        datasets: [
+	        	{
+		            label: 'Máximas',
+		            backgroundColor: color('#36a2eb').alpha(0.5).rgbString(),
+					borderColor: '#36a2eb',
+					borderWidth: 1,
+		            data: [12, 19, 32, 15, 2, 30]
+		        },
+		        {
+		            label: 'Mínimas',
+		            backgroundColor: color('#ff6384').alpha(0.5).rgbString(),
+					borderColor: '#ff6384',
+					borderWidth: 1,
+		            data: [-12, 5, 18, -5, -12, 10]
+		        }
+		    ]
+	    }
 		
+		return barChartData;
+	},
 	// funcao de inicializacao 
 	init: function () {	
 		
@@ -9,19 +33,15 @@ app.InvokeMethod = {
 		var methodDesc = app.storage.get("methodDescriptor");
 		app.InvokeMethod.createForm(methodDesc.parameters);
 		
+		//teste
+		var $tabResult = $("#tabResult");
+		var $result = $("#result");
 		
-		$(".btn").after("<div class='LoadWait' style='margin-left:20px;position:relative;width: 200px;'></div>");
-		//app.settings.setLoadSubmit('btn', 'Aguarde...', 'disabled');
-		
-		
-		//////////////////////////////////////////
-		
-		
-		
-		
+		$tabResult.show();
+		var render = new RenderResult();
+		$result.append(render["ChartBar"](app.InvokeMethod.dataChartBar()));
 		
 	},
-
 	// cria o Form para a entrada dos valores do metodo a ser invocado
 	createForm: function (parameters){
 		
@@ -72,13 +92,26 @@ app.InvokeMethod = {
 		    				var $result = $("#result");
 		    				
 		    				$tabResult.show();
-		    				$("html, body").animate({scrollTop: $result.offset().top }, 1000);
-		    						    				
+		    				$("html, body").animate({scrollTop: $result.offset().top - 100 }, 1000);
+		    				
+		    				var render = new RenderResult();
+		    				
+		    				if ($.isFunction(render[result.type])) {
+		    					render[result.type](result.data);
+		    			    } else {
+		    			    	$result.html(result.data);
+		    				}
+		    				
+		    				//Este código é apenas para testes de renderização enquanto não há o retono json
+		    				$result.append(render["ChartBar"](app.InvokeMethod.dataChartBar));
+		    				
+		    				/*
 		    				if (!app.settings.isJson(result.data)){
 		    					$result.text(result.data);
 		    				}else{
 		    					$result.text(JSON.stringify(result, null, 2));
 		    				}
+		    				*/
 		    				app.settings.setLoadSubmit('btn', 'Executar', '');
 		    	        },
 		    			error:function(data,status,er) {

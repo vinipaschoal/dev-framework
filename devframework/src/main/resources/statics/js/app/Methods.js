@@ -18,6 +18,13 @@ app.Methods = {
 			
 			// lista os metodos
 			app.Methods.list();
+			
+			$(document).on('click', '.linkMethod', function(){
+	    		event.preventDefault();
+	    		$index = $(this).data("index");
+	    		app.Methods.invokeMethod($index);
+	    	});
+			
 		},
 		
 		// carrega a lista de metodos
@@ -31,7 +38,7 @@ app.Methods = {
            	 
             	app.Methods.methodClass.row.add([
             		methodDesc.label,
-					"<a href='#' onclick='app.Methods.invokeMethod(" + i + ")'>" + app.utils.methodSignature(methodDesc) + "</a>",
+					"<a href='#' class='linkMethod' data-index='" + i + "'>" + app.utils.methodSignature(methodDesc) + "</a>",
 					methodDesc.description]).draw( false );
            	});
             app.settings.loading.hide();

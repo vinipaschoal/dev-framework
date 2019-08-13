@@ -27,9 +27,15 @@ app.Classes = {
 	    	});
 	    	
 	    	$("#btnSubmit").click(function (event) {
-				event.preventDefault();                
+				event.preventDefault();
 				app.Classes.save();
 	        });
+	    	
+	    	$(document).on('click', '.linkClazz', function(){
+	    		event.preventDefault();
+	    		$index = $(this).data("index");
+	    		app.Classes.listMethods($index);
+	    	});
 		},
 		
 		// carrega a lista de classes
@@ -55,7 +61,7 @@ app.Classes = {
 	                    $.each(classList, function( i, classDesc ) {
 	                    	app.Classes.tableClass.row.add([
 	                    		classDesc.label, 
-								"<a href='#' onclick='app.Classes.listMethods(" + i + ")'>" + classDesc.qualifiedName + "</a>",
+								"<a href='#' class='linkClazz' data-index='" + i + "'>" + classDesc.qualifiedName + "</a>",
 								classDesc.description]).draw( false );
 	                   	});
                     }else{
