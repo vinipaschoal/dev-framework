@@ -1,29 +1,4 @@
 app.InvokeMethod = {
-		dataChartBar: function (){
-			
-		var color = Chart.helpers.color;
-		var barChartData = {
-	        labels: ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho'],
-	        datasets: [
-	        	{
-		            label: 'Máximas',
-		            backgroundColor: color('#36a2eb').alpha(0.5).rgbString(),
-					borderColor: '#36a2eb',
-					borderWidth: 1,
-		            data: [12, 19, 32, 15, 2, 30]
-		        },
-		        {
-		            label: 'Mínimas',
-		            backgroundColor: color('#ff6384').alpha(0.5).rgbString(),
-					borderColor: '#ff6384',
-					borderWidth: 1,
-		            data: [-12, 5, 18, -5, -12, 10]
-		        }
-		    ]
-	    }
-		
-		return barChartData;
-	},
 	// funcao de inicializacao 
 	init: function () {	
 		
@@ -32,14 +7,6 @@ app.InvokeMethod = {
 		
 		var methodDesc = app.storage.get("methodDescriptor");
 		app.InvokeMethod.createForm(methodDesc.parameters);
-		
-		//teste
-		var $tabResult = $("#tabResult");
-		var $result = $("#result");
-		
-		$tabResult.show();
-		var render = new RenderResult();
-		$result.append(render["ChartBar"](app.InvokeMethod.dataChartBar()));
 		
 	},
 	// cria o Form para a entrada dos valores do metodo a ser invocado
@@ -103,7 +70,22 @@ app.InvokeMethod = {
 		    				}
 		    				
 		    				//Este código é apenas para testes de renderização enquanto não há o retono json
-		    				$result.append(render["ChartBar"](app.InvokeMethod.dataChartBar));
+		    				$.getJSON("http://localhost:8080/devframework/resources/js/app/data.json", function(json) {
+		    				    
+		    					var $tabResult = $("#tabResult");
+		    					var $result = $("#result");
+		    					
+		    					$tabResult.show();
+		    					var render = new RenderResult();
+		    					
+		    					var $types = ['ChartBar', 'Table'];			
+		    					var i = (Math.floor(Math.random() * ($types.length - 1 + 1)) + 1) - 1;
+		    					
+		    					$result.append(render[$types[i]](json));		    					
+
+		    				}).fail(function() {
+		    					console.log( "error" );
+		    				});
 		    				
 		    				/*
 		    				if (!app.settings.isJson(result.data)){
