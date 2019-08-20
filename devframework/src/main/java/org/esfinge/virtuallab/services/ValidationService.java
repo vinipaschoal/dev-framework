@@ -9,11 +9,13 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.esfinge.virtuallab.api.annotations.ServiceClass;
+import org.esfinge.virtuallab.api.annotations.ServiceDAO;
 import org.esfinge.virtuallab.exceptions.ClassLoaderException;
 import org.esfinge.virtuallab.exceptions.ValidationException;
 import org.esfinge.virtuallab.metadata.ClassMetadata;
 import org.esfinge.virtuallab.metadata.MetadataHelper;
-import org.esfinge.virtuallab.metadata.MethodMetadata;
+import org.esfinge.virtuallab.utils.ReflectionUtils;
 import org.esfinge.virtuallab.utils.Utils;
 
 /**
@@ -104,19 +106,15 @@ public final class ValidationService
 			// obtem os metadados da classe
 			ClassMetadata metadata = MetadataHelper.getInstance().getClassMetadata(clazz);
 			
-			// verifica se esta anotada com @ClassService e possui metodos @ServiceMethod
-			if (!metadata.isAnnotatedWithServiceClass())
-				throw new ValidationException(String.format("A classe '%s' nao possui a anotacao @ServiceClass!", clazz.getCanonicalName()));
-			
-			// verifica se possui metodos @ServiceMethod
-			if (Utils.isNullOrEmpty(metadata.getMethodsWithServiceMethod()))
-				throw new ValidationException(String.format("A classe '%s' nao possui metodos com a anotacao @ServiceMethod!", clazz.getCanonicalName()));
+			// verifica se esta anotada com @ServiceClass ou @ServiceDAO
+			if ( !metadata.isServiceClass() && !metadata.isServiceDAO() )
+				throw new ValidationException(String.format("A classe '%s' nao possui a anotacao @ServiceClass ou @ServiceDAO!", clazz.getCanonicalName()));
 			
 			// ok, classe valida!
 		}
 		catch ( Exception e )
 		{
-			throw new ValidationException(String.format("Erro ao validar a classe '%s':", clazz.getCanonicalName()), e);
+			throw new ValidationException(String.format("Erro ao validar a classe '%s'!", clazz.getCanonicalName()), e);
 		}
 	}
 
@@ -128,12 +126,38 @@ public final class ValidationService
 		//
 		Utils.throwIfNull(method, ValidationException.class,  "O metodo nao pode ser nulo!");
 		
-		// obtem os metadados do metodo
-		MethodMetadata metadata = MetadataHelper.getInstance().getMethodMetadata(method);
+		// obtem a classe do metodo
+		Class<?> methodClass = method.getDeclaringClass();
 		
-		// verifica se esta anotado com @ServiceMethod
-		if (!metadata.isAnnotatedWithServiceMethod())
-			throw new ValidationException(String.format("O metodo '%s' nao possui a anotacao @ServiceMethod!", method.getName()));
+		// verifica se a classe esta anotada com @ServiceClass ou @ServiceDAO
+		boolean serviceClass = methodClass.getAnnotation(ServiceClass.class) != null;
+		serviceClass |= methodClass.getAnnotation(ServiceDAO.class) != null;
+		
+		if (! serviceClass )
+			throw new ValidationException(String.format("A classe '%s' nao possui a anotacao @ServiceClass ou @ServiceDAO!", methodClass.getCanonicalName()));
+
+		// verifica o tipo do retorno
+		Class<?> returnClass = method.getReturnType();
+		
+		// nao pode ser void
+		if ( returnClass.equals(void.class) )
+			throw new ValidationException(String.format("O metodo '%s' deve retornar um objeto valido! (nao pode ser void)", method.getName()));
+		
+		// tipos validos: basicos / array / colecao / objeto valido
+		if (! ReflectionUtils.isBasicType(returnClass) )
+			if (! ReflectionUtils.isArray(returnClass) )
+				if (! ReflectionUtils.isCollection(returnClass) )
+					if (! ReflectionUtils.isFlatObject(returnClass) )
+						throw new ValidationException(String.format("O metodo '%s' retorna um objeto nao suportado (%s)", 
+								method.getName(), returnClass.getCanonicalName()));
+		
+		// verifica os tipos dos parametros
+		// tipos validos: basico / objeto valido
+		for ( Class<?> paramClass : method.getParameterTypes() )
+			if (! ReflectionUtils.isBasicType(paramClass) )
+				if (! ReflectionUtils.isFlatObject(paramClass) )
+					throw new ValidationException(String.format("O metodo '%s' possui um parametro nao suportado (%s)", 
+							method.getName(), paramClass.getCanonicalName()));
 	}
 
 	/**

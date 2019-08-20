@@ -6,7 +6,7 @@ import org.esfinge.virtuallab.api.annotations.ServiceClass;
 import org.esfinge.virtuallab.api.annotations.ServiceMethod;
 
 @ServiceClass
-public class Matematica
+public class MatematicaService
 {
 	@ServiceMethod(label = "Distancia entre Pontos", description = "Calcula a distancia entre dois pontos")
 	public double calcularDistancia(

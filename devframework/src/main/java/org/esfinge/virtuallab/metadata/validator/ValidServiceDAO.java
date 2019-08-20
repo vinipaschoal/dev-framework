@@ -8,11 +8,12 @@ import java.lang.annotation.Target;
 import net.sf.esfinge.metadata.annotation.validator.ToValidate;
 
 /**
- * Utilizado na anotacao @ServiceClass.
+ * Utilizado na anotacao @ServiceDAO.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
-@ToValidate(NeedDefaultConstructorValidator.class)
-public @interface NeedDefaultConstructor
+@ToValidate(ValidServiceDAOValidador.class)
+public @interface ValidServiceDAO
 {
+
 }

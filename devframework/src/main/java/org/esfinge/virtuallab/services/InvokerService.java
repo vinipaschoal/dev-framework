@@ -1,14 +1,19 @@
 package org.esfinge.virtuallab.services;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 import org.apache.commons.lang3.ClassUtils;
 import org.esfinge.virtuallab.api.InvokerProxy;
 import org.esfinge.virtuallab.descriptors.MethodDescriptor;
 import org.esfinge.virtuallab.descriptors.ParameterDescriptor;
 import org.esfinge.virtuallab.exceptions.InvocationException;
+import org.esfinge.virtuallab.metadata.ClassMetadata;
+import org.esfinge.virtuallab.metadata.MetadataHelper;
 import org.esfinge.virtuallab.utils.ReflectionUtils;
 import org.esfinge.virtuallab.utils.Utils;
+
+import net.sf.esfinge.querybuilder.QueryBuilder;
 
 /**
  * Invoca metodos em classes de servico. 
@@ -50,6 +55,7 @@ public class InvokerService implements InvokerProxy
 		{
 			// recupera a classe do metodo a ser invocado
 			Class<?> clazz = ReflectionUtils.findClass(methodDescriptor.getClassName());
+			ClassMetadata classMetadata = MetadataHelper.getInstance().getClassMetadata(clazz);
 			
 			// verifica se a classe eh valida
 			ValidationService.getInstance().checkClass(clazz);
@@ -61,25 +67,51 @@ public class InvokerService implements InvokerProxy
 			ValidationService.getInstance().checkMethod(method);
 			
 			// cria um objeto da classe cujo metodo sera invocado
-			Object obj = clazz.newInstance();
+			Object obj;
 			
-			// injeta o servico nos campos que tem a anotacao @InvokerProxy
-			ReflectionUtils.getDeclaredFieldsAnnotatedWith(clazz, org.esfinge.virtuallab.api.annotations.InvokerProxy.class).forEach(f -> {
+			// @ServiceClass
+			if ( classMetadata.isServiceClass() )
+			{
+				obj = clazz.newInstance();
+				
+				// injeta o servico nos campos que tem a anotacao @InvokerProxy
+				ReflectionUtils.getDeclaredFieldsAnnotatedWith(clazz, org.esfinge.virtuallab.api.annotations.InvokerProxy.class).forEach(f -> {
+					try
+					{
+						ReflectionUtils.setFieldValue(obj, f.getName(), InvokerService.this);
+					}
+					catch ( Exception e )
+					{
+						throw new InvocationException(String.format("Erro ao injetar objeto InvokerProxy no campo '%s' da classe '%s'!",
+								f.getName(), clazz.getCanonicalName()), e);
+					}
+				});
+				
+				// invoca o metodo
+				return method.invoke(obj, paramValues);
+			}
+			
+			// @ServiceDAO
+			else
+			{
 				try
 				{
-					ReflectionUtils.setFieldValue(obj, f.getName(), InvokerService.this);
+					DataSourceService.setDataSourceFor(clazz);
+					obj = QueryBuilder.create(clazz);
+					System.out.println("OBJECT: " + obj.getClass());
+					System.out.println("IS PROXY: " + Proxy.isProxyClass(obj.getClass()));
+					System.out.println("METHOD: " + method.getName());					
+					System.out.println("TEMPERATURA CLASS LOADED: " + ReflectionUtils.findClass("org.esfinge.virtuallab.domain.Temperatura"));
+					return Proxy.getInvocationHandler(obj).invoke(obj, method, paramValues);
 				}
-				catch ( Exception e )
+				finally
 				{
-					throw new InvocationException(String.format("Erro ao injetar objeto InvokerProxy no campo '%s' da classe '%s'!",
-							f.getName(), clazz.getCanonicalName()), e);
+					DataSourceService.clear();
 				}
-			});
+			}
 			
-			// invoca o metodo
-			return method.invoke(obj, paramValues);
 		}
-		catch ( Exception exc )
+		catch ( Throwable exc )
 		{
 			throw new InvocationException(String.format("Erro ao tentar invocar metodo '%s' da classe '%s'!", 
 					methodDescriptor.getName(), methodDescriptor.getClassName()), exc);

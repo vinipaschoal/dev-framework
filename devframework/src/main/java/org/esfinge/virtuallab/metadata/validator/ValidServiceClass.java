@@ -8,13 +8,11 @@ import java.lang.annotation.Target;
 import net.sf.esfinge.metadata.annotation.validator.ToValidate;
 
 /**
- * Utilizado na anotacao @ServiceMethod para verificar 
- * se os tipos dos parametros e do retorno sao validos.
+ * Utilizado na anotacao @ServiceClass.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
-@ToValidate(ValidDataTypesValidator.class)
-public @interface ValidDataTypes
+@ToValidate(ValidServiceClassValidator.class)
+public @interface ValidServiceClass
 {
-
 }

@@ -44,7 +44,14 @@ public class MetadataHelper
 	{ 
 		try
 		{
-			return reader.readingAnnotationsTo(clazz, ClassMetadata.class);	
+			// ServiceDAO
+			if ( clazz.isInterface() )
+				return reader.readingAnnotationsTo(clazz, ServiceDAOMetadata.class);	
+				
+			// ServiceClass
+			else
+				return reader.readingAnnotationsTo(clazz, ServiceClassMetadata.class);	
+				
 		}
 		catch ( Exception e )
 		{

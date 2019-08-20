@@ -1,29 +1,103 @@
+import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.reflect.MethodUtils;
 import org.esfinge.virtuallab.TestUtils;
+import org.esfinge.virtuallab.api.annotations.BarChartReturn;
 import org.esfinge.virtuallab.api.annotations.CustomReturn;
 import org.esfinge.virtuallab.api.annotations.ServiceClass;
 import org.esfinge.virtuallab.api.annotations.ServiceMethod;
 import org.esfinge.virtuallab.api.annotations.TableReturn;
-import org.esfinge.virtuallab.domain.Matematica;
+import org.esfinge.virtuallab.domain.MatematicaService;
 import org.esfinge.virtuallab.domain.Ponto;
 import org.esfinge.virtuallab.domain.Tarefa;
 import org.esfinge.virtuallab.domain.TarefaService;
-import org.esfinge.virtuallab.utils.ReflectionUtils;
+import org.esfinge.virtuallab.metadata.processors.MethodReturnProcessor;
+import org.esfinge.virtuallab.metadata.processors.MethodReturnProcessorHelper;
+import org.esfinge.virtuallab.web.json.JsonData;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.util.TraceClassVisitor;
+
 
 public class Main
 {
 	public static void main(String... args) throws Exception
 	{
 		TestUtils.createJar("tarefa.jar", TarefaService.class, Tarefa.class);
-		TestUtils.createJar("matematica.jar", Matematica.class, Ponto.class);
+		TestUtils.createJar("matematica.jar", MatematicaService.class, Ponto.class);
+//		TestUtils.createJar("temperatura.jar", TemperaturaService.class, Temperatura.class);
+		
+		/*
+		File jarFile = Paths.get(TestUtils.TEST_DIR, "temperatura.jar").toFile();
+		System.out.println("Exists: " + jarFile.exists() + " - " + jarFile.getAbsolutePath());
+		addJarToClasspath(jarFile);
+		
+		System.out.println(Class.forName("org.esfinge.virtuallab.domain.Temperatura"));
+		
+		ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver(ClassLoader.getSystemClassLoader());
+		String pattern = "classpath*:" + "org/esfinge/virtuallab/domain" +  ";
+//				ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "/
+		System.out.println("Pattern: " + pattern);
+		Resource[] resources = resourcePatternResolver.getResources(pattern);
+		
+		for (Resource resource : resources)
+		{
+			System.out.println(resource.getFilename());
+		}
+		*/
+		
+		
+		Method m = MethodUtils.getMethodsWithAnnotation(Main.class, BarChartReturn.class)[0];
+		MethodReturnProcessor<?> processor = MethodReturnProcessorHelper.getInstance().findProcessor(m);
+		JsonData data = processor.process(getData());
+		System.out.println(data);
+
+//		ValidServiceDAOValidador v = new ValidServiceDAOValidador();
+//		v.validate(null, RepoTest.class);
 	}	
+	
+	public static void addJarToClasspath(File jar) throws Exception
+	{
+		// Get the ClassLoader class
+		ClassLoader cl = ClassLoader.getSystemClassLoader();
+		Class<?> clazz = cl.getClass();
+
+		// Get the protected addURL method from the parent URLClassLoader class
+		Method method = clazz.getSuperclass().getDeclaredMethod("addURL", new Class[] { URL.class });
+
+		// Run projected addURL method to add JAR to classpath
+		method.setAccessible(true);
+		method.invoke(cl, new Object[] { jar.toURI().toURL() });
+	}
+	
+	@BarChartReturn(labels = {"Sul", "Sudeste", "Nordeste", "Norte", "Centro-Oeste"},
+			colors = {"rgba(255, 99, 132, 0.2)", "rgba(255, 206, 86, 0.2)", "rgba(75, 192, 192, 0.2)", "rgba(153, 102, 255, 0.2)", "rgba(255, 159, 64, 0.2)"},
+			legend = "Number of Votes",
+			title = "Brazil Election Votes",
+			titleFontSize = 40,
+			xAxisLabel = "Regions",
+			yAxisLabel = "Votes",
+			xAxisGridLines = false,
+			yAxisGridLines = false,			
+			axisFontSize = 30,
+			horizontal = false) 
+	public static List<Number> getData()
+	{
+		List<Number> list = new ArrayList<>();
+		list.add(12);
+		list.add(19);
+		list.add(3);
+		list.add(7);
+		list.add(10);
+		
+		return list;
+	}
 	
 	/**
 	 * Retorna uma String com as informacoes de bytecode de uma classe.

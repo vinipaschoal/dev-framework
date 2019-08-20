@@ -3,11 +3,7 @@ package org.esfinge.virtuallab.metadata.processors;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
-import org.esfinge.virtuallab.api.annotations.CustomReturn;
-import org.esfinge.virtuallab.api.annotations.TableReturn;
 import org.esfinge.virtuallab.descriptors.MethodDescriptor;
-import org.esfinge.virtuallab.metadata.MetadataHelper;
-import org.esfinge.virtuallab.metadata.MethodMetadata;
 import org.esfinge.virtuallab.metadata.validator.MethodReturn;
 import org.esfinge.virtuallab.utils.ReflectionUtils;
 
@@ -46,15 +42,18 @@ public class MethodReturnProcessorHelper
 		// obtem o metodo a partir do descritor
 		Method method = ReflectionUtils.getMethod(methodDescriptor);
 		
-		// obtem os metadados do descritor
-		MethodMetadata methodMetadata = MetadataHelper.getInstance().getMethodMetadata(method);
-		
-		// 
-		if ( methodMetadata.isAnnotatedWithCustomReturn() )
-			return this.getProcessor(method, CustomReturn.class);
-		
-		if ( methodMetadata.isAnnotatedWithTableReturn() )
-			return this.getProcessor(method, TableReturn.class);
+		return this.findProcessor(method);
+	}
+
+	/**
+	 * Retorna o processador apropriado para o retorno do metodo. 
+	 */
+	public MethodReturnProcessor<?> findProcessor(Method method) throws Exception
+	{
+		// verifica se tem alguma anotacao de MethodReturn
+		for ( Annotation annotation : method.getAnnotations() )
+			if ( annotation.annotationType().isAnnotationPresent(MethodReturn.class) )
+				return this.getProcessor(method, annotation.annotationType());
 		
 		// processor default
 		return DefaultReturnProcessor.getInstance();

@@ -45,7 +45,7 @@ public class Utils
 		{
 			// carrega o arquivo de propriedades
 			this.properties = new Properties();
-			this.properties.load(this.getClass().getClassLoader().getResourceAsStream("virtuallab.properties"));
+			this.properties.load(this.getClass().getClassLoader().getResourceAsStream("application.properties"));
 
 			// cria um diretorio de upload no diretorio temporario do sistema
 			// para caso a chave "upload.dir" do arquivo de propriedades seja invalida

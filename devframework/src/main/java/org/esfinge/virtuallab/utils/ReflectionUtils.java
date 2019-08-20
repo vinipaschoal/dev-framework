@@ -3,6 +3,9 @@ package org.esfinge.virtuallab.utils;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,6 +15,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.commons.lang3.reflect.MethodUtils;
 import org.esfinge.virtuallab.descriptors.MethodDescriptor;
 import org.esfinge.virtuallab.descriptors.ParameterDescriptor;
 
@@ -166,6 +170,22 @@ public class ReflectionUtils
 	}
 	
 	/**
+	 * Retorna todos os metodos da classe anotados com a anotacao informada, incluindo os das superclasses, 
+	 */
+	public static List<Method> getAllMethodsAnnotatedWith(Class<?> clazz, Class<? extends Annotation> annotationClazz)
+	{
+		return MethodUtils.getMethodsListWithAnnotation(clazz, annotationClazz, true, true);
+	}
+	
+	/**
+	 * Retorna todos os metodos da classe anotados com a anotacao informada, nao incluindo os das superclasses, 
+	 */
+	public static List<Method> getDeclaredMethodsAnnotatedWith(Class<?> clazz, Class<? extends Annotation> annotationClazz)
+	{
+		return MethodUtils.getMethodsListWithAnnotation(clazz, annotationClazz, false, true);
+	}
+	
+	/**
 	 * Retorna a classe pelo seu nome qualificado.
 	 */
 	public static Class<?> findClass(String classQualifiedName) throws ClassNotFoundException
@@ -202,12 +222,13 @@ public class ReflectionUtils
 	}
 	
 	/**
-	 * Verifica se a classe eh uma objeto JSON valido.
+	 * Verifica se a classe eh uma objeto basico valido.
 	 * Regras:
 	 * - ter um construtor padrao publico
 	 * - possuir somente atributos basicos (primitivos/wrappers, String)
+	 * - ser serializavel pelo framework Jackson JSON
 	 */
-	public static boolean isValidJsonObject(Class<?> clazz)
+	public static boolean isFlatObject(Class<?> clazz)
 	{
 		try
 		{
@@ -228,5 +249,76 @@ public class ReflectionUtils
 		{
 			return false;
 		}		
+	}
+	
+	/**
+	 * Retorna os tipos concretos de uma classe que implementa/estende uma interface generica.
+	 * Funciona somente para as classes que implementam/estendem a interface generica no codigo fonte, e nao em tempo de execucao:
+	 * 
+	 * Funciona: 
+	 * - interface Generica<E, F>
+	 * - class Concreta implements Generica<ClasseA, ClasseB>
+	 * - interface Concreta extends Generica<ClasseA, ClasseB>
+	 * 
+	 * NAO Funciona: 
+	 * - Generica<ClasseA,ClasseB> obj = new Generica<ClasseA, ClasseB>(){}
+	 */
+	public static List<Class<?>> getActualTypesFromGenericInterface(Class<?> genericInterface, Class<?> concreteClass)
+	{
+		List<Class<?>> types = new ArrayList<>();
+		
+		// obtem as interfaces com tipos genericos
+		for ( Type type : concreteClass.getGenericInterfaces() ) 
+			if ( type instanceof ParameterizedType )
+			{
+				ParameterizedType pType = (ParameterizedType) type;
+				
+				// eh a interface generica informada?
+				if ( pType.getRawType() == genericInterface )
+				{
+					// obtem os tipos concretos
+					for ( Type actType : pType.getActualTypeArguments())
+					{
+						if ( actType instanceof Class<?> )
+							types.add((Class<?>) actType);
+					}
+					
+					break;
+				}
+			}
+		
+		return types;		
+	}
+	
+	/**
+	 * Retorna os tipos concretos de uma classe que estende uma classe generica.
+	 * Funciona somente para as classes que estendem a classe generica no codigo fonte, e nao em tempo de execucao:
+	 * 
+	 * Funciona: 
+	 * - class Generica<E, F>
+	 * - class Concreta extends Generica<ClasseA, ClasseB>
+	 * 
+	 * NAO Funciona: 
+	 * - class Concreta implements Map<ClasseA, ClasseB> (use o getActualTypesFromGenericInterface)
+	 * - List<String> list = new ArrayList<String>();
+	 */
+	public static List<Class<?>> getActualTypesFromGenericClass(Class<?> concreteClass)
+	{
+		List<Class<?>> types = new ArrayList<>();
+		
+		// obtem a classe pai com tipos genericos
+ 		Type type = concreteClass.getGenericSuperclass();
+ 		
+		if ( type instanceof ParameterizedType )
+		{
+			ParameterizedType pType = (ParameterizedType) type;
+			
+			// obtem os tipos concretos
+			for ( Type actType : pType.getActualTypeArguments())
+				if ( actType instanceof Class<?> )
+					types.add((Class<?>) actType);
+		}
+		
+		return types;		
 	}
 }
