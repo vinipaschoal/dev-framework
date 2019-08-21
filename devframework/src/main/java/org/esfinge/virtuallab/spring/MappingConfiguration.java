@@ -13,6 +13,7 @@ import org.springframework.web.servlet.resource.PathResourceResolver;
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = "org.esfinge.virtuallab.*")
+@SuppressWarnings("deprecation")
 public class MappingConfiguration extends WebMvcConfigurerAdapter
 {
 	@Override

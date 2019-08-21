@@ -23,14 +23,13 @@ import net.sf.esfinge.querybuilder.jpa1.EntityManagerProvider;
 public class QueryBuilderEntityManagerProvider implements EntityManagerProvider, ApplicationContextAware
 {
 	// Contexto do Spring
-	public static ApplicationContext context;
+	private static ApplicationContext _context;
 	
-
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException
 	{
 		// armazena o contexto do Spring para ter acesso aos beans
-		context = applicationContext;
+		_context = applicationContext;
 	}
 
 	@Override
@@ -40,9 +39,6 @@ public class QueryBuilderEntityManagerProvider implements EntityManagerProvider,
 		Map<String,String> props = new HashMap<>();
 		props.put( "org.hibernate.dialect", DataSourceService.getCurrentDataBase().getDialect());
 		
-		// TODO: debug..
-		System.out.println("QUERY BUILDER >> " + DataSourceService.getCurrentDataBase());
-		
 		// cria um EntityManager para o DataSource selecionado
 		return getEntityManagerFactory().createEntityManager(props);
 	}
@@ -51,6 +47,6 @@ public class QueryBuilderEntityManagerProvider implements EntityManagerProvider,
 	public EntityManagerFactory getEntityManagerFactory()
 	{
 		// retorna do contexto do Spring
-		return context.getBean(EntityManagerFactory.class);
+		return _context.getBean(EntityManagerFactory.class);
 	}
 }

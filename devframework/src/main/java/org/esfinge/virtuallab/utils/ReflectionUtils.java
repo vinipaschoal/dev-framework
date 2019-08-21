@@ -222,6 +222,14 @@ public class ReflectionUtils
 	}
 	
 	/**
+	 * Verifica se a classe eh um mapa.
+	 */
+	public static boolean isMap(Class<?> clazz)
+	{
+		return Map.class.isAssignableFrom(clazz);
+	}
+	
+	/**
 	 * Verifica se a classe eh uma objeto basico valido.
 	 * Regras:
 	 * - ter um construtor padrao publico

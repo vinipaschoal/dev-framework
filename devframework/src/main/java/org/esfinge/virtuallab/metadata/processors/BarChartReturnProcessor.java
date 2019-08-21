@@ -2,12 +2,13 @@ package org.esfinge.virtuallab.metadata.processors;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang3.RandomUtils;
 import org.esfinge.virtuallab.api.annotations.BarChartReturn;
 import org.esfinge.virtuallab.utils.JsonUtils;
+import org.esfinge.virtuallab.utils.ReflectionUtils;
 import org.esfinge.virtuallab.utils.Utils;
 import org.esfinge.virtuallab.web.json.JsonData;
 import org.esfinge.virtuallab.web.json.JsonObject;
@@ -36,11 +37,11 @@ public class BarChartReturnProcessor implements MethodReturnProcessor<BarChartRe
 
 		// popula as informacoes
 		returnObj.setType(this.annotation.horizontal() ? "horizontalBar" : "bar");
-		returnObj.getOptions().populate(this.annotation);;
-		returnObj.getData().getLabels().addAll(Arrays.asList(annotation.labels()));
-
-		List<?> values = Utils.isNullOrEmpty(value) ? new ArrayList<>() : new ArrayList<>((Collection<?>) value);
-		List<String> colors = Utils.isNullOrEmpty(annotation.colors()) ? new ArrayList<>() : Arrays.asList(this.annotation.colors()); 
+		returnObj.getOptions().populate(this.annotation);
+		returnObj.getData().getLabels().addAll(this.getLabels(value));
+		
+		List<String> colors = this.getColors(value);
+		List<?> values = this.getValues(value);
 		returnObj.getData().getDatasets().add(this.createDataSet(values, colors));
 		
 		// retorna o objeto JSON
@@ -54,6 +55,132 @@ public class BarChartReturnProcessor implements MethodReturnProcessor<BarChartRe
 	}
 	
 	/**
+	 * Retorna os nomes das categorias (barras) do grafico.
+	 */
+	@SuppressWarnings("unchecked")
+	private List<String> getLabels(Object value)
+	{
+		//
+		List<String> labels = new ArrayList<>();
+		
+ 		// verifica se foi especificada a propriedade "labels" da anotacao
+	 	if (! Utils.isNullOrEmpty(this.annotation.dataLabels()) )
+			labels.addAll(Arrays.asList(this.annotation.dataLabels()));
+		
+		// se for uma mapa, usa as chaves como labels
+	 	else if ( value instanceof Map )
+	 		Map.class.cast(value).keySet().forEach(o -> labels.add(o.toString()));
+		
+		// se for lista, usa o campo indicado na propriedade "labelsField" da anotacao
+	 	else if ( value instanceof List )
+		{
+	 		List<?> collection = List.class.cast(value);
+	 		
+	 		// obtem o label em cada objeto da colecao
+ 	 		for ( int i = 0; i < collection.size(); i++ )
+ 	 			try
+	 	 		{
+ 	 				// tenta acessar a propriedade do objeto
+ 	 				labels.add(ReflectionUtils.getFieldValue(collection.get(i), this.annotation.dataLabelsField()).toString());
+	 	 		}
+	 	 		catch ( Exception e )
+	 	 		{
+	 	 			System.out.println(e.toString());
+	 	 			
+	 	 			// texto generico (DATA 01, DATA 02, DATA 03..)
+	 	 			labels.add(String.format("DATA %02d", i+1));
+	 	 		}
+		}
+	 	
+	 	//
+	 	return labels;
+	}
+	
+	/**
+	 * Retorna as cores das categorias (barras) do grafico.
+	 */
+	@SuppressWarnings("unchecked")
+	private List<String> getColors(Object value)
+	{
+		//
+		List<String> colors = new ArrayList<>();
+		
+ 		// verifica se foi especificada a propriedade "colors" da anotacao
+	 	if (! Utils.isNullOrEmpty(this.annotation.dataColors()) )
+	 		colors.addAll(Arrays.asList(this.annotation.dataColors()));
+
+		// se for mapa ou colecao, usa o campo indicado na propriedade "colorsField" da anotacao
+	 	else if (! Utils.isNullOrEmpty(value) )
+		{
+	 		List<?> collection = null;
+	 		
+	 		if ( value instanceof Map )
+	 			collection = new ArrayList<>(Map.class.cast(value).values());
+	 		
+	 		else
+	 			collection = List.class.cast(value);
+	 		
+	 		// obtem a cor em cada objeto da colecao
+ 	 		for ( int i = 0; i < collection.size(); i++ )
+ 	 			try
+	 	 		{
+ 	 				// tenta acessar a propriedade do objeto
+ 	 				colors.add(ReflectionUtils.getFieldValue(collection.get(i), this.annotation.dataColorsField()).toString());
+	 	 		}
+	 	 		catch ( Exception e )
+	 	 		{
+	 	 			// cor aleatoria
+	 	 			colors.add(String.format("rgba(%d, %d, %d, 0.2)", RandomUtils.nextInt(0, 256), RandomUtils.nextInt(0, 256), RandomUtils.nextInt(0, 256)));
+	 	 		}
+		}
+	 	
+	 	//
+	 	return colors;
+	}
+	
+	/**
+	 * Retorna os valores das categorias (barras) do grafico.
+	 */
+	@SuppressWarnings("unchecked")
+	private List<Number> getValues(Object value)
+	{
+		//
+		List<Number> values = new ArrayList<>();
+		
+		if (! Utils.isNullOrEmpty(value) )
+		{
+	 		List<?> collection = null;
+	 		
+	 		if ( value instanceof Map )
+	 			collection = new ArrayList<>(Map.class.cast(value).values());
+	 		
+	 		else
+	 			collection = List.class.cast(value);
+	 		
+	 		// obtem o valor em cada objeto da colecao
+	 		if ( Utils.isNullOrEmpty(this.annotation.dataValuesField()) && Number.class.isAssignableFrom(collection.get(0).getClass()) )
+	 			collection.forEach(o -> values.add(Number.class.cast(o)));
+	 		
+	 		else
+		 		for ( int i = 0; i < collection.size(); i++ )
+		 			try
+			 		{
+		 				// tenta acessar a propriedade do objeto
+		 				values.add(Number.class.cast(ReflectionUtils.getFieldValue(collection.get(i), this.annotation.dataValuesField())));
+			 		}
+			 		catch ( Exception e )
+			 		{
+			 			// campo / valor invalido no objeto, cancela e retorna lista vazia
+			 			values.clear();
+			 			break;
+			 		}
+		}
+		
+		//
+		return values;
+	}
+	
+	/**
 	 * Cria o dataset com os valores do retorno do metodo. 
 	 */
 	private DatasetObject createDataSet(List<?> values, List<String> colors)
@@ -64,10 +191,6 @@ public class BarChartReturnProcessor implements MethodReturnProcessor<BarChartRe
 		// existem valores para o grafico?
 		if (! Utils.isNullOrEmpty(values) )
 		{
-			// verifica se foram especificadas as cores
-			if ( Utils.isNullOrEmpty(colors) )
-				colors = Collections.nCopies(values.size(), "rgba(0, 0, 0, 0.2)");  // preto translucido
-
 			// valor | cor
 			for ( int i = 0; i < values.size(); i++ )
 			{
@@ -233,7 +356,7 @@ public class BarChartReturnProcessor implements MethodReturnProcessor<BarChartRe
 		{
 			// eixo X
 			JsonObject xGridLines = new JsonObject();
-			xGridLines.addProperty("display", annotation.xAxisGridLines());
+			xGridLines.addProperty("display", annotation.xAxisShowGridlines());
 			
 			JsonObject xAxes = new JsonObject();
 			xAxes.addProperty("gridLines", xGridLines);
@@ -248,18 +371,11 @@ public class BarChartReturnProcessor implements MethodReturnProcessor<BarChartRe
 				xAxes.addProperty("scaleLabel", scaleLabel);
 			}
 			
-			this.scales.addProperty("xAxes", Arrays.asList(xAxes));
-
-			
 			// eixo Y
-			JsonObject ticks = new JsonObject();
-			ticks.addProperty("beginAtZero", true);
-			
 			JsonObject yGridLines = new JsonObject();
-			yGridLines.addProperty("display", annotation.yAxisGridLines());
+			yGridLines.addProperty("display", annotation.yAxisShowGridlines());
 				
 			JsonObject yAxes = new JsonObject();
-			yAxes.addProperty("ticks", ticks);
 			yAxes.addProperty("gridLines", yGridLines);
 				
 			if (! Utils.isNullOrEmpty(annotation.yAxisLabel()) )
@@ -272,6 +388,16 @@ public class BarChartReturnProcessor implements MethodReturnProcessor<BarChartRe
 				yAxes.addProperty("scaleLabel", scaleLabel);
 			}
 			
+			// ticks (comecar escala do 0)
+			JsonObject ticks = new JsonObject();
+			ticks.addProperty("beginAtZero", true);
+
+			if ( annotation.horizontal() )
+				xAxes.addProperty("ticks", ticks);
+			else
+				yAxes.addProperty("ticks", ticks); 
+
+			this.scales.addProperty("xAxes", Arrays.asList(xAxes));
 			this.scales.addProperty("yAxes", Arrays.asList(yAxes));
 			
 			// titulo

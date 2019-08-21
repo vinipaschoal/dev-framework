@@ -46,7 +46,7 @@ public class InvokerService implements InvokerProxy
 	/**
 	 * Invoca o metodo com os parametros informados.
 	 */
-	public Object call(MethodDescriptor methodDescriptor, Object... paramValues) throws InvocationException
+	public synchronized Object call(MethodDescriptor methodDescriptor, Object... paramValues) throws InvocationException
 	{
 		// verifica se foi especificado um descritor de metodo
 		Utils.throwIfNull(methodDescriptor, InvocationException.class, "O descritor do metodo a ser invocado nao pode ser nulo!");
@@ -75,7 +75,7 @@ public class InvokerService implements InvokerProxy
 				obj = clazz.newInstance();
 				
 				// injeta o servico nos campos que tem a anotacao @InvokerProxy
-				ReflectionUtils.getDeclaredFieldsAnnotatedWith(clazz, org.esfinge.virtuallab.api.annotations.InvokerProxy.class).forEach(f -> {
+				ReflectionUtils.getDeclaredFieldsAnnotatedWith(clazz, org.esfinge.virtuallab.api.annotations.Invoker.class).forEach(f -> {
 					try
 					{
 						ReflectionUtils.setFieldValue(obj, f.getName(), InvokerService.this);
@@ -96,16 +96,18 @@ public class InvokerService implements InvokerProxy
 			{
 				try
 				{
+					// seleciona o DataSource relacionado com a classe
 					DataSourceService.setDataSourceFor(clazz);
+					
+					// cria a classe do QueryBuilder
 					obj = QueryBuilder.create(clazz);
-					System.out.println("OBJECT: " + obj.getClass());
-					System.out.println("IS PROXY: " + Proxy.isProxyClass(obj.getClass()));
-					System.out.println("METHOD: " + method.getName());					
-					System.out.println("TEMPERATURA CLASS LOADED: " + ReflectionUtils.findClass("org.esfinge.virtuallab.domain.Temperatura"));
+					
+					// invoca o metodo
 					return Proxy.getInvocationHandler(obj).invoke(obj, method, paramValues);
 				}
 				finally
 				{
+					// libera o DataSource
 					DataSourceService.clear();
 				}
 			}
@@ -137,7 +139,7 @@ public class InvokerService implements InvokerProxy
 				md.getParameters().add(pd);
 			}
 		
-		// tenta invoca o metodo
+		// tenta invocar o metodo
 		Object result = this.call(md, paramValues);
 		
 		// cast do resultado para o tipo de retorno informado

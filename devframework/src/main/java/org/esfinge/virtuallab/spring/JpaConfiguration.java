@@ -1,5 +1,6 @@
 package org.esfinge.virtuallab.spring;
 
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.esfinge.virtuallab.services.DataSourceService;
@@ -24,23 +25,20 @@ public class JpaConfiguration
 	@Bean
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory()
 	{
-		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();// EntityManagerFactoryBeanHelper.getInstance();
-		em.setDataSource(this.getDataSource());
-		em.setPackagesToScan(new String[] { "org.esfinge.virtuallab" });
+		LocalContainerEntityManagerFactoryBean emfh = EntityManagerFactoryHelper.getInstance();
+		emfh.setDataSource(this.getDataSource());
+		emfh.setPackagesToScan(new String[] { "org.esfinge.virtuallab" }); // precisa especificar um pacote para nao procurar o arquivo 'persistence.xml'
 
 		HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-		vendorAdapter.setDatabasePlatform("org.hibernate.dialect.H2Dialect");
-		em.setJpaVendorAdapter(vendorAdapter);
-		em.setPersistenceUnitPostProcessors(DataSourceService.getInstance());
+		vendorAdapter.setDatabasePlatform("org.hibernate.dialect.H2Dialect"); // dialeto do BD default
+		emfh.setJpaVendorAdapter(vendorAdapter);
 		
-		return em;
+		return emfh;
 	}
 
 	@Bean
-	public JpaTransactionManager transactionManager()
+	public JpaTransactionManager transactionManager(EntityManagerFactory emf)
 	{
-		JpaTransactionManager txnMgr = new JpaTransactionManager();
-		txnMgr.setEntityManagerFactory(entityManagerFactory().getObject());
-		return txnMgr;
+		return new JpaTransactionManager(emf);
 	}
 }

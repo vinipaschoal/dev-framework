@@ -18,6 +18,7 @@ import org.esfinge.virtuallab.metadata.ClassMetadata;
 import org.esfinge.virtuallab.metadata.MetadataHelper;
 import org.esfinge.virtuallab.metadata.ServiceClassMetadata;
 import org.esfinge.virtuallab.metadata.ServiceDAOMetadata;
+import org.esfinge.virtuallab.spring.EntityManagerFactoryHelper;
 import org.esfinge.virtuallab.utils.Utils;
 
 /**
@@ -167,9 +168,12 @@ public class PersistenceService
 			{
 				@SuppressWarnings("unchecked")
 				List<Class<?>> jarClassList = (List<Class<?>>) valid;
-				if (jarClassList != null)
-					for (Class<?> clazz : jarClassList)
-						this.cacheServiceClass(clazz);
+				for (Class<?> clazz : jarClassList)
+					this.cacheServiceClass(clazz);
+				
+				// informa o EntityManagerFactory sobre o JAR para carregar as entidades
+				EntityManagerFactoryHelper.getInstance().loadEntitiesFromJar(file.getAbsolutePath());
+				EntityManagerFactoryHelper.getInstance().reload();
 			}
 
 			return true;

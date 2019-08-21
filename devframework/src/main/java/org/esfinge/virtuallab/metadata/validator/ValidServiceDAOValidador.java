@@ -12,7 +12,6 @@ import org.esfinge.virtuallab.utils.Utils;
 
 import net.sf.esfinge.metadata.AnnotationValidationException;
 import net.sf.esfinge.metadata.AnnotationValidator;
-import net.sf.esfinge.querybuilder.QueryBuilder;
 import net.sf.esfinge.querybuilder.Repository;
 
 /**
@@ -55,16 +54,5 @@ public class ValidServiceDAOValidador implements AnnotationValidator
 		ValidServiceMethodValidator methodValidator = new ValidServiceMethodValidator();
 		for ( Method method : methods )
 			methodValidator.validate(null, method);
-		
-		try
-		{
-			// verifica se eh instanciavel pelo QueryBuilder
-			QueryBuilder.create(clazz);
-		}
-		catch ( Exception e )
-		{
-			throw new AnnotationValidationException(String.format(
-					"A interface '%s' deve ser compativel com o Esfinge QueryBuilder: \n%s", clazz.getCanonicalName(), e));
-		}
 	}
 }

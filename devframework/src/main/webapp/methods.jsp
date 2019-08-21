@@ -1,4 +1,3 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 
 <tags:_Layout>
@@ -22,7 +21,7 @@
 
 			<section class="jumbotron text-center">
 				<div class="container">
-					<h1 class="jumbotron-heading">ServiÃ§os do MÃ³dulo: <strong id="headerClassName"></strong></h1>
+					<h1 class="jumbotron-heading">Serviços do Módulo: <strong id="headerClassName"></strong></h1>
 				</div>
 			</section>
 	
@@ -33,9 +32,9 @@
 							<table id="methodTable" class="table table-striped table-bordered">
 								<thead>
 									<tr>
-										<th>ServiÃ§o</th>
+										<th>Serviço</th>
 										<th>Assinatura</th>
-										<th>DescriÃ§Ã£o</th>
+										<th>Descrição</th>
 									</tr>
 								</thead>
 								<tbody>

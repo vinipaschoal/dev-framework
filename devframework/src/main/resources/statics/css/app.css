@@ -11,7 +11,7 @@
 }
 
 .font-esfinge {
-	font-size: 20px;
+	font-size: 30px;
 	font-family: 'POERedcoatNew';
 	font-weight: normal;
 	font-style: normal;
@@ -47,7 +47,7 @@
 	height: 100%;
 	background: #ffffff;
 	z-index: 999;
-	display; none;
+	display: none;
 }
 
 #loading span {
@@ -108,3 +108,5 @@
     padding: 13px;
     color: #fff;
 }
+
+#tabResult { display: none; }

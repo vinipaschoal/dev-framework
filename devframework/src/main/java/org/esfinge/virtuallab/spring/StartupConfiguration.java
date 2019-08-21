@@ -5,13 +5,11 @@ import java.io.File;
 import org.apache.commons.io.FilenameUtils;
 import org.esfinge.virtuallab.services.ClassLoaderService;
 import org.esfinge.virtuallab.services.PersistenceService;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 @Component
-@DependsOn({"entityManagerFactory", "queryBuilderEntityManagerProvider"})
 public class StartupConfiguration
 {
 	@EventListener
@@ -36,7 +34,12 @@ public class StartupConfiguration
 
 					// jar
 					else
+					{
 						classLoader.loadJar(filePath);
+						
+						// adiciona ao EntityManagerFactoryHelper para mapear as entidades
+						EntityManagerFactoryHelper.getInstance().loadEntitiesFromJar(filePath);
+					}
 				} 
 				catch (Exception exc)
 				{
@@ -49,6 +52,11 @@ public class StartupConfiguration
 		{
 			// TODO: debug..
 			e1.printStackTrace();
+		}
+		finally
+		{
+			// carrega o EntityManagerFactory com as entidades mapeadas
+			EntityManagerFactoryHelper.getInstance().reload();
 		}
 	}
 }

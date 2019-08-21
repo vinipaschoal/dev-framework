@@ -3,21 +3,21 @@ var app = window.app || {};
 app.settings = {
 		languagePtBr: {
 			"sEmptyTable": "Nenhum registro encontrado",
-    	    "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
-    	    "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
+    	    "sInfo": "Mostrando de _START_ at&eacute; _END_ de _TOTAL_ registros",
+    	    "sInfoEmpty": "Mostrando 0 at&eacute; 0 de 0 registros",
     	    "sInfoFiltered": "(Filtrados de _MAX_ registros)",
     	    "sInfoPostFix": "",
     	    "sInfoThousands": ".",
-    	    "sLengthMenu": "_MENU_ resultados por página",
+    	    "sLengthMenu": "_MENU_ resultados por p&aacute;gina",
     	    "sLoadingRecords": "Carregando...",
     	    "sProcessing": "Processando...",
     	    "sZeroRecords": "Nenhum registro encontrado",
     	    "sSearch": "Pesquisar",
     	    "oPaginate": {
-    	        "sNext": "Próximo",
+    	        "sNext": "Pr&oacute;ximo",
     	        "sPrevious": "Anterior",
     	        "sFirst": "Primeiro",
-    	        "sLast": "Último"
+    	        "sLast": "&Uacute;ltimo"
     	    },
     	    "oAria": {
     	        "sSortAscending": ": Ordenar colunas de forma ascendente",
@@ -27,6 +27,14 @@ app.settings = {
 		loading: $("<div id='loading'><span><i class='fas fa-spinner fa-pulse fa-1x'></i> Carregando...</span></div>"),
 		setLoad: function () {
 			$(".Load").append(app.settings.loading);
+		},
+		setLoadSubmit: function (selector, message, disabled) {
+			message = message || '';
+			disabled = disabled || '';
+			$button = $("." + selector);
+			$button.val(message);
+			if (disabled) $button.attr('disabled',disabled);
+			else $button.removeAttr('disabled');
 		},
 		getUrlParametes: function () {
 			var vars = [], hash;
@@ -38,6 +46,30 @@ app.settings = {
 		        vars[hash[0]] = hash[1];
 		    }
 		    return vars;
+		},
+		isJson: function (str) {
+			try {
+		        JSON.parse(str);
+		    } catch (e) {
+		        return false;
+		    }
+		    return true;
+		},
+		loadScreenDescription: function () {
+			var classDesc = app.storage.get("classDescriptor");
+			if (classDesc != null){
+				if ($('#breadcrumbClassName').length) $('#breadcrumbClassName').text(classDesc.qualifiedName);
+				if ($('#headerClassName').length) $('#headerClassName').text(classDesc.label);
+				if ($('#InvokeClassName').length) $('#InvokeClassName').text(classDesc.qualifiedName + "(" + classDesc.label + ")");
+				if ($('#InvokeClassDescription').length) $('#InvokeClassDescription').text(classDesc.description);
+			}
+
+			var methodDesc = app.storage.get("methodDescriptor");
+			if (methodDesc != null){
+				if ($('#breadcrumbMethodName').length) $('#breadcrumbMethodName').text(app.utils.methodSignature(methodDesc));
+				if ($('#headerMethodName').length) $('#headerMethodName').text(methodDesc.label);
+				if ($('#InvokeMethodName').length) $('#InvokeMethodName').text(methodDesc.name);
+			}
 		},
 		init: function () {
 			
@@ -85,7 +117,7 @@ app.storage = {
 		
 		// recupera um objeto da sessao
 		get: function(key) {
-			return JSON.parse(sessionStorage.getItem(key));
+			return app.settings.isJson(sessionStorage.getItem(key)) ? JSON.parse(sessionStorage.getItem(key)) : null;
 		},
 		
 		// remove um objeto da sessao

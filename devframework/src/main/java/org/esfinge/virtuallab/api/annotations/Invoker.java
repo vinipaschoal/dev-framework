@@ -15,7 +15,7 @@ import net.sf.esfinge.metadata.annotation.validator.ToValidate;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 @ToValidate(InvokerProxyValidator.class)
-public @interface InvokerProxy
+public @interface Invoker
 {
 
 }

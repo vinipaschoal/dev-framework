@@ -1,26 +1,19 @@
 package org.esfinge.virtuallab.services;
 
-import java.net.MalformedURLException;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.sql.DataSource;
 
 import org.esfinge.virtuallab.metadata.ServiceDAOMetadata;
-import org.esfinge.virtuallab.utils.ReflectionUtils;
 import org.esfinge.virtuallab.utils.Utils;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
-import org.springframework.orm.jpa.persistenceunit.MutablePersistenceUnitInfo;
-import org.springframework.orm.jpa.persistenceunit.PersistenceUnitPostProcessor;
-
-import net.sf.esfinge.querybuilder.Repository;
 
 /**
  * Responsavel em gerenciar os DataSource dos servicos que acessam Bancos de Dados.
  */
-public class DataSourceService extends AbstractRoutingDataSource implements PersistenceUnitPostProcessor
+public class DataSourceService extends AbstractRoutingDataSource
 {
 	// chave para o DS default (null object)
 	private static final DSKey DEFAULT_DS = new DSKey("DEFAULT", "org.hibernate.dialect.H2Dialect");
@@ -33,9 +26,6 @@ public class DataSourceService extends AbstractRoutingDataSource implements Pers
 	
 	// mapa dos DataSource registrados
 	private Map<Object, Object> dsMap;
-	
-	// gerencia as entidades JPA mapeadas
-	private MutablePersistenceUnitInfo persistenceUnitInfo;
 	
 	// controla o DataSource selecionado
 	private final ThreadLocal<DSKey> context = new ThreadLocal<>();
@@ -76,34 +66,11 @@ public class DataSourceService extends AbstractRoutingDataSource implements Pers
 		return getCurrentDataBase();
 	}
 	
-	@Override
-	public void postProcessPersistenceUnitInfo(MutablePersistenceUnitInfo pui)
-	{
-		this.persistenceUnitInfo = pui;
-//		this.persistenceUnitInfo.addManagedClassName("org.esfinge.virtuallab.domain.Temperatura");
-		/*
-		try
-		{
-			ClassLoaderService.getInstance().loadJar("/tmp/temperatura.jar");
-			this.persistenceUnitInfo.addJarFileUrl(Paths.get("/tmp", "temperatura.jar").toUri().toURL());
-		}
-		catch (MalformedURLException e)
-		{
-			e.printStackTrace();
-		}
-		
-		System.err.println("PUI managed entities: " + _instance.persistenceUnitInfo.getManagedClassNames());
-		*/
-	}
-	
 	/**
-	 * Seleciona o DataSource relacionado a classe de BD informada.
+	 * Seleciona o DataSource relacionado com a classe DAO informada.
 	 */
 	public static void setDataSourceFor(Class<?> clazz)
 	{
-		//TODO: debug..
-		System.out.println("DS SERVICE >> " + getInstance().keyMap.get(clazz));
-		
 		getInstance().context.set(_instance.keyMap.get(clazz));
 	}
 	
@@ -151,18 +118,6 @@ public class DataSourceService extends AbstractRoutingDataSource implements Pers
 
 			// atualiza as propriedades do AbstractRoutingDataSource
 			_instance.afterPropertiesSet();
-			
-			// obtem a classe da entidade do @ServiceDAO
-			Class<?> entityClass = ReflectionUtils.getActualTypesFromGenericInterface(Repository.class, daoClass).get(0);
-			
-			// registra a entidade no gerenciador JPA
-//			_instance.persistenceUnitInfo.addManagedClassName(entityClass.getCanonicalName());
-//			EntityManagerFactoryBeanHelper.getInstance().afterPropertiesSet();
-			
-//			System.out.println("Entity class: " + entityClass);
-//			System.out.println("PUI managed entities: " + _instance.persistenceUnitInfo.getManagedClassNames());
-//			System.out.println("PUI name: " + _instance.persistenceUnitInfo.getPersistenceUnitName());
-//			System.out.println("EntityManagerFactory metamodel: " + new QueryBuilderEntityManagerProvider().getEntityManagerFactory().getMetamodel().getEntities());
 		}
 	}
 	

@@ -4,21 +4,21 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import org.esfinge.virtuallab.metadata.processors.BarChartReturnProcessor;
 import org.esfinge.virtuallab.metadata.validator.MethodReturn;
-import org.hibernate.mapping.Map;
 
 import net.sf.esfinge.metadata.annotation.validator.method.ValidMethodReturn;
 
 /**
  * Indica que o retorno de um metodo sera apresentado como um grafico de barras simples.
- * Pode ser utilizado com Collection<Number>, Collection<Object> ou Map<String,Number>
+ * Pode ser utilizado com List<Number>, List<Object>, Map<String,Number> ou Map<String,Object>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@ValidMethodReturn(validTypesToReturn = { Collection.class, Map.class })
+@ValidMethodReturn(validTypesToReturn = { List.class, Map.class })
 @MethodReturn(processor = BarChartReturnProcessor.class)
 public @interface BarChartReturn
 {
@@ -38,10 +38,10 @@ public @interface BarChartReturn
 	String yAxisLabel() default "";
 	
 	// mostra as linhas de grade do eixo X
-	boolean xAxisGridLines() default true;
+	boolean xAxisShowGridlines() default true;
 	
 	// mostra as linhas de grade do eixo Y
-	boolean yAxisGridLines() default true;
+	boolean yAxisShowGridlines() default true;
 	
 	// tamanho da fonte dos eixos
 	int axisFontSize() default 16;
@@ -50,16 +50,20 @@ public @interface BarChartReturn
 	boolean horizontal() default false;
 
 	// nomes das categorias (barras) do grafico
-	String[] labels() default {};
-	
-	// o campo do item da colecao que sera utilizado 
-	// como nome das categorias (barras) do grafico
-	String labelsField() default "";
+	String[] dataLabels() default {};
 	
 	// cores das categorias (barras) do grafico
-	String[] colors() default {};
+	String[] dataColors() default {};
 	
-	// o campo do item da colecao que sera utilizado
+	// o campo dos objetos da colecao que sera utilizado 
+	// para obter o nome das categorias (barras) do grafico
+	String dataLabelsField() default "";
+	
+	// o campo dos objetos da colecao que sera utilizado
 	// para obter a cor das categorias (barras) do grafico
-	String colorsField() default "";
+	String dataColorsField() default "";
+	
+	// o campo dos objetos da colecao que sera utilizado 
+	// para obter o valor das categorias (barras) do grafico
+	String dataValuesField() default "";
 }

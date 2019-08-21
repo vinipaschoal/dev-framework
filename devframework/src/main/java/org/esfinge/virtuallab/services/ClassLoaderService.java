@@ -57,7 +57,7 @@ public class ClassLoaderService
 		catch (NoSuchMethodException | SecurityException e)
 		{
 			// TODO: debug..
-			System.out.println("CLASS LOADER >> Erro ao acessar metodos protegidos do ClassLoader do sistema, ABORTANDO...");
+			System.err.println("CLASS LOADER >> Erro ao acessar metodos protegidos do ClassLoader do sistema, ABORTANDO...");
 			e.printStackTrace();
 			
 			// TERMINA O SISTEMA!

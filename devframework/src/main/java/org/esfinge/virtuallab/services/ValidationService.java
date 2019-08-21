@@ -12,6 +12,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.esfinge.virtuallab.api.annotations.ServiceClass;
 import org.esfinge.virtuallab.api.annotations.ServiceDAO;
 import org.esfinge.virtuallab.exceptions.ClassLoaderException;
+import org.esfinge.virtuallab.exceptions.MetadataException;
 import org.esfinge.virtuallab.exceptions.ValidationException;
 import org.esfinge.virtuallab.metadata.ClassMetadata;
 import org.esfinge.virtuallab.metadata.MetadataHelper;
@@ -112,8 +113,9 @@ public final class ValidationService
 			
 			// ok, classe valida!
 		}
-		catch ( Exception e )
+		catch ( MetadataException e )
 		{
+			// erro na validacao dos metadados da classe
 			throw new ValidationException(String.format("Erro ao validar a classe '%s'!", clazz.getCanonicalName()), e);
 		}
 	}
@@ -143,13 +145,14 @@ public final class ValidationService
 		if ( returnClass.equals(void.class) )
 			throw new ValidationException(String.format("O metodo '%s' deve retornar um objeto valido! (nao pode ser void)", method.getName()));
 		
-		// tipos validos: basicos / array / colecao / objeto valido
+		// tipos validos: basicos / array / colecao / mapa / objeto valido
 		if (! ReflectionUtils.isBasicType(returnClass) )
 			if (! ReflectionUtils.isArray(returnClass) )
 				if (! ReflectionUtils.isCollection(returnClass) )
-					if (! ReflectionUtils.isFlatObject(returnClass) )
-						throw new ValidationException(String.format("O metodo '%s' retorna um objeto nao suportado (%s)", 
-								method.getName(), returnClass.getCanonicalName()));
+					if (! ReflectionUtils.isMap(returnClass) )
+						if (! ReflectionUtils.isFlatObject(returnClass) )
+							throw new ValidationException(String.format("O metodo '%s' retorna um objeto nao suportado (%s)", 
+									method.getName(), returnClass.getCanonicalName()));
 		
 		// verifica os tipos dos parametros
 		// tipos validos: basico / objeto valido
@@ -186,7 +189,9 @@ public final class ValidationService
 				}
 				catch ( ValidationException e )
 				{
-					// classe invalida, ignora
+					// verifica se foi erro de validacao de metadados ou de uma classe que nao eh de servico / DAO
+					if ( e.getCause() instanceof MetadataException )
+						throw e;
 				}
 			}
 				

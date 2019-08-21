@@ -5,7 +5,7 @@ import org.esfinge.virtuallab.api.annotations.ParamAttribute;
 import org.esfinge.virtuallab.api.annotations.ServiceClass;
 import org.esfinge.virtuallab.api.annotations.ServiceMethod;
 
-@ServiceClass
+@ServiceClass(description = "Demonstra a utilizacao de label nos atributos dos parametros de metodos (@Param e @ParamAttribute)")
 public class MatematicaService
 {
 	@ServiceMethod(label = "Distancia entre Pontos", description = "Calcula a distancia entre dois pontos")

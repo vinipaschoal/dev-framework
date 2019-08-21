@@ -27,9 +27,15 @@ app.Classes = {
 	    	});
 	    	
 	    	$("#btnSubmit").click(function (event) {
-				event.preventDefault();                
+				event.preventDefault();
 				app.Classes.save();
 	        });
+	    	
+	    	$(document).on('click', '.linkClazz', function(){
+	    		event.preventDefault();
+	    		$index = $(this).data("index");
+	    		app.Classes.listMethods($index);
+	    	});
 		},
 		
 		// carrega a lista de classes
@@ -55,7 +61,7 @@ app.Classes = {
 	                    $.each(classList, function( i, classDesc ) {
 	                    	app.Classes.tableClass.row.add([
 	                    		classDesc.label, 
-								"<a href='#' onclick='app.Classes.listMethods(" + i + ")'>" + classDesc.qualifiedName + "</a>",
+								"<a href='#' class='linkClazz' data-index='" + i + "'>" + classDesc.qualifiedName + "</a>",
 								classDesc.description]).draw( false );
 	                   	});
                     }else{
@@ -136,7 +142,7 @@ app.Classes = {
                 $fileExt = $fileExt.substring($fileExt.lastIndexOf('.'));
                 if (app.Classes.validExts.indexOf($fileExt) < 0) {
 					alertBt({
-	        	      messageText: "O arquivo selecionado é inválido. Selecione apenas arquivos do tipo " + app.Classes.validExts.toString() + ".",
+	        	      messageText: "O arquivo selecionado &eacute; inv&aacute;lido. Selecione apenas arquivos do tipo " + app.Classes.validExts.toString() + ".",
 	        	      headerText: "Alerta",
 	        	      alertType: "warning"
 	        	    });
@@ -168,7 +174,7 @@ app.Classes = {
                         $('#classModal').modal('hide');
                         alertBt({
        	        	      messageText: result.message,
-       	        	      headerText: "Confirmação",
+       	        	      headerText: "Confirma&ccedil;&atilde;o",
        	        	      alertType: "success"
        	        	    });
                         app.Classes.list();
