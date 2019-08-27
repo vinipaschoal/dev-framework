@@ -5,8 +5,8 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.esfinge.virtuallab.TestUtils;
-import org.esfinge.virtuallab.annotations.ServiceClass;
-import org.esfinge.virtuallab.annotations.ServiceMethod;
+import org.esfinge.virtuallab.api.annotations.ServiceClass;
+import org.esfinge.virtuallab.api.annotations.ServiceMethod;
 import org.esfinge.virtuallab.utils.Utils;
 import org.junit.AfterClass;
 import org.junit.Assert;

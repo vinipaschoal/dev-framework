@@ -83,6 +83,7 @@ public abstract class TestUtils
 				jarFile.putNextEntry(new JarEntry(classPath));
 				
 				// caminho para o arquivo da classe
+				classPath = Paths.get("target", "test-classes", classPath).toAbsolutePath().toString();				
 				if (! Paths.get(classPath).toFile().exists())
 					classPath = pathFromTestDir(FilenameUtils.getBaseName(classPath) + ".class");
 				

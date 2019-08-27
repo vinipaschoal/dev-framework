@@ -22,7 +22,7 @@ public interface IJsonRequestHandler extends IRequestHandler {
 		JsonReturn jsonReturn = this.handleAsync(request);
 
 		// seta o retorno como sendo do tipo JSON
-		response.setContentType("application/json;charset=UTF-8");
+		response.setContentType("application/json;charset=ISO-8859-1");
 
 		// retorna o objeto JSON para a pagina processa-lo de forma assincrona
 		response.getOutputStream().print(JsonUtils.stringify(jsonReturn));

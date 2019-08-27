@@ -5,9 +5,9 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.esfinge.virtuallab.annotations.processors.MethodReturnProcessor;
-import org.esfinge.virtuallab.annotations.processors.MethodReturnProcessorHelper;
 import org.esfinge.virtuallab.descriptors.MethodDescriptor;
+import org.esfinge.virtuallab.metadata.processors.MethodReturnProcessor;
+import org.esfinge.virtuallab.metadata.processors.MethodReturnProcessorHelper;
 import org.esfinge.virtuallab.services.InvokerService;
 import org.esfinge.virtuallab.utils.JsonUtils;
 import org.esfinge.virtuallab.utils.ReflectionUtils;

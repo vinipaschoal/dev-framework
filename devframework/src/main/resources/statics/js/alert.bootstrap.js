@@ -61,7 +61,7 @@ function alertBt(options) {
 			'border-top-right-radius': '5px'
 		});
     
-		$('#ezAlerts-title').text(defaults.headerText);
+		$('#ezAlerts-title').html(defaults.headerText);
 		$('#ezAlerts-message').html(defaults.messageText);
 
 		var keyb = false, backd = "static";

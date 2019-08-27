@@ -5,8 +5,8 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.esfinge.virtuallab.TestUtils;
-import org.esfinge.virtuallab.annotations.ServiceClass;
-import org.esfinge.virtuallab.annotations.ServiceMethod;
+import org.esfinge.virtuallab.api.annotations.ServiceClass;
+import org.esfinge.virtuallab.api.annotations.ServiceMethod;
 import org.esfinge.virtuallab.utils.Utils;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -62,7 +62,7 @@ public class ValidationServiceTest
 		String classPath = TestUtils.pathFromTestDir(className + ".class");
 
 		// verifica se a classe eh valida
-		Class<?> clazz = ValidationService.getInstance().checkClass(classPath);
+		Class<?> clazz = ValidationService.getInstance().checkClassFile(classPath);
 		Assert.assertEquals(className, clazz.getCanonicalName());
 	}
 
@@ -80,7 +80,7 @@ public class ValidationServiceTest
 		InputStream classStream = TestUtils.streamFromTestDir(className + ".class");
 
 		// verifica se a classe eh valida
-		Class<?> clazz = ValidationService.getInstance().checkClass(classStream, className);
+		Class<?> clazz = ValidationService.getInstance().checkClassFile(classStream, className);
 		Assert.assertEquals(className, clazz.getCanonicalName());
 	}
 
@@ -98,7 +98,7 @@ public class ValidationServiceTest
 		String classPath = TestUtils.pathFromTestDir(className + ".class");
 
 		// verifica se a classe eh valida
-		Class<?> clazz = ValidationService.getInstance().checkClass(classPath);
+		Class<?> clazz = ValidationService.getInstance().checkClassFile(classPath);
 		Assert.assertNull(clazz);
 	}
 
@@ -116,7 +116,7 @@ public class ValidationServiceTest
 		InputStream classStream = TestUtils.streamFromTestDir(className + ".class");
 
 		// verifica se a classe eh valida
-		Class<?> clazz = ValidationService.getInstance().checkClass(classStream, className);
+		Class<?> clazz = ValidationService.getInstance().checkClassFile(classStream, className);
 		Assert.assertNull(clazz);
 	}
 
@@ -138,7 +138,7 @@ public class ValidationServiceTest
 		Assert.assertTrue(TestUtils.createJar("validJar.jar", validClass1, validClass2, invalidClass));
 		String jarPath = TestUtils.pathFromTestDir("validJar.jar");
 
-		List<Class<?>> classList = ValidationService.getInstance().checkJar(jarPath);
+		List<Class<?>> classList = ValidationService.getInstance().checkJarFile(jarPath);
 		Assert.assertEquals(2, classList.size());
 		Assert.assertNotNull(Utils.getFromCollection(classList, c -> c.getCanonicalName().equals(validClass1)));
 		Assert.assertNotNull(Utils.getFromCollection(classList, c -> c.getCanonicalName().equals(validClass2)));
@@ -162,7 +162,7 @@ public class ValidationServiceTest
 		Assert.assertTrue(TestUtils.createJar("validJar.jar", validClass, invalidClass1, invalidClass2));
 		InputStream jarStream = TestUtils.streamFromTestDir("validJar.jar");
 
-		List<Class<?>> classList = ValidationService.getInstance().checkJar(jarStream, "validJar.jar");
+		List<Class<?>> classList = ValidationService.getInstance().checkJarFile(jarStream, "validJar.jar");
 		Assert.assertEquals(1, classList.size());
 		Assert.assertNotNull(Utils.getFromCollection(classList, c -> c.getCanonicalName().equals(validClass)));
 	}
@@ -185,7 +185,7 @@ public class ValidationServiceTest
 		Assert.assertTrue(TestUtils.createJar("invalidJar.jar", invalidClass1, invalidClass2, invalidClass3));
 		String jarPath = TestUtils.pathFromTestDir("invalidJar.jar");
 
-		List<Class<?>> classList = ValidationService.getInstance().checkJar(jarPath);
+		List<Class<?>> classList = ValidationService.getInstance().checkJarFile(jarPath);
 		Assert.assertNull(classList);
 	}
 
@@ -207,7 +207,7 @@ public class ValidationServiceTest
 		Assert.assertTrue(TestUtils.createJar("invalidJar.jar", invalidClass1, invalidClass2, invalidClass3));
 		InputStream jarStream = TestUtils.streamFromTestDir("invalidJar.jar");
 
-		List<Class<?>> classList = ValidationService.getInstance().checkJar(jarStream, "invalidJar.jar");
+		List<Class<?>> classList = ValidationService.getInstance().checkJarFile(jarStream, "invalidJar.jar");
 		Assert.assertNull(classList);
 	}
 }

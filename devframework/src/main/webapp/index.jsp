@@ -1,4 +1,3 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 
 <tags:_Layout>
@@ -11,7 +10,7 @@
 			<section class="jumbotron text-center">
 				<div class="container">
 					<h1 class="jumbotron-heading">Lista de Classes</h1>
-					<p class="lead">Selecione o bot√£o abaixo para cadastrar novas classes java.</p>
+					<p class="lead">Selecione o bot„o abaixo para cadastrar novas classes java.</p>
 					<p>
 						<button type="button" class="btn btn-primary" data-toggle="modal"
 						data-target="#classModal">Adicionar Nova Classe Java</button>
@@ -27,9 +26,9 @@
 							<table id="classTable" class="table table-striped table-bordered" data-url="listClasses.op">
 								<thead>
 									<tr>
-										<th>M√≥dulo</th>
+										<th>MÛdulo</th>
 										<th>Classe</th>
-										<th>Descri√ß√£o</th>
+										<th>DescriÁ„o</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -90,6 +89,6 @@
 	</jsp:attribute>
 	
 	<jsp:attribute name="js_custom">
-		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/app/Classes.js"></script>
+		<script type="text/javascript" charset="iso-8859-1" src="${pageContext.request.contextPath}/resources/js/app/Classes.js"></script>
 	</jsp:attribute>
 </tags:_Layout>

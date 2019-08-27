@@ -4,11 +4,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.RandomUtils;
-import org.esfinge.virtuallab.annotations.CustomReturn;
-import org.esfinge.virtuallab.annotations.Param;
-import org.esfinge.virtuallab.annotations.ServiceClass;
-import org.esfinge.virtuallab.annotations.ServiceMethod;
-import org.esfinge.virtuallab.annotations.TableReturn;
+import org.esfinge.virtuallab.api.annotations.CustomReturn;
+import org.esfinge.virtuallab.api.annotations.Param;
+import org.esfinge.virtuallab.api.annotations.ServiceClass;
+import org.esfinge.virtuallab.api.annotations.ServiceMethod;
+import org.esfinge.virtuallab.api.annotations.TableReturn;
 
 @ServiceClass(label = "Tarefas / ToDo", description = "Disponibiliza serviços relacionados a tarefas, no estilo ToDo.")
 public class TarefaService

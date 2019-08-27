@@ -1,6 +1,7 @@
 package org.esfinge.virtuallab.services;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import org.apache.bcel.classfile.ClassParser;
 import org.apache.bcel.classfile.JavaClass;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.esfinge.virtuallab.exceptions.ClassLoaderException;
 import org.esfinge.virtuallab.utils.Utils;
 import org.esfinge.virtuallab.web.FrontControllerServlet;
 
@@ -55,39 +57,57 @@ public class ClassLoaderService
 		catch (NoSuchMethodException | SecurityException e)
 		{
 			// TODO: debug..
-			System.out.println("CLASS LOADER >> Erro ao acessar metodos protegidos do ClassLoader do sistema!");
-
+			System.err.println("CLASS LOADER >> Erro ao acessar metodos protegidos do ClassLoader do sistema, ABORTANDO...");
 			e.printStackTrace();
+			
+			// TERMINA O SISTEMA!
+			System.exit(-1);
 		}
 	}
 
 	/**
 	 * Carrega a classe.
 	 */
-	public Class<?> loadClass(String classFilePath) throws Exception
+	public Class<?> loadClass(String classFilePath) throws ClassLoaderException
 	{
-		return this.loadClass(FileUtils.openInputStream(new File(classFilePath)), classFilePath);
+		try
+		{
+			return this.loadClass(FileUtils.openInputStream(new File(classFilePath)), classFilePath);
+		}
+		catch ( IOException e )
+		{
+			throw new ClassLoaderException("Erro ao carregar o arquivo da classe!", e);
+		}
 	}
 
 	/**
 	 * Carrega a classe.
 	 */
-	public Class<?> loadClass(InputStream classFileStream, String className) throws Exception
+	public Class<?> loadClass(InputStream classFileStream, String className) throws ClassLoaderException
 	{
-		return this.loadClassInternal(
-				new ClassParser(classFileStream, this.fixClassName(FilenameUtils.getName(className))).parse());
+		try
+		{
+			return this.loadClassInternal(
+					new ClassParser(classFileStream, this.fixClassName(FilenameUtils.getName(className))).parse());
+		}
+		catch ( IOException e )
+		{
+			throw new ClassLoaderException("Erro ao carregar o arquivo da classe!", e);
+		}
 	}
 
 	/**
 	 * Carrega a classe de um arquivo Jar.
 	 */
-	public Class<?> loadClassFromJar(String jarFilePath, String classQualifiedName) throws Exception
+	public Class<?> loadClassFromJar(String jarFilePath, String classQualifiedName) throws ClassLoaderException
 	{
-		try (
-				// abre o arquivo jar
-				JarFile jarFile = new JarFile(jarFilePath);
-			)
+		JarFile jarFile = null;
+		
+		try
 		{
+			// abre o arquivo jar
+			jarFile = new JarFile(jarFilePath);
+
 			// corrige para o nome qualificado da classe
 			String className = this.fixClassName(classQualifiedName);
 
@@ -102,38 +122,67 @@ public class ClassLoaderService
 			// nao encontrou a classe
 			return null;
 		}
+		catch ( IOException e )
+		{
+			throw new ClassLoaderException("Erro ao carregar arquivo jar!", e);
+		}
+		finally
+		{
+			// fecha o arquivo jar
+			if ( jarFile != null )
+			{
+				try
+				{
+					jarFile.close();
+				}
+				catch (IOException e)
+				{
+					// TODO: debug..
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	/**
 	 * Carrega a classe de um arquivo Jar.
 	 */
-	public Class<?> loadClassFromJar(InputStream jarFileStream, String classQualifiedName) throws Exception
+	public Class<?> loadClassFromJar(InputStream jarFileStream, String classQualifiedName) throws ClassLoaderException
 	{
-		// cria um arquivo temporario para carregar o jar
-		File tempJarFile = File.createTempFile("tempJar", ".tmp");
-		FileUtils.copyToFile(jarFileStream, tempJarFile);
+		File tempJarFile = null; 
 
 		try
 		{
+			// cria um arquivo temporario para carregar o jar
+			tempJarFile = File.createTempFile("tempJar", ".tmp");
+			FileUtils.copyToFile(jarFileStream, tempJarFile);
+
 			return this.loadClassFromJar(tempJarFile.getAbsolutePath(), classQualifiedName);
+		}
+		catch ( IOException e )
+		{
+			throw new ClassLoaderException("Erro ao carregar arquivo jar!", e);
 		}
 		finally
 		{
 			// apaga o arquivo temporario
-			FileUtils.deleteQuietly(tempJarFile);
+			if ( tempJarFile != null )
+				FileUtils.deleteQuietly(tempJarFile);
 		}
 	}
 
 	/**
 	 * Carrega as classes do arquivo Jar.
 	 */
-	public List<Class<?>> loadJar(String jarFilePath) throws Exception
+	public List<Class<?>> loadJar(String jarFilePath) throws ClassLoaderException
 	{
-		try (
-				// abre o arquivo jar
-				JarFile jarFile = new JarFile(jarFilePath);
-			)
+		JarFile jarFile = null;
+		
+		try
 		{
+			// abre o arquivo jar
+			jarFile = new JarFile(jarFilePath);
+
 			// lista das classes contidas no jar
 			List<Class<?>> classList = new ArrayList<Class<?>>();
 
@@ -156,52 +205,88 @@ public class ClassLoaderService
 			// verifica se encontrou alguma classe
 			return classList.size() == 0 ? null : classList;
 		}
+		catch ( IOException e )
+		{
+			throw new ClassLoaderException("Erro ao carregar arquivo jar!", e);
+		}
+		finally
+		{
+			// fecha o arquivo jar
+			if ( jarFile != null )
+			{
+				try
+				{
+					jarFile.close();
+				}
+				catch (IOException e)
+				{
+					// TODO: debug..
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	/**
 	 * Carrega as classes do arquivo Jar.
 	 */
-	public List<Class<?>> loadJar(InputStream jarFileStream) throws Exception
+	public List<Class<?>> loadJar(InputStream jarFileStream) throws ClassLoaderException
 	{
-		// cria um arquivo temporario para carregar o jar
-		File tempJarFile = File.createTempFile("tempJar", ".tmp");
-		FileUtils.copyToFile(jarFileStream, tempJarFile);
+		File tempJarFile = null;
 
 		try
 		{
+			// cria um arquivo temporario para carregar o jar
+			tempJarFile = File.createTempFile("tempJar", ".tmp");
+			FileUtils.copyToFile(jarFileStream, tempJarFile);
+			
 			return this.loadJar(tempJarFile.getAbsolutePath());
+		}
+		catch ( IOException e )
+		{
+			throw new ClassLoaderException("Erro ao carregar arquivo jar!", e);
 		}
 		finally
 		{
 			// apaga o arquivo temporario
-			FileUtils.deleteQuietly(tempJarFile);
+			if ( tempJarFile != null )
+				FileUtils.deleteQuietly(tempJarFile);
 		}
 	}
 	
 	/**
 	 * Carrega a classe.
 	 */
-	private Class<?> loadClassInternal(JavaClass javaClass) throws Exception
+	private Class<?> loadClassInternal(JavaClass javaClass) throws ClassLoaderException
 	{
 		try
 		{
 			// verifica se a classe ja esta carregada
 			return Class.forName(javaClass.getClassName());
 		}
-		catch (ClassNotFoundException e)
+		catch (ClassNotFoundException cnfe)
 		{
-			// tenta carregar a classe
-			byte[] classBytecodes = javaClass.getBytes();
-			return (Class<?>) this.defineClassMethod.invoke(FrontControllerServlet.class.getClassLoader(),
-					javaClass.getClassName(), classBytecodes, 0, classBytecodes.length);
+			try
+			{
+				// tenta carregar a classe
+				byte[] classBytecodes = javaClass.getBytes();
+				return (Class<?>) this.defineClassMethod.invoke(FrontControllerServlet.class.getClassLoader(),
+						javaClass.getClassName(), classBytecodes, 0, classBytecodes.length);
+			}
+			catch ( Exception e )
+			{
+				throw new ClassLoaderException(String.format("Erro ao tentar carregar a classe '%s'!", javaClass.getClassName()), e);
+			}
 		}
 	}
 
 	/**
 	 * Verifica o formato do nome da classe e corrige para o padrao se necessario.
 	 */
-	private String fixClassName(String className)
+	private String fixClassName(String className) throws ClassLoaderException
 	{
+		Utils.throwIfNull(className, ClassLoaderException.class, "Nome da classe nao pode ser null!");
+		
 		// troca os separadores por .
 		if (FilenameUtils.isExtension(className, "class"))
 			className = FilenameUtils.removeExtension(className);

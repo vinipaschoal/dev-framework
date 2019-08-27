@@ -1,115 +1,49 @@
 package org.esfinge.virtuallab.metadata;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.esfinge.virtuallab.annotations.ServiceClass;
-import org.esfinge.virtuallab.annotations.ServiceMethod;
-
-import net.sf.esfinge.metadata.annotation.container.AllMethodsWith;
-import net.sf.esfinge.metadata.annotation.container.AnnotationProperty;
-import net.sf.esfinge.metadata.annotation.container.ContainerFor;
-import net.sf.esfinge.metadata.annotation.container.ContainsAnnotation;
-import net.sf.esfinge.metadata.annotation.container.ElementName;
-import net.sf.esfinge.metadata.annotation.container.ReflectionReference;
-import net.sf.esfinge.metadata.container.ContainerTarget;
-
 /**
- * Extrai informacoes de metadados das classes.
+ * Informacoes de metadados das classes.
  */
-@ContainerFor(ContainerTarget.TYPE)
-public class ClassMetadata
+public interface ClassMetadata
 {
-	// indica se a classe contem a anotacao @ServiceClass
-	@ContainsAnnotation(ServiceClass.class)
-	private boolean annotatedWithServiceClass;
+	/**
+	 * Retorna se eh uma classe de servico.
+	 */
+	public default boolean isServiceClass() 
+	{
+	 	return false;
+	}
 
-	// lista dos metodos anotados com @ServiceMethod
-	@AllMethodsWith(ServiceMethod.class)
-	private List<MethodMetadata> methodsWithServiceMethod;
-
-	// rotulo para a classe
-	@AnnotationProperty(annotation = ServiceClass.class, property = "label")
-	private String label;
-
-	// texto informativo sobre a classe
-	@AnnotationProperty(annotation=ServiceClass.class, property = "description")
-	private String description;
-
-	// classe da classe
-	@ReflectionReference
-	private Class<?> clazz;
-
-	// nome da classe
-	@ElementName
-	private String className;
-	
+	/**
+	 * Retorna se eh uma classe de acesso a Banco de Dados.
+	 */
+	public default boolean isServiceDAO()
+	{
+		return false;
+	}
 	
 	/**
-	 * Construtor padrao.
+	 * Retorna o rotulo para a classe.
 	 */
-	public ClassMetadata()
+	public default String getLabel()
 	{
-		this.methodsWithServiceMethod = new ArrayList<>();
+		return "";
+	}
+
+	/**
+	 * Retorna o texto informativo sobre a classe. 
+	 */
+	public default String getDescription()
+	{
+		return "";
 	}
 	
-	public boolean isAnnotatedWithServiceClass()
-	{
-		return annotatedWithServiceClass;
-	}
-
-	public void setAnnotatedWithServiceClass(boolean annotatedWithServiceClass)
-	{
-		this.annotatedWithServiceClass = annotatedWithServiceClass;
-	}
-
-	public List<MethodMetadata> getMethodsWithServiceMethod()
-	{
-		return methodsWithServiceMethod;
-	}
-
-	public void setMethodsWithServiceMethod(List<MethodMetadata> methodsWithServiceMethod)
-	{
-		this.methodsWithServiceMethod = methodsWithServiceMethod;
-	}
-
-	public String getDescription()
-	{
-		return description;
-	}
+	/**
+	 * Retorna o objeto Class da classe.
+	 */
+	public Class<?> getClazz();
 	
-	public void setDescription(String description)
-	{
-		this.description = description;
-	}
-
-	public String getLabel()
-	{
-		return label;
-	}
-
-	public void setLabel(String label)
-	{
-		this.label = label;
-	}
-
-	public Class<?> getClazz()
-	{
-		return clazz;
-	}
-
-	public void setClazz(Class<?> clazz)
-	{
-		this.clazz = clazz;
-	}
-
-	public String getClassName()
-	{
-		return className;
-	}
-
-	public void setClassName(String className)
-	{
-		this.className = className;
-	}
+	/**
+	 * Retorna o nome da classe.
+	 */
+	public String getClassName();
 }

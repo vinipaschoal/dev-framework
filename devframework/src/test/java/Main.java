@@ -1,67 +1,137 @@
-import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.esfinge.virtuallab.TestUtils;
-import org.esfinge.virtuallab.annotations.CustomReturn;
-import org.esfinge.virtuallab.annotations.ServiceClass;
-import org.esfinge.virtuallab.annotations.ServiceMethod;
-import org.esfinge.virtuallab.annotations.TableReturn;
-import org.esfinge.virtuallab.domain.Matematica;
+import org.esfinge.virtuallab.api.annotations.BarChartReturn;
+import org.esfinge.virtuallab.api.annotations.CustomReturn;
+import org.esfinge.virtuallab.api.annotations.ServiceClass;
+import org.esfinge.virtuallab.api.annotations.ServiceMethod;
+import org.esfinge.virtuallab.api.annotations.TableReturn;
+import org.esfinge.virtuallab.domain.ChartService;
+import org.esfinge.virtuallab.domain.MatematicaInvokerProxy;
+import org.esfinge.virtuallab.domain.MatematicaService;
 import org.esfinge.virtuallab.domain.Ponto;
 import org.esfinge.virtuallab.domain.Tarefa;
 import org.esfinge.virtuallab.domain.TarefaService;
-import org.esfinge.virtuallab.metadata.ClassMetadata;
-import org.esfinge.virtuallab.metadata.MetadataHelper;
-import org.esfinge.virtuallab.services.ValidationService;
-import org.esfinge.virtuallab.utils.ReflectionUtils;
+import org.esfinge.virtuallab.domain.Temperatura;
+import org.esfinge.virtuallab.domain.TemperaturaInvokerProxy;
+import org.esfinge.virtuallab.domain.TemperaturaService;
+import org.esfinge.virtuallab.domain.Topic;
+import org.esfinge.virtuallab.domain.TopicService;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.util.TraceClassVisitor;
 
-import net.sf.esfinge.classmock.ClassMock;
-import net.sf.esfinge.classmock.api.IClassReader;
-import net.sf.esfinge.classmock.api.IClassWriter;
-import net.sf.esfinge.classmock.api.enums.VisibilityEnum;
-import net.sf.esfinge.classmock.parse.ParseASM;
 
 public class Main
 {
 	public static void main(String... args) throws Exception
 	{
 		TestUtils.createJar("tarefa.jar", TarefaService.class, Tarefa.class);
-		TestUtils.createJar("matematica.jar", Matematica.class, Ponto.class);
+		TestUtils.createJar("matematica.jar", MatematicaService.class, MatematicaInvokerProxy.class, Ponto.class);
+		TestUtils.createJar("chart.jar", ChartService.class, Temperatura.class);
+		TestUtils.createJar("temperaturaDAO.jar", TemperaturaService.class, TemperaturaInvokerProxy.class, Temperatura.class);
+		TestUtils.createJar("topicDAO.jar", TopicService.class, Topic.class);
 		
-		String className = "virtuallab.test.ValidServiceClass";
-		try
+		/*
+		for ( Method m : MethodUtils.getMethodsWithAnnotation(Main.class, BarChartReturn.class) )
 		{
-			Class<?> clazz = ReflectionUtils.findClass(className);
-			throw new Exception("Classe ja carregada: " + clazz);
+			MethodReturnProcessor<?> processor = MethodReturnProcessorHelper.getInstance().findProcessor(m);
+			JsonData data = processor.process(m.invoke(null, null));
+			System.out.println(data);
+			System.out.println();
 		}
-		catch ( ClassNotFoundException cnfe )
-		{
-			cnfe.printStackTrace();
-		}
+		*/
+	}
+	
+	
+	@BarChartReturn(dataLabels = {"Sul", "Sudeste", "Nordeste", "Norte", "Centro-Oeste"},
+			dataColors = {"rgba(255, 99, 132, 0.2)", "rgba(255, 206, 86, 0.2)", "rgba(75, 192, 192, 0.2)", "rgba(153, 102, 255, 0.2)", "rgba(255, 159, 64, 0.2)"},
+			legend = "Number of Votes",
+			title = "Brazil Election Votes",
+			titleFontSize = 40,
+			xAxisLabel = "Regions",
+			yAxisLabel = "Votes",
+			xAxisShowGridlines = false,
+			yAxisShowGridlines = false,			
+			axisFontSize = 30,
+			horizontal = false) 
+	public static List<Number> getDataList()
+	{
+		List<Number> list = new ArrayList<>();
+		list.add(12);
+		list.add(19);
+		list.add(3);
+		list.add(7);
+		list.add(10);
 		
-		IClassWriter classMock = ClassMock.of(className);
-		classMock.annotation(ServiceClass.class);
-		classMock.method("someService").visibility(VisibilityEnum.PUBLIC).returnType(int.class).annotation(ServiceMethod.class);
+		return list;
+	}
+	
+	@BarChartReturn
+	public static Map<String,Number> getDataMap()
+	{
+		Map<String, Number> map = new HashMap<>();
 		
-		ParseASM parserASM = new ParseASM((IClassReader) classMock);
-		String filePath = TestUtils.pathFromTestDir("ValidServiceClass.class");
+		map.put("Sul", 12);
+		map.put("Sudeste", 19);
+		map.put("Nordeste", 3);
+		map.put("Norte", 7);
+		map.put("Centro-Oeste", 10);
 		
-		FileUtils.writeByteArrayToFile(new File(filePath), parserASM.parse());
+		return map;
+	}
+
+	@BarChartReturn(dataLabelsField = "mes",
+			dataValuesField = "maxima",
+			legend = "Temperatura Máxima",
+			title = "Temperatura Máxima Anual",
+			titleFontSize = 40,
+			xAxisLabel = "Meses",
+			yAxisLabel = "Temperatura",
+			xAxisShowGridlines = false,
+			yAxisShowGridlines = true,			
+			axisFontSize = 30,
+			horizontal = false) 
+	public static List<Temperatura> getTemperaturasByMaxima()
+	{
+		List<Temperatura> list = new ArrayList<>();
+		list.add(new Temperatura(2l, "-23.5475","-46.63611111", 28.2, 19.3, "janeiro"));
+		list.add(new Temperatura(3l, "-23.5475","-46.63611111", 28.8, 19.5, "fevereiro"));
+		list.add(new Temperatura(4l, "-23.5475","-46.63611111", 28.0, 18.8, "marco"));
+		list.add(new Temperatura(5l, "-23.5475","-46.63611111", 26.2, 17.4, "abril"));
+		list.add(new Temperatura(6l, "-23.5475","-46.63611111", 23.3, 14.5, "maio"));
+		list.add(new Temperatura(7l, "-23.5475","-46.63611111", 22.6, 13.0, "junho"));
 		
-		Class<?> clazz = ValidationService.getInstance().checkClass(filePath);
-		ClassMetadata metadata = MetadataHelper.getInstance().getClassMetadata(clazz);
+		return list;
+	}
+
+	@BarChartReturn(dataValuesField = "minima",
+			legend = "Temperatura Mínma",
+			title = "Temperatura Mínima Anual",
+			titleFontSize = 40,
+			xAxisLabel = "Temperatura",
+			yAxisLabel = "Meses",
+			xAxisShowGridlines = true,
+			yAxisShowGridlines = false,			
+			axisFontSize = 30,
+			horizontal = true) 
+	public static Map<String,Temperatura> getTemperaturasByMinima()
+	{
+		Map<String, Temperatura> map = new HashMap<>();
+		map.put("JANEIRO", new Temperatura(2l, "-23.5475","-46.63611111", 28.2, 19.3, "janeiro"));
+		map.put("FEVEREIRO", new Temperatura(3l, "-23.5475","-46.63611111", 28.8, 19.5, "fevereiro"));
+		map.put("MARCO", new Temperatura(4l, "-23.5475","-46.63611111", 28.0, 18.8, "marco"));
+		map.put("ABRIL", new Temperatura(5l, "-23.5475","-46.63611111", 26.2, 17.4, "abril"));
+		map.put("MAIO", new Temperatura(6l, "-23.5475","-46.63611111", 23.3, 14.5, "maio"));
+		map.put("JUNHO", new Temperatura(7l, "-23.5475","-46.63611111", 22.6, 13.0, "junho"));
 		
-		System.out.println("Class: " + clazz.getCanonicalName());
-		System.out.println("@ServiceClass: " + metadata.isAnnotatedWithServiceClass());
-		System.out.println("@ServiceMethod: " + metadata.getMethodsWithServiceMethod().size());
-	}	
+		return map;
+	}
 	
 	/**
 	 * Retorna uma String com as informacoes de bytecode de uma classe.

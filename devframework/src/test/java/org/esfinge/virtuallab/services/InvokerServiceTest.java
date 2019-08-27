@@ -5,6 +5,7 @@ import java.util.Arrays;
 import org.esfinge.virtuallab.descriptors.MethodDescriptor;
 import org.esfinge.virtuallab.descriptors.ParameterDescriptor;
 import org.esfinge.virtuallab.exceptions.InvocationException;
+import org.esfinge.virtuallab.exceptions.ValidationException;
 import org.esfinge.virtuallab.services.invoker.InvokerInvalidClass;
 import org.esfinge.virtuallab.services.invoker.InvokerValidClass;
 import org.hamcrest.core.IsInstanceOf;
@@ -72,7 +73,7 @@ public class InvokerServiceTest
 	{
 		// espera falhar por causa de IllegalAccessException
 		thrown.expect(InvocationException.class);
-		thrown.expectCause(IsInstanceOf.instanceOf(IllegalAccessException.class));
+		thrown.expectCause(IsInstanceOf.instanceOf(ValidationException.class));
 		
 		// especifica uma classe com construtor privado
 		MethodDescriptor md = this.createMethodDescriptor();

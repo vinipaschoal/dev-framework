@@ -4,9 +4,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.esfinge.virtuallab.annotations.CustomReturn;
-import org.esfinge.virtuallab.annotations.ServiceMethod;
-import org.esfinge.virtuallab.annotations.TableReturn;
+import org.esfinge.virtuallab.api.annotations.ServiceMethod;
 
 import net.sf.esfinge.metadata.annotation.container.AnnotationProperty;
 import net.sf.esfinge.metadata.annotation.container.ContainerFor;
@@ -25,14 +23,6 @@ public class MethodMetadata
 	// indica se o metodo contem a anotacao @ServiceMethod
 	@ContainsAnnotation(ServiceMethod.class)
 	private boolean annotatedWithServiceMethod;
-
-	// indica se o metodo contem a anotacao @CustomReturn
-	@ContainsAnnotation(CustomReturn.class)
-	private boolean annotatedWithCustomReturn;
-
-	// indica se o metodo contem a anotacao @HtmlTableReturn
-	@ContainsAnnotation(TableReturn.class)
-	private boolean annotatedWithTableReturn;
 
 	// rotulo para o metodo
 	@AnnotationProperty(annotation = ServiceMethod.class, property = "label")
@@ -71,26 +61,6 @@ public class MethodMetadata
 	public void setAnnotatedWithServiceMethod(boolean annotatedWithServiceMethod)
 	{
 		this.annotatedWithServiceMethod = annotatedWithServiceMethod;
-	}
-
-	public boolean isAnnotatedWithCustomReturn()
-	{
-		return annotatedWithCustomReturn;
-	}
-
-	public void setAnnotatedWithCustomReturn(boolean annotatedWithCustomReturn)
-	{
-		this.annotatedWithCustomReturn = annotatedWithCustomReturn;
-	}
-
-	public boolean isAnnotatedWithTableReturn()
-	{
-		return annotatedWithTableReturn;
-	}
-
-	public void setAnnotatedWithTableReturn(boolean annotatedWithTableReturn)
-	{
-		this.annotatedWithTableReturn = annotatedWithTableReturn;
 	}
 
 	public String getDescription()

@@ -27,7 +27,7 @@ public class UploadFileHandler implements IJsonRequestHandler
 		{
 			String fileName = this.saveFile(request);
 			jsonReturn.setSuccess(true);
-			jsonReturn.setMessage("Arquivo " + fileName + " carregado com sucesso!");
+			jsonReturn.setMessage("Arquivo '" + fileName + "' carregado com sucesso!");
 		}
 		catch ( Exception e )
 		{

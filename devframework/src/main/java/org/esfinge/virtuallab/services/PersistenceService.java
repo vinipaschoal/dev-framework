@@ -16,6 +16,9 @@ import org.esfinge.virtuallab.descriptors.ClassDescriptor;
 import org.esfinge.virtuallab.descriptors.MethodDescriptor;
 import org.esfinge.virtuallab.metadata.ClassMetadata;
 import org.esfinge.virtuallab.metadata.MetadataHelper;
+import org.esfinge.virtuallab.metadata.ServiceClassMetadata;
+import org.esfinge.virtuallab.metadata.ServiceDAOMetadata;
+import org.esfinge.virtuallab.spring.EntityManagerFactoryHelper;
 import org.esfinge.virtuallab.utils.Utils;
 
 /**
@@ -39,7 +42,6 @@ public class PersistenceService
 		
 		// 
 		ValidationService validation = ValidationService.getInstance();
-		MetadataHelper metadataHelper = MetadataHelper.getInstance();
 		
 		// obtem os arquivos de classes e jar do diretorio de upload
 		for (File file : this.getUploadedFiles())
@@ -51,24 +53,42 @@ public class PersistenceService
 				// classe
 				if (FilenameUtils.isExtension(filePath, "class"))
 				{
-					Class<?> clazz = validation.checkClass(filePath);
-					if (clazz != null)
-						this.classCache.put(clazz.getCanonicalName(), metadataHelper.getClassMetadata(clazz));
+					Class<?> clazz = validation.checkClassFile(filePath);
+					this.cacheServiceClass(clazz);
 				}
 				// jar
 				else
 				{
 					// obtem as classes validas do jar
-					List<Class<?>> jarClassList = validation.checkJar(filePath);
+					List<Class<?>> jarClassList = validation.checkJarFile(filePath);
 					if (jarClassList != null)
 						for (Class<?> clazz : jarClassList)
-							this.classCache.put(clazz.getCanonicalName(), metadataHelper.getClassMetadata(clazz));
+							this.cacheServiceClass(clazz);
 				}
 			}
 			catch (Exception exc)
 			{
 				exc.printStackTrace();
 			}
+	}
+	
+	/**
+	 * Armazena as informacoes da classe de servico em cache.
+	 */
+	private void cacheServiceClass(Class<?> clazz)
+	{
+		if (clazz != null)
+		{
+			// obtem os metadados da classe
+			ClassMetadata metadata = MetadataHelper.getInstance().getClassMetadata(clazz);
+			
+			// armazena as informacoes de metadados no cache
+			this.classCache.put(clazz.getCanonicalName(), metadata);
+			
+			// salva as informacoes do DataSource da classe @ServiceDAO
+			if ( metadata.isServiceDAO() )
+				DataSourceService.registerDataSource((ServiceDAOMetadata) metadata);
+		}
 	}
 
 	/**
@@ -100,8 +120,17 @@ public class PersistenceService
 		ClassMetadata classMetadata = this.classCache.get(classQualifiedName);
 		
 		if ( classMetadata != null )
-			return classMetadata.getMethodsWithServiceMethod().stream()
-					.map(m -> new MethodDescriptor(m)).collect(Collectors.toList());
+		{
+			// @ServiceClass
+			if ( classMetadata.isServiceClass() )
+				return ((ServiceClassMetadata) classMetadata).getMethodsWithServiceMethod().stream()
+						.map(m -> new MethodDescriptor(m)).collect(Collectors.toList());
+			
+			// @ServiceDAO
+			if ( classMetadata.isServiceDAO() )
+				return ((ServiceDAOMetadata) classMetadata).getMethods().stream()
+						.map(m -> new MethodDescriptor(m)).collect(Collectors.toList());
+		}
 
 		return new ArrayList<MethodDescriptor>();
 	}
@@ -117,8 +146,8 @@ public class PersistenceService
 		ByteArrayInputStream streamCopy = new ByteArrayInputStream(IOUtils.toByteArray(fileStream));
 
 		// verifica se o arquivo (classe/jar) eh valido
-		Object valid = fileName.endsWith(".jar") ? ValidationService.getInstance().checkJar(streamCopy, fileName)
-				: ValidationService.getInstance().checkClass(streamCopy, fileName);
+		Object valid = fileName.endsWith(".jar") ? ValidationService.getInstance().checkJarFile(streamCopy, fileName)
+				: ValidationService.getInstance().checkClassFile(streamCopy, fileName);
 
 		if (valid != null)
 		{
@@ -130,19 +159,21 @@ public class PersistenceService
 			FileUtils.copyInputStreamToFile(streamCopy, file);
 			
 			// atualiza o cache
-			MetadataHelper metadataHelper = MetadataHelper.getInstance();
 			if (valid instanceof Class<?>)
 			{
 				Class<?> clazz = (Class<?>) valid;
-				this.classCache.put(clazz.getCanonicalName(), metadataHelper.getClassMetadata(clazz));
+				this.cacheServiceClass(clazz);
 			}
 			else
 			{
 				@SuppressWarnings("unchecked")
 				List<Class<?>> jarClassList = (List<Class<?>>) valid;
-				if (jarClassList != null)
-					for (Class<?> clazz : jarClassList)
-						this.classCache.put(clazz.getCanonicalName(), metadataHelper.getClassMetadata(clazz));
+				for (Class<?> clazz : jarClassList)
+					this.cacheServiceClass(clazz);
+				
+				// informa o EntityManagerFactory sobre o JAR para carregar as entidades
+				EntityManagerFactoryHelper.getInstance().loadEntitiesFromJar(file.getAbsolutePath());
+				EntityManagerFactoryHelper.getInstance().reload();
 			}
 
 			return true;

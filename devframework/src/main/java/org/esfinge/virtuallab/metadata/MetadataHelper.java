@@ -2,6 +2,8 @@ package org.esfinge.virtuallab.metadata;
 
 import java.lang.reflect.Method;
 
+import org.esfinge.virtuallab.exceptions.MetadataException;
+
 import net.sf.esfinge.metadata.AnnotationReader;
 
 /**
@@ -38,16 +40,37 @@ public class MetadataHelper
 	/**
 	 * Retorna as informacoes de metadado da classe informada.
 	 */
-	public ClassMetadata getClassMetadata(Class<?> clazz) throws Exception
+	public ClassMetadata getClassMetadata(Class<?> clazz) throws MetadataException
 	{ 
-		return reader.readingAnnotationsTo(clazz, ClassMetadata.class);	
+		try
+		{
+			// ServiceDAO
+			if ( clazz.isInterface() )
+				return reader.readingAnnotationsTo(clazz, ServiceDAOMetadata.class);	
+				
+			// ServiceClass
+			else
+				return reader.readingAnnotationsTo(clazz, ServiceClassMetadata.class);	
+				
+		}
+		catch ( Exception e )
+		{
+			throw new MetadataException(String.format("Erro ao recuperar os metadados da classe '%s'!", clazz.getCanonicalName()), e);
+		}
 	}
 	
 	/**
 	 * Retorna as informacoes de metadado do metodo informado.
 	 */
-	public MethodMetadata getMethodMetadata(Method method) throws Exception
+	public MethodMetadata getMethodMetadata(Method method) throws MetadataException
 	{
-		return reader.readingAnnotationsTo(method, MethodMetadata.class);	
+		try
+		{
+			return reader.readingAnnotationsTo(method, MethodMetadata.class);	
+		}
+		catch ( Exception e )
+		{
+			throw new MetadataException(String.format("Erro ao recuperar os metadados do metodo '%s'!", method.getName()), e);
+		}
 	}
 }

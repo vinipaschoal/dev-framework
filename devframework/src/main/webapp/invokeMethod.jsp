@@ -59,6 +59,8 @@
 					</div>
 				</div>
 				<div class="clearfix my-1">&nbsp;</div>
+				<div id="mapid" style="height: 300px;"></div>
+				<div class="clearfix my-1">&nbsp;</div>
 				<div class="row">
 					<div class="col-md-12">
 						<div class="card" id="tabResult">
