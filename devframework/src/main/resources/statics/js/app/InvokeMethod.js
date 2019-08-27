@@ -8,20 +8,6 @@ app.InvokeMethod = {
 		var methodDesc = app.storage.get("methodDescriptor");
 		app.InvokeMethod.createForm(methodDesc.parameters);
 		
-		// Render map
-		var mymap = L.map('mapid').setView([-23.17944, -45.88694], 10);
-		
-		L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-			attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-			maxZoom: 18,
-			id: 'mapbox.streets',
-			accessToken: 'pk.eyJ1IjoiZmt2aWxsYW5pIiwiYSI6ImNqenQ2YTliejAyNDczbG1qeW40aGpid2YifQ.rQwyF9X2CuV1s7vjS1G9oA'
-		}).addTo(mymap);
-		
-		var marker = L.marker([-23.17944, -45.88694]).addTo(mymap);
-		marker.bindPopup("<b>São José dos Campos</b><br>Estamos aqui!.").openPopup();
-		
-		
 	},
 	// cria o Form para a entrada dos valores do metodo a ser invocado
 	createForm: function (parameters){
@@ -89,6 +75,34 @@ app.InvokeMethod = {
 			    				
 			    				if ($.isFunction(render[result.type])) {
 			    					render[result.type](result.data, $result);
+			    					
+			    					//Código teste para renderizar o mapa
+			    					
+			    					//Modelo de objeto para receber do serviço
+			    					var $data = {
+			    							map: {
+			    								lat: -23.533773,
+		    									long: -46.625290,
+		    									zoom: 6
+			    							},			    					
+			    							markers: [
+			    								{
+			    									lat: -23.533773,
+			    									long: -46.625290,
+			    									popup: "<b>São Paulo</b><br/>Temperaturas:<br>Janeiro/19 - Min: 10C Max: 28C"
+			    								},
+			    								{
+			    									lat: -23.17944,
+			    									long: -45.88694,
+			    									popup: "<b>São José dos Campos</b><br/>Temperaturas:<br>Janeiro/19 - Min: 13C Max: 32C"
+			    								}
+			    							]
+			    					};
+			    					
+			    					//Chama o método de mapa
+			    					render["MAP"]($data, $result);
+			    					
+			    					
 			    			    } else {
 			    			    	$result.html(result.data);
 			    				}

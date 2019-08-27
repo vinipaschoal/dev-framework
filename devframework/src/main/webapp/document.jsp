@@ -21,7 +21,7 @@
 
 			<section class="jumbotron text-center">
 				<div class="container">
-					<h1 class="jumbotron-heading"><strong>Sobre</strong> </h1>
+					<h1 class="jumbotron-heading"><strong>Documentação</strong> </h1>
 				</div>
 			</section>
 	
@@ -29,7 +29,7 @@
 				<div class="row">
 					<div class="col-md-12">
 						<p>
-							Texto sobre a documentação do projeto.
+							Documentação sobre como implementar as classes para upload na plataforma.
 						</p>
 					</div>
 				</div>

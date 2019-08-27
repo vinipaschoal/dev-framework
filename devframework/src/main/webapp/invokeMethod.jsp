@@ -33,21 +33,7 @@
 			<div class="clearfix my-1">&nbsp;</div>
 			<div class="container">
 				<div class="row">
-					<div class="col-md-5">
-						<div class="card">
-	  						<div class="card-header">
-								Descrição do Serviço
-							</div>
-							<div class="card-body">
-								<strong>Classe: </strong><span id="InvokeClassName"></span>
-								<br/><strong>Descrição da Classe: </strong><span id="InvokeClassDescription"></span>
-								<br/><br/>
-								<strong>Método: </strong><span id="InvokeMethodName"></span>
-								<br/><strong>Descrição do Método: </strong><span id="InvokeMethodDescription"></span>
-	  						</div>
-						</div>	
-					</div>
-					<div class="col-md-7">
+					<div class="col-md-12">
 						<div class="card">
 	  						<div class="card-header">
 								Simular a execução do método <strong>"Cadastrar tarefa"</strong>
@@ -58,8 +44,6 @@
 						</div>
 					</div>
 				</div>
-				<div class="clearfix my-1">&nbsp;</div>
-				<div id="mapid" style="height: 300px;"></div>
 				<div class="clearfix my-1">&nbsp;</div>
 				<div class="row">
 					<div class="col-md-12">
