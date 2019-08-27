@@ -12,13 +12,15 @@ import org.esfinge.virtuallab.metadata.ClassMetadata;
 import org.esfinge.virtuallab.metadata.MetadataHelper;
 import org.esfinge.virtuallab.utils.ReflectionUtils;
 import org.esfinge.virtuallab.utils.Utils;
+import org.springframework.cglib.proxy.Enhancer;
+import org.springframework.cglib.proxy.InvocationHandler;
 
 import net.sf.esfinge.querybuilder.QueryBuilder;
 
 /**
  * Invoca metodos em classes de servico. 
  */
-public class InvokerService implements InvokerProxy
+public class InvokerService implements InvokerProxy, InvocationHandler
 {
 	// instancia unica da classe
 	private static InvokerService _instance;
@@ -53,15 +55,40 @@ public class InvokerService implements InvokerProxy
 		
 		try
 		{
+			// obtem o metodo a ser invocado
+			Method method = ReflectionUtils.getMethod(methodDescriptor);
+			
+			// tenta invocar o metodo
+			return this.call(method, paramValues);
+		}
+		catch ( Exception exc )
+		{
+			// verifica se a excecao veio do metodo 'call'
+			if ( exc instanceof InvocationException )
+				throw (InvocationException) exc;
+			
+			// excecao veio do metodo 'ReflectionUtils.getMethod'
+			throw new InvocationException(String.format("Erro ao tentar invocar metodo '%s' da classe '%s'!", 
+					methodDescriptor.getName(), methodDescriptor.getClassName()), exc);
+		}
+	}
+	
+	/**
+	 * Invoca o metodo com os parametros informados.
+	 */
+	public synchronized Object call(Method method, Object... paramValues) throws InvocationException
+	{
+		// verifica se foi especificado um descritor de metodo
+		Utils.throwIfNull(method, InvocationException.class, "O metodo a ser invocado nao pode ser nulo!");
+
+		try
+		{
 			// recupera a classe do metodo a ser invocado
-			Class<?> clazz = ReflectionUtils.findClass(methodDescriptor.getClassName());
+			Class<?> clazz = method.getDeclaringClass();
 			ClassMetadata classMetadata = MetadataHelper.getInstance().getClassMetadata(clazz);
 			
 			// verifica se a classe eh valida
 			ValidationService.getInstance().checkClass(clazz);
-			
-			// obtem o metodo a ser invocado
-			Method method = ReflectionUtils.getMethod(methodDescriptor);
 			
 			// verifica se o metodo eh valido
 			ValidationService.getInstance().checkMethod(method);
@@ -84,6 +111,19 @@ public class InvokerService implements InvokerProxy
 					{
 						throw new InvocationException(String.format("Erro ao injetar objeto InvokerProxy no campo '%s' da classe '%s'!",
 								f.getName(), clazz.getCanonicalName()), e);
+					}
+				});
+				
+				// injeta o servico nos campos que tem a anotacao @Inject
+				ReflectionUtils.getDeclaredFieldsAnnotatedWith(clazz, org.esfinge.virtuallab.api.annotations.Inject.class).forEach(f -> {
+					try
+					{
+						ReflectionUtils.setFieldValue(obj, f.getName(), this.createProxyFor(f.getType()));
+					}
+					catch ( Exception e )
+					{
+						throw new InvocationException(String.format("Erro ao injetar objeto '%s' no campo '%s' da classe '%s'!",
+								f.getType().getCanonicalName(), f.getName(), clazz.getCanonicalName()), e);
 					}
 				});
 				
@@ -116,9 +156,10 @@ public class InvokerService implements InvokerProxy
 		catch ( Throwable exc )
 		{
 			throw new InvocationException(String.format("Erro ao tentar invocar metodo '%s' da classe '%s'!", 
-					methodDescriptor.getName(), methodDescriptor.getClassName()), exc);
+					method.getName(), method.getDeclaringClass().getCanonicalName()), exc);
 		}
 	}
+
 	
 	@Override
 	@SuppressWarnings("unchecked")
@@ -147,5 +188,25 @@ public class InvokerService implements InvokerProxy
 			return (E) ClassUtils.primitiveToWrapper(returnType).cast(result);
 		else
 			return returnType.cast(result);
+	}
+	
+	@Override
+	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
+	{
+		return this.call(method, args);
+	}
+
+	/**
+	 * Cria um proxy para a classe informada.
+	 */
+	private <E> E createProxyFor(Class<E> superclass)
+	{
+		// CGLIB
+		Enhancer proxy = new Enhancer();
+		proxy.setClassLoader(ClassLoaderService.class.getClassLoader());
+		proxy.setSuperclass(superclass);
+		proxy.setCallback(InvokerService.getInstance());
+		
+		return superclass.cast(proxy.create());
 	}
 }

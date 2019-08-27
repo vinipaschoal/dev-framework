@@ -153,6 +153,12 @@
 		</dependency>
 		
 		<dependency>
+		    <groupId>org.webjars</groupId>
+		    <artifactId>leaflet</artifactId>
+		    <version>1.5.1</version>
+		</dependency>
+		
+		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
 			<version>1.8.3</version>

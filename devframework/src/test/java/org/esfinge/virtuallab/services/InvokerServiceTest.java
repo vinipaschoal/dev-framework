@@ -51,7 +51,7 @@ public class InvokerServiceTest
 	@Test(expected = InvocationException.class)
 	public void testInvokeOnNull() throws InvocationException
 	{
-		InvokerService.getInstance().call(null);
+		InvokerService.getInstance().call((MethodDescriptor) null);
 	}
 	
 	@Test

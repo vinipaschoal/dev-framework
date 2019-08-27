@@ -19,7 +19,7 @@ import org.esfinge.virtuallab.domain.Ponto;
 import org.esfinge.virtuallab.domain.Tarefa;
 import org.esfinge.virtuallab.domain.TarefaService;
 import org.esfinge.virtuallab.domain.Temperatura;
-import org.esfinge.virtuallab.domain.TemperaturaInvokerProxy;
+import org.esfinge.virtuallab.domain.TemperaturaServiceProxy;
 import org.esfinge.virtuallab.domain.TemperaturaService;
 import org.esfinge.virtuallab.domain.Topic;
 import org.esfinge.virtuallab.domain.TopicService;
@@ -34,8 +34,17 @@ public class Main
 		TestUtils.createJar("tarefa.jar", TarefaService.class, Tarefa.class);
 		TestUtils.createJar("matematica.jar", MatematicaService.class, MatematicaInvokerProxy.class, Ponto.class);
 		TestUtils.createJar("chart.jar", ChartService.class, Temperatura.class);
-		TestUtils.createJar("temperaturaDAO.jar", TemperaturaService.class, TemperaturaInvokerProxy.class, Temperatura.class);
+		TestUtils.createJar("temperaturaDAO.jar", TemperaturaService.class, TemperaturaServiceProxy.class, Temperatura.class);
 		TestUtils.createJar("topicDAO.jar", TopicService.class, Topic.class);
+		
+		/*
+		Enhancer proxy = new Enhancer();
+		proxy.setSuperclass(MatematicaService.class);
+		proxy.setCallback(InvokerService.getInstance());
+		
+		MatematicaService matSvc = (MatematicaService) proxy.create();
+		System.out.println(matSvc.calcularDistancia(new Ponto(1,2), new Ponto(4,6)));
+		*/
 		
 		/*
 		for ( Method m : MethodUtils.getMethodsWithAnnotation(Main.class, BarChartReturn.class) )
