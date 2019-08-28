@@ -13,8 +13,8 @@ import org.esfinge.virtuallab.metadata.validator.MethodReturn;
 import net.sf.esfinge.metadata.annotation.validator.method.ValidMethodReturn;
 
 /**
- * Indica que o retorno de um metodo sera apresentado como um grafico de barras simples.
- * Pode ser utilizado com List<Number>, List<Object>, Map<String,Number> ou Map<String,Object>
+ * Renderiza o retorno de um metodo como um grafico de barras simples.
+ * Pode ser utilizado com List<Number>, List<Object>, Map<String,Number> ou Map<String,Object>.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

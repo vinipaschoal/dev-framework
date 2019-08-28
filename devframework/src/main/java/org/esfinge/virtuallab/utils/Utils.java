@@ -52,7 +52,7 @@ public class Utils
 			Paths.get(FileUtils.getTempDirectoryPath(), "upload").toAbsolutePath().toFile().mkdirs();
 
 			// TODO: debug..
-			System.out.println(">> DIRETORIO DE UPLOAD: " + this.getUploadDir());
+			System.err.println("\n>> DIRETORIO DE UPLOAD: " + this.getUploadDir() + "\n");
 		}
 		catch (IOException e)
 		{

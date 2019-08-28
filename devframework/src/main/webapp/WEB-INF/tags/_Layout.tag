@@ -12,6 +12,7 @@
 		<link href="webjars/bootstrap/4.3.1/css/bootstrap.css" rel="stylesheet" type="text/css">
 		<link href="webjars/datatables/1.10.19/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css">
 		<link href="webjars/font-awesome/5.9.0/css/all.min.css" rel="stylesheet" type="text/css">
+		<link href="webjars/leaflet/1.5.1/leaflet.css" rel="stylesheet" type="text/css">
 		<link href="${pageContext.request.contextPath}/resources/css/app.css" rel="stylesheet" type="text/css">
      	<jsp:invoke fragment="css_custom"/>
  	</head>
@@ -54,12 +55,14 @@
 	<script type="text/javascript" src="webjars/jquery-maskedinput/1.4.0/jquery.maskedinput.min.js"></script>
 	<!-- load underscore library -->
 	<script type="text/javascript" src="webjars/underscorejs/1.8.3/underscore-min.js"></script>
-	<!-- load jsonform library -->
+	<!-- load font-awesome library -->
+	<script type="text/javascript" src="webjars/font-awesome/5.9.0/js/all.min.js"></script>
+	<!-- load leaflet library -->
+	<script type="text/javascript" src="webjars/leaflet/1.5.1/leaflet.js"></script>
+		<!-- load jsonform library -->
 	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jsonform.js"></script>
 	<!-- load bigSlide library -->
 	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/bigSlide.min.js"></script>
-	<!-- load font-awesome library -->
-	<script type="text/javascript" src="webjars/font-awesome/5.9.0/js/all.min.js"></script>
 	<!-- load alert.bootstrap library -->
 	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/alert.bootstrap.js"></script>
 	<!-- load javascript.app -->

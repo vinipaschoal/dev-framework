@@ -10,7 +10,7 @@ import net.sf.esfinge.metadata.AnnotationValidationException;
 import net.sf.esfinge.metadata.AnnotationValidator;
 
 /**
- * Verifica se o metodo anotado com @ServiceMethod possui mais do que um manipulador de retorno.
+ * Verifica se o metodo anotado com @ServiceMethod possui mais do que um renderizador de retorno.
  */
 public class MethodReturnValidator implements AnnotationValidator
 {

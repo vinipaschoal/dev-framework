@@ -74,30 +74,12 @@ app.InvokeMethod = {
 			    				var render = new RenderResult();
 			    				
 			    				if ($.isFunction(render[result.type])) {
-			    					$result.html(render[result.type](result.data));
+			    					render[result.type](result.data, $result);
+			    					
 			    			    } else {
 			    			    	$result.html(result.data);
 			    				}
 			    				
-			    				/*
-			    				//Este código é apenas para testes de renderização enquanto não há o retono json
-			    				$.getJSON("http://localhost:8080/devframework/resources/js/app/data.json", function(json) {
-			    				    
-			    					var $tabResult = $("#tabResult");
-			    					var $result = $("#result");
-			    					
-			    					$tabResult.show();
-			    					var render = new RenderResult();
-			    					
-			    					var $types = ['ChartBar', 'Table'];			
-			    					var i = (Math.floor(Math.random() * ($types.length - 1 + 1)) + 1) - 1;
-			    					
-			    					$result.append(render[$types[i]](json));		    					
-	
-			    				}).fail(function() {
-			    					console.log( "error" );
-			    				});
-			    				*/
 			    				/*
 			    				if (!app.settings.isJson(result.data)){
 			    					$result.text(result.data);

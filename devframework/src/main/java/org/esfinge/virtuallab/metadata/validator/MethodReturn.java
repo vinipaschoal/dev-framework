@@ -8,8 +8,8 @@ import java.lang.annotation.Target;
 import net.sf.esfinge.metadata.annotation.validator.ToValidate;
 
 /**
- * Utilizado nas anotacoes que manipulam o retorno de metodos, como por exemplo @TableReturn.
- * Nao pode exister mais do que um manipulador de retorno para um metodo. 
+ * Utilizado nas anotacoes que renderizam o retorno de metodos, como por exemplo @TableReturn.
+ * Nao pode exister mais do que um renderizador de retorno para um metodo. 
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)

@@ -85,8 +85,6 @@ public class BarChartReturnProcessor implements MethodReturnProcessor<BarChartRe
 	 	 		}
 	 	 		catch ( Exception e )
 	 	 		{
-	 	 			System.out.println(e.toString());
-	 	 			
 	 	 			// texto generico (DATA 01, DATA 02, DATA 03..)
 	 	 			labels.add(String.format("DATA %02d", i+1));
 	 	 		}

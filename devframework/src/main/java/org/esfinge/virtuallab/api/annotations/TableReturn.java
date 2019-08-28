@@ -12,7 +12,8 @@ import org.esfinge.virtuallab.metadata.validator.MethodReturn;
 import net.sf.esfinge.metadata.annotation.validator.method.ValidMethodReturn;
 
 /**
- * Indica que o retorno de um metodo sera apresentado como uma tabela.
+ * Renderiza o retorno de um metodo como uma tabela.
+ * Pode ser utilizado com colecoes (List, Set, Queue).
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
