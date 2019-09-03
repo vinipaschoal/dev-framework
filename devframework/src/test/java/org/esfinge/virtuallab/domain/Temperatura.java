@@ -14,6 +14,7 @@ public class Temperatura
 
 	private String latitude;
 	private String longitude;
+	private String local;
 	private double maxima;
 	private double minima;
 	private String mes;
@@ -23,11 +24,12 @@ public class Temperatura
 		
 	}
 	
-	public Temperatura(Long id, String lat, String lng, double max, double min, String mes)
+	public Temperatura(Long id, String lat, String lng, String local, double max, double min, String mes)
 	{
 		this.id = id;
 		this.latitude = lat;
 		this.longitude = lng;
+		this.local = local;
 		this.maxima = max;
 		this.minima = min;
 		this.mes = mes;
@@ -61,6 +63,16 @@ public class Temperatura
 	public void setLongitude(String longitude)
 	{
 		this.longitude = longitude;
+	}
+	
+	public String getLocal()
+	{
+		return local;
+	}
+	
+	public void setLocal(String local)
+	{
+		this.local = local;
 	}
 
 	public double getMaxima()

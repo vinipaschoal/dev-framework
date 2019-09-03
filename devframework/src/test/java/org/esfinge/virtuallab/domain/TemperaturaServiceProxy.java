@@ -26,7 +26,7 @@ public class TemperaturaServiceProxy
 	
 	
 	@ServiceMethod(label = "Tabela de temperaturas @Invoker", description = "Invoca o metodo 'getTemperatura' do DAO TemperaturaService e retorna em formato de tabela")
-	@TableReturn(fields = {"mes", "latitude", "longitude", "maxima", "minima"})
+	@TableReturn(fields = {"mes", "local", "latitude", "longitude", "maxima", "minima"})
 	public List<Temperatura> listTemperaturasAsTable()
 	{
 		return this.invoker.invoke("org.esfinge.virtuallab.domain.TemperaturaService", "getTemperatura", List.class);		
@@ -36,7 +36,7 @@ public class TemperaturaServiceProxy
 	@BarChartReturn(legend = "Temperatura Média",
 	title = "Temperatura Média do Mês",
 	titleFontSize = 40,
-	xAxisLabel = "Local (lat,long)",
+	xAxisLabel = "Local",
 	yAxisLabel = "Temperatura",
 	xAxisShowGridlines = true,
 	yAxisShowGridlines = true,
@@ -47,15 +47,15 @@ public class TemperaturaServiceProxy
 		List<Temperatura> result = this.service.getTemperaturaByMes(mes);
 		
 		Map<String,Number> tempMap = new HashMap<>();
-		result.forEach(t -> tempMap.put(String.format("%.4f, %.4f", Float.valueOf(t.getLatitude()), Float.valueOf(t.getLongitude())), (t.getMaxima() + t.getMinima()) / 2));
+		result.forEach(t -> tempMap.put(t.getLocal(), (t.getMaxima() + t.getMinima()) / 2));
 		
 		return tempMap;
 	}
 	
-	@ServiceMethod(label = "Mapa de temperaturas mínimas @Inject", description = "Invoca o metodo 'getTemperaturaByMes' do DAO TemperaturaService e retorna em formato de mapa")
-	@MapReturn(markerTitle = "Temperatura Mínima",
-	markerTextField = "minima")
-	public List<Temperatura> listTemperaturaMinimaAsMap(String mes)
+	@ServiceMethod(label = "Mapa de temperaturas @Inject", description = "Invoca o metodo 'getTemperaturaByMes' do DAO TemperaturaService e retorna em formato de mapa")
+	@MapReturn(markerTitle = "${obj.local}",
+	markerText = "Temperaturas:<br/>Min: ${obj.minima}°C / Max: ${obj.maxima}°C")
+	public List<Temperatura> listTemperaturaAsMap(String mes)
 	{
 		return this.service.getTemperaturaByMes(mes);
 	}

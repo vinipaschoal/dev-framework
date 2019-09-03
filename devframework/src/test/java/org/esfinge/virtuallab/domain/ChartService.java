@@ -16,7 +16,7 @@ public class ChartService
 	@BarChartReturn(dataLabels = {"Sul", "Sudeste", "Nordeste", "Norte", "Centro-Oeste"},
 			dataColors = {"rgba(255, 99, 132, 0.2)", "rgba(255, 206, 86, 0.2)", "rgba(75, 192, 192, 0.2)", "rgba(153, 102, 255, 0.2)", "rgba(255, 159, 64, 0.2)"},
 			legend = "Numero de Votos",
-			title = "Eleições Brasil - Votos",
+			title = "Eleições - Votos",
 			titleFontSize = 40,
 			xAxisLabel = "Região",
 			yAxisLabel = "Votos",
@@ -55,8 +55,8 @@ public class ChartService
 			+ " do objeto que serao utilizadas para obter os dados do grafico!")
 	@BarChartReturn(dataLabelsField = "mes",
 			dataValuesField = "maxima",
-			legend = "Temperatura Máxima",
-			title = "Temperatura Máxima Anual",
+			legend = "Temperatura Máxima de SP",
+			title = "Temperatura Máxima Anual de São Paulo-SP",
 			titleFontSize = 40,
 			xAxisLabel = "Meses",
 			yAxisLabel = "Temperatura",
@@ -67,12 +67,12 @@ public class ChartService
 	public List<Temperatura> createChart3()
 	{
 		List<Temperatura> list = new ArrayList<>();
-		list.add(new Temperatura(2l, "-23.5475","-46.63611111", 28.2, 19.3, "janeiro"));
-		list.add(new Temperatura(3l, "-23.5475","-46.63611111", 28.8, 19.5, "fevereiro"));
-		list.add(new Temperatura(4l, "-23.5475","-46.63611111", 28.0, 18.8, "marco"));
-		list.add(new Temperatura(5l, "-23.5475","-46.63611111", 26.2, 17.4, "abril"));
-		list.add(new Temperatura(6l, "-23.5475","-46.63611111", 23.3, 14.5, "maio"));
-		list.add(new Temperatura(7l, "-23.5475","-46.63611111", 22.6, 13.0, "junho"));
+		list.add(new Temperatura(2l, "-23.5475","-46.63611111", "São Paulo", 28.2, 19.3, "janeiro"));
+		list.add(new Temperatura(3l, "-23.5475","-46.63611111", "São Paulo", 28.8, 19.5, "fevereiro"));
+		list.add(new Temperatura(4l, "-23.5475","-46.63611111", "São Paulo", 28.0, 18.8, "marco"));
+		list.add(new Temperatura(5l, "-23.5475","-46.63611111", "São Paulo", 26.2, 17.4, "abril"));
+		list.add(new Temperatura(6l, "-23.5475","-46.63611111", "São Paulo", 23.3, 14.5, "maio"));
+		list.add(new Temperatura(7l, "-23.5475","-46.63611111", "São Paulo", 22.6, 13.0, "junho"));
 		
 		return list;
 	}
@@ -80,8 +80,8 @@ public class ChartService
 	@ServiceMethod(description = "Gera o grafico atraves de um mapa de objetos (Map<String, Temperatura>), "
 			+ "configurando a anotacao para gerar um grafico HORIZONTAL!")
 	@BarChartReturn(dataValuesField = "minima",
-			legend = "Temperatura Mínma",
-			title = "Temperatura Mínima Anual",
+			legend = "Temperatura Mínima de SP",
+		title = "Temperatura Mínima Anual de São Paulo-SP",
 			titleFontSize = 40,
 			xAxisLabel = "Temperatura",
 			yAxisLabel = "Meses",
@@ -92,12 +92,12 @@ public class ChartService
 	public Map<String,Temperatura> createChart4()
 	{
 		Map<String, Temperatura> map = new HashMap<>();
-		map.put("JANEIRO", new Temperatura(2l, "-23.5475","-46.63611111", 28.2, 19.3, "janeiro"));
-		map.put("FEVEREIRO", new Temperatura(3l, "-23.5475","-46.63611111", 28.8, 19.5, "fevereiro"));
-		map.put("MARCO", new Temperatura(4l, "-23.5475","-46.63611111", 28.0, 18.8, "marco"));
-		map.put("ABRIL", new Temperatura(5l, "-23.5475","-46.63611111", 26.2, 17.4, "abril"));
-		map.put("MAIO", new Temperatura(6l, "-23.5475","-46.63611111", 23.3, 14.5, "maio"));
-		map.put("JUNHO", new Temperatura(7l, "-23.5475","-46.63611111", 22.6, 13.0, "junho"));
+		map.put("JANEIRO", new Temperatura(2l, "-23.5475","-46.63611111", "São Paulo",  28.2, 19.3, "janeiro"));
+		map.put("FEVEREIRO", new Temperatura(3l, "-23.5475","-46.63611111", "São Paulo", 28.8, 19.5, "fevereiro"));
+		map.put("MARCO", new Temperatura(4l, "-23.5475","-46.63611111", "São Paulo", 28.0, 18.8, "marco"));
+		map.put("ABRIL", new Temperatura(5l, "-23.5475","-46.63611111", "São Paulo", 26.2, 17.4, "abril"));
+		map.put("MAIO", new Temperatura(6l, "-23.5475","-46.63611111", "São Paulo", 23.3, 14.5, "maio"));
+		map.put("JUNHO", new Temperatura(7l, "-23.5475","-46.63611111", "São Paulo", 22.6, 13.0, "junho"));
 		
 		return map;
 	}

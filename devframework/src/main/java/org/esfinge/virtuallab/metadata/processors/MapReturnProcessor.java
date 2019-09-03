@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.jexl3.JexlBuilder;
+import org.apache.commons.jexl3.JexlContext;
+import org.apache.commons.jexl3.JexlEngine;
+import org.apache.commons.jexl3.JexlExpression;
+import org.apache.commons.jexl3.MapContext;
 import org.esfinge.virtuallab.api.annotations.MapReturn;
 import org.esfinge.virtuallab.utils.JsonUtils;
 import org.esfinge.virtuallab.utils.ReflectionUtils;
@@ -14,23 +19,13 @@ import org.esfinge.virtuallab.web.json.JsonData;
  * Processa o retorno de um metodo ao formato de grafico de barras para ser apresentando na UI. 
  */
 @SuppressWarnings("unused")
-public class MapReturnProcessor implements MethodReturnProcessor<MapReturn>
+public class MapReturnProcessor extends MethodReturnProcessor<MapReturn>
 {
 	private static final Double INVALID_COORDINATE = new Double(200);
 	private static final double DEFAULT_LAT = -15.77972;
 	private static final double DEFAULT_LONG = -47.92972;
-			
-	
-	// anotacao utilizada no metodo
-	private MapReturn annotation;
-	
-	
-	@Override
-	public void initialize(MapReturn annotation)
-	{
-		this.annotation = annotation;
-	}
 
+	
 	@Override
 	public JsonData process(Object value) throws Exception
 	{
@@ -38,7 +33,7 @@ public class MapReturnProcessor implements MethodReturnProcessor<MapReturn>
 		MapObject returnObj = new MapObject();
 
 		// informacoes do mapa
-		returnObj.setInitialZoom(this.annotation.mapInitialZoom());
+		returnObj.setInitialZoom(this.annotation.mapZoom());
 		
 		// lat/long do centro do mapa
 		Double mapLat = this.checkLatitude(this.annotation.mapCenterLat());
@@ -108,8 +103,8 @@ public class MapReturnProcessor implements MethodReturnProcessor<MapReturn>
 	private MarkerObject parseMarker(Object obj)
 	{
 		// tenta obter a lat/long do objeto
-		Double lat = this.getLatitude(this.annotation.latField(), obj);
-		Double lng = this.getLongitude(this.annotation.longField(), obj);
+		Double lat = this.getLatitude(this.annotation.markerLatField(), obj);
+		Double lng = this.getLongitude(this.annotation.markerLongField(), obj);
 		
 		// coordenadas sao validas?
 		if ( lat == INVALID_COORDINATE || lng == INVALID_COORDINATE )
@@ -123,38 +118,20 @@ public class MapReturnProcessor implements MethodReturnProcessor<MapReturn>
 		StringBuilder popup = new StringBuilder();
 		
 		// titulo do marcador
-		if (! Utils.isNullOrEmpty(this.annotation.markerTitleField()) )
+		if (! Utils.isNullOrEmpty(this.annotation.markerTitle()) )
 		{
-			try
-			{
-				Object title = ReflectionUtils.getFieldValue(obj, this.annotation.markerTitleField());
-				
-				if ( title != null )
-					popup.append(String.format("<b>%s</b><br/>", title.toString()));
-			}
-			catch ( Exception e )
-			{				
-			}
+			String title = this.parseEL(this.annotation.markerTitle(), obj);
+			if ( title != null )
+				popup.append(String.format("<b>%s</b><br/>", title.toString()));
 		}
-		else if (! Utils.isNullOrEmpty(this.annotation.markerTitle()))
-			popup.append(String.format("<b>%s</b><br/>", this.annotation.markerTitle()));
-		
+
 		// texto do marcador
-		if (! Utils.isNullOrEmpty(this.annotation.markerTextField()) )
+		if (! Utils.isNullOrEmpty(this.annotation.markerText()) )
 		{
-			try
-			{
-				Object text = ReflectionUtils.getFieldValue(obj, this.annotation.markerTextField());
-				
-				if ( text != null )
-					popup.append(text.toString());
-			}
-			catch ( Exception e )
-			{				
-			}
+			String text = this.parseEL(this.annotation.markerText(), obj);
+			if ( text != null )
+				popup.append(text.toString());
 		}
-		else if (! Utils.isNullOrEmpty(this.annotation.markerText()))
-			popup.append(this.annotation.markerText());
 		
 		//
 		marker.setPopup(popup.toString());
@@ -251,6 +228,29 @@ public class MapReturnProcessor implements MethodReturnProcessor<MapReturn>
 		
 		// 
 		return INVALID_COORDINATE;
+	}
+	
+	/**
+	 * Processa as expressoes EL do texto informado.
+	 */
+	private String parseEL(String text, Object obj)
+	{
+		// procura por aspas simples (') e escapa (\')
+		String textEL = text.trim().replaceAll("'", "\\\\'");
+
+		// processa os campos de EL ${}
+		textEL = textEL.replaceAll("\\$\\{(.+?)\\}", "' + $1 + '");
+		
+		// escapa o texto final
+		textEL = "'" + textEL + "'";
+		
+		// Apache Commons JEXL
+		JexlEngine jexl = new JexlBuilder().cache(512).silent(true).create();
+		JexlExpression exp = jexl.createExpression(textEL);
+		JexlContext context = new MapContext();
+		context.set("obj", obj);
+		
+		return exp.evaluate(context).toString();
 	}
 
 	

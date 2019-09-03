@@ -18,18 +18,8 @@ import org.springframework.util.CollectionUtils;
 /**
  * Processa o retorno de um metodo customizando-o para ser apresentando na UI. 
  */
-public class CustomReturnProcessor implements MethodReturnProcessor<CustomReturn>
+public class CustomReturnProcessor extends MethodReturnProcessor<CustomReturn>
 {
-	// anotacao utilizada no metodo
-	private CustomReturn annotation;
-	
-	
-	@Override
-	public void initialize(CustomReturn annotation)
-	{
-		this.annotation = annotation;
-	}
-
 	@Override
 	public JsonData process(Object value) throws Exception
 	{

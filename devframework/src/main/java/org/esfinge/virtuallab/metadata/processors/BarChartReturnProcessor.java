@@ -17,18 +17,8 @@ import org.esfinge.virtuallab.web.json.JsonObject;
  * Processa o retorno de um metodo ao formato de grafico de barras para ser apresentando na UI. 
  */
 @SuppressWarnings("unused")
-public class BarChartReturnProcessor implements MethodReturnProcessor<BarChartReturn>
+public class BarChartReturnProcessor extends MethodReturnProcessor<BarChartReturn>
 {
-	// anotacao utilizada no metodo
-	private BarChartReturn annotation;
-	
-	
-	@Override
-	public void initialize(BarChartReturn annotation)
-	{
-		this.annotation = annotation;
-	}
-
 	@Override
 	public JsonData process(Object value) throws Exception
 	{

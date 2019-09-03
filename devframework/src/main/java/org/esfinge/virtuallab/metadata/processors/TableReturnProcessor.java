@@ -14,18 +14,8 @@ import org.esfinge.virtuallab.web.json.JsonData;
 /**
  * Processa o retorno de um metodo ao formato de tabela para ser apresentando na UI. 
  */
-public class TableReturnProcessor implements MethodReturnProcessor<TableReturn>
+public class TableReturnProcessor extends MethodReturnProcessor<TableReturn>
 {
-	// anotacao utilizada no metodo
-	private TableReturn annotation;
-	
-	
-	@Override
-	public void initialize(TableReturn annotation)
-	{
-		this.annotation = annotation;
-	}
-
 	@Override
 	public JsonData process(Object value) throws Exception
 	{

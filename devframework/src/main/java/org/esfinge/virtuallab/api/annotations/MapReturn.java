@@ -25,19 +25,19 @@ public @interface MapReturn
 	double mapCenterLong() default -52.92972;
 	
 	// zoom inicial do mapa
-	int mapInitialZoom() default 5;
+	int mapZoom() default 5;
 	
 	// titulo do texto do(s) marcador(es)
+	// pode ser utilizada uma expressao EL para acessar um campo do objeto retornado 
 	String markerTitle() default "";
-	String markerTitleField() default "";
 	
 	// texto do(s) marcador(es)
+	// pode ser utilizada uma expressao EL para acessar um campo do objeto retornado 
 	String markerText() default "";
-	String markerTextField() default "";
 	
 	// latitude do(s) marcador(es)
-	String latField() default "";
+	String markerLatField() default "";
 	
 	// longitude do(s) marcador(es)
-	String longField() default "";
+	String markerLongField() default "";
 }

@@ -7,20 +7,27 @@ import org.esfinge.virtuallab.web.json.JsonData;
 /**
  * Processa o retorno de um metodo adequando-o ao formato a ser apresentando na UI. 
  */
-public interface MethodReturnProcessor<A extends Annotation>
+public abstract class MethodReturnProcessor<A extends Annotation>
 {	
+	// armazena a anotacao a ser processada
+	protected A annotation;
+	
+	
 	/**
 	 * Recebe a anotacao utilizada no metodo para poder processar o objeto. 
 	 */
-	public void initialize(A annotation);
+	public void initialize(A annotation)	
+	{
+		this.annotation = annotation;
+	}
 	
 	/**
 	 * Processa o objeto, adequando-o ao formato a ser apresentado na UI.
 	 */
-	public JsonData process(Object value) throws Exception;
+	public abstract JsonData process(Object value) throws Exception;
 	
 	/**
 	 * Retorna o tipo para que a UI possa identificar e renderizar corretamente o resultado processado.  
 	 */
-	public String getType();
+	public abstract String getType();
 }
