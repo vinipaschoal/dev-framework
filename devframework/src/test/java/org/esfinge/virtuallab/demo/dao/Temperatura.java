@@ -1,4 +1,4 @@
-package org.esfinge.virtuallab.domain;
+package org.esfinge.virtuallab.demo.dao;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

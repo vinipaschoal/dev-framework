@@ -147,8 +147,8 @@ public class MapReturnProcessor extends MethodReturnProcessor<MapReturn>
 		// verifica se foi especificado o campo
 		if ( Utils.isNullOrEmpty(field) )
 		{
-			// tenta encontrar o campo lat ou latitude
-			for ( String name : new String[]{"lat", "latitude"} )
+			// tenta encontrar o campo de latitude
+			for ( String name : new String[]{"latitude", "lat", "latid", "ltd"} )
 			{
 				try
 				{
@@ -193,8 +193,8 @@ public class MapReturnProcessor extends MethodReturnProcessor<MapReturn>
 		// verifica se foi especificado o campo
 		if ( Utils.isNullOrEmpty(field) )
 		{
-			// tenta encontrar o campo lng, long ou longitude
-			for ( String name : new String[]{"lng", "long", "longitude"} )
+			// tenta encontrar o campo de longitude
+			for ( String name : new String[]{"longitude", "longit", "lng", "lgd"} )
 			{
 				try
 				{

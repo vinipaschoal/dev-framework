@@ -1,5 +1,5 @@
 package org.esfinge.virtuallab.web.json;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.esfinge.virtuallab.utils.JsonUtils;
@@ -23,7 +23,8 @@ public class JsonObject extends JsonData
 	 */
 	public JsonObject()
 	{
-		this.jsonObject = new HashMap<>();
+		// LinkedHashMap: mantem a ordem de insercao
+		this.jsonObject = new LinkedHashMap<>();
 	}
 
 	/**

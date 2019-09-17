@@ -57,20 +57,22 @@ function RenderResult() {
 		
 		place.html($table);
 		
-		$table.DataTable(
-				{
-					"language": app.settings.languagePtBr,
-					"paging": true,
-					"pageLength": 10,
-					"searching": true,
-					"ordering": false,
-			        "info":     true,
-			        "fnInitComplete": function(oSettings) {
-			        	if (!data.showHeader)
-			        		$table.children("thead").hide();
-			        }
-				});
-		
+		// verifica se tem linhas na tabela
+		if ( data.rows.length > 0 ){
+			$table.DataTable(
+					{
+						"language": app.settings.languagePtBr,
+						"paging": true,
+						"pageLength": 10,
+						"searching": true,
+						"ordering": false,
+				        "info":     true,
+				        "fnInitComplete": function(oSettings) {
+				        	if (!data.showHeader)
+				        		$table.children("thead").hide();
+				        }
+					});
+		}
 	},
 	
 	this.CHART_BAR = function(data, place) {
@@ -107,6 +109,11 @@ function RenderResult() {
 			var marker = L.marker([value.latitude, value.longitude]).addTo(mymap);
 			marker.bindPopup(value.popup);
 		});
+		
+		// DEBUG: mostra lat/long ao clicar no mapa
+//		mymap.on('click', function(e) {
+//			alert('Lat: ' + e.latlng.lat + ' , Long: ' + e.latlng.lng);
+//		});
 		
 	}
 }

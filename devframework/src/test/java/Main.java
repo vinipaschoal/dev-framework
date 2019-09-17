@@ -2,17 +2,18 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import org.esfinge.virtuallab.TestUtils;
-import org.esfinge.virtuallab.domain.ChartService;
-import org.esfinge.virtuallab.domain.MatematicaInvokerProxy;
-import org.esfinge.virtuallab.domain.MatematicaService;
-import org.esfinge.virtuallab.domain.Ponto;
-import org.esfinge.virtuallab.domain.Tarefa;
-import org.esfinge.virtuallab.domain.TarefaService;
-import org.esfinge.virtuallab.domain.Temperatura;
-import org.esfinge.virtuallab.domain.TemperaturaService;
-import org.esfinge.virtuallab.domain.TemperaturaServiceProxy;
-import org.esfinge.virtuallab.domain.Topic;
-import org.esfinge.virtuallab.domain.TopicService;
+import org.esfinge.virtuallab.demo.chart.ChartDemo;
+import org.esfinge.virtuallab.demo.chart.Votes;
+import org.esfinge.virtuallab.demo.dao.DaoDemo;
+import org.esfinge.virtuallab.demo.dao.Temperatura;
+import org.esfinge.virtuallab.demo.json.Disciplina;
+import org.esfinge.virtuallab.demo.json.JsonDemo;
+import org.esfinge.virtuallab.demo.map.Cidade;
+import org.esfinge.virtuallab.demo.map.Localidade;
+import org.esfinge.virtuallab.demo.map.MapDemo;
+import org.esfinge.virtuallab.demo.proxy.ProxyDemo;
+import org.esfinge.virtuallab.demo.table.TableDemo;
+import org.esfinge.virtuallab.demo.table.Task;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.util.TraceClassVisitor;
 
@@ -21,11 +22,17 @@ public class Main
 {
 	public static void main(String... args) throws Exception
 	{
-		TestUtils.createJar("tarefa.jar", TarefaService.class, Tarefa.class);
-		TestUtils.createJar("matematica.jar", MatematicaService.class, MatematicaInvokerProxy.class, Ponto.class);
-		TestUtils.createJar("chart.jar", ChartService.class, Temperatura.class);
-		TestUtils.createJar("temperaturaDAO.jar", TemperaturaService.class, TemperaturaServiceProxy.class, Temperatura.class);
-		TestUtils.createJar("topicDAO.jar", TopicService.class, Topic.class);
+//		TestUtils.createJar("tarefa.jar", TarefaService.class, Tarefa.class);
+//		TestUtils.createJar("matematica.jar", MatematicaService.class, MatematicaInvokerProxy.class, Ponto.class);
+//		TestUtils.createJar("chart.jar", ChartService.class, Temperatura.class);
+//		TestUtils.createJar("temperaturaDAO.jar", TemperaturaService.class, TemperaturaServiceProxy.class, Temperatura.class);
+//		TestUtils.createJar("topicDAO.jar", TopicService.class, Topic.class);
+		TestUtils.createJar("TableDemo.jar", TableDemo.class, Task.class);
+		TestUtils.createJar("ChartDemo.jar", ChartDemo.class, Votes.class);
+		TestUtils.createJar("DaoDemo.jar", DaoDemo.class, Temperatura.class);
+		TestUtils.createJar("ProxyDemo.jar", ProxyDemo.class, DaoDemo.class, Temperatura.class);
+		TestUtils.createJar("MapDemo.jar", MapDemo.class, Cidade.class, Localidade.class, DaoDemo.class, Temperatura.class);
+		TestUtils.createJar("JsonDemo.jar", JsonDemo.class, Disciplina.class);
 		
 		/*
 		Temperatura t = new Temperatura(2l, "-23.5475","-46.63611111", 28.2, 19.3, "janeiro");

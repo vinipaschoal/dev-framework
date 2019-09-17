@@ -2,7 +2,7 @@ package org.esfinge.virtuallab.metadata.processors;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -101,7 +101,7 @@ public class CustomReturnProcessor extends MethodReturnProcessor<CustomReturn>
 				: ArrayUtils.clone(fields);
 				
 		// verifica se os campos sao validos
-		Map<String,String> returnMap = new HashMap<>();
+		Map<String,String> returnMap = new LinkedHashMap<>(); //LinkedHashMap: mantem a ordem dos campos especificados na anotacao
 		for ( int i = 0; i < fields.length; i++ )
 			if ( ReflectionUtils.hasField(clazz, fields[i]) )
 				returnMap.put(fields[i], labels[i]);

@@ -9,7 +9,7 @@ import net.sf.esfinge.querybuilder.annotation.LesserOrEquals;
 
 @ServiceDAO(label = "DAO Temperaturas",
 description = "Banco de Dados: PostgreSQL  -  Entidade: Temperatura",
-url = "jdbc:postgresql://localhost:5432/postgres", user = "postgres", password = "", dialect = "org.hibernate.dialect.PostgreSQLDialect")
+url = "jdbc:postgresql://localhost:5432/postgres", user = "postgres", password = "postgres", dialect = "org.hibernate.dialect.PostgreSQLDialect")
 public interface TemperaturaService extends Repository<Temperatura>
 {
 	public List<Temperatura> getTemperatura();

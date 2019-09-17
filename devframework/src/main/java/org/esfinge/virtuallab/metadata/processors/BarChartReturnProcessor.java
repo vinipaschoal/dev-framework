@@ -118,7 +118,7 @@ public class BarChartReturnProcessor extends MethodReturnProcessor<BarChartRetur
 	 	 		catch ( Exception e )
 	 	 		{
 	 	 			// cor aleatoria
-	 	 			colors.add(String.format("rgba(%d, %d, %d, 0.2)", RandomUtils.nextInt(0, 256), RandomUtils.nextInt(0, 256), RandomUtils.nextInt(0, 256)));
+	 	 			colors.add(String.format("rgba(%d, %d, %d, 0.7)", RandomUtils.nextInt(0, 256), RandomUtils.nextInt(0, 256), RandomUtils.nextInt(0, 256)));
 	 	 		}
 		}
 	 	
