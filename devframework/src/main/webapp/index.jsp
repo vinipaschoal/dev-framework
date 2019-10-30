@@ -26,9 +26,10 @@
 							<table id="classTable" class="table table-striped table-bordered" data-url="listClasses.op">
 								<thead>
 									<tr>
-										<th>Módulo</th>
-										<th>Classe</th>
-										<th>Descrição</th>
+										<th style="width:15%">Módulo</th>
+										<th style="width:30%">Classe</th>
+										<th style="width:50%">Descrição</th>
+										<th style="width:5%" align="center">Remover</th>
 									</tr>
 								</thead>
 								<tbody>

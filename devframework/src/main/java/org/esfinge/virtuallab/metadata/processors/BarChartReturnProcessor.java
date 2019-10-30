@@ -41,7 +41,7 @@ public class BarChartReturnProcessor extends MethodReturnProcessor<BarChartRetur
 	@Override
 	public String getType()
 	{
-		return "CHART_BAR";
+		return "CHART";
 	}
 	
 	/**

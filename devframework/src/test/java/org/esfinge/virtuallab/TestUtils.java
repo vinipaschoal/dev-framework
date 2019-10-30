@@ -1,21 +1,16 @@
 package org.esfinge.virtuallab;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.jar.Attributes;
-import java.util.jar.JarEntry;
-import java.util.jar.JarOutputStream;
-import java.util.jar.Manifest;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.esfinge.virtuallab.utils.Utils;
 import org.junit.Assert;
 
 import net.sf.esfinge.classmock.ClassMock;
@@ -59,7 +54,10 @@ public abstract class TestUtils
 	 */
 	public static boolean createJar(String name, Class<?>... classes)
 	{
-		return createJar(name, Arrays.asList(classes).stream().map(c -> c.getCanonicalName()).toArray(String[]::new));
+		return createJar(name, Arrays.asList(classes)
+				.stream()
+				.map(c -> c.getCanonicalName())
+				.toArray(String[]::new));
 	}
 	
 	/**
@@ -67,40 +65,10 @@ public abstract class TestUtils
 	 */
 	public static boolean createJar(String name, String... qualifiedClassNames)
 	{
-		try
-		{
-			// cria o manifest do arquivo jar de teste
-			Manifest manifest = new Manifest();
-			manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
-
-			// arquivo jar
-			JarOutputStream jarFile = new JarOutputStream(new FileOutputStream(TEST_DIR + "/" + name), manifest);
-
-			// adiciona as classes ao jar
-			for (String clazz : qualifiedClassNames)
-			{
-				String classPath = clazz.replace(".", "/") + ".class";
-				jarFile.putNextEntry(new JarEntry(classPath));
-				
-				// caminho para o arquivo da classe
-				classPath = Paths.get("target", "test-classes", classPath).toAbsolutePath().toString();				
-				if (! Paths.get(classPath).toFile().exists())
-					classPath = pathFromTestDir(FilenameUtils.getBaseName(classPath) + ".class");
-				
-				jarFile.write(FileUtils.readFileToByteArray(new File(classPath)));
-				jarFile.closeEntry();
-			}
-
-			// fecha o arquivo jar
-			jarFile.close();
-
-			return true;
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			return false;
-		}
+		return Utils.createJar(name, TEST_DIR, Arrays.asList(qualifiedClassNames)
+				.stream()
+				.map(c -> Paths.get("target", "test-classes").toAbsolutePath().toString() + "/" + c.replace(".", "/") + ".class")
+				.toArray(String[]::new));
 	}
 
 	/**

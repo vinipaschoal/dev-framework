@@ -39,7 +39,7 @@ public class ServiceDAOMetadata implements ClassMetadata
 	@AnnotationProperty(annotation = ServiceDAO.class, property = "user")
 	private String user;
 
-	// senha paera conexao com o BD
+	// senha para conexao com o BD
 	@AnnotationProperty(annotation = ServiceDAO.class, property = "password")
 	private String password;
 
@@ -50,7 +50,7 @@ public class ServiceDAOMetadata implements ClassMetadata
 	// texto informativo sobre a classe
 	@AnnotationProperty(annotation=ServiceDAO.class, property = "description")
 	private String description;
-
+	
 	// classe da classe
 	@ReflectionReference
 	private Class<?> clazz;

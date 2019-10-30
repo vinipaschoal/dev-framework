@@ -1,4 +1,4 @@
-package org.esfinge.virtuallab.demo.chart;
+package org.esfinge.virtuallab.demo.chart.bars;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,9 +15,9 @@ import org.esfinge.virtuallab.api.annotations.ServiceMethod;
  * Demonstracao da anotacao @BarChartReturn.
  *-------------------------------------------------------------------------*/
 @ServiceClass(
-	label = "GRÁFICOS",
+	label = "GRÁFICOS - BARRAS",
 	description = "Demonstração da anotação @BarChartReturn.")
-public class ChartDemo
+public class BarChartDemo
 {
 	private static final List<Votes> votes = new ArrayList<>();
 	static {

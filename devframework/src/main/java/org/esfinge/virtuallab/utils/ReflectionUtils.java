@@ -7,6 +7,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,7 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.esfinge.virtuallab.descriptors.MethodDescriptor;
 import org.esfinge.virtuallab.descriptors.ParameterDescriptor;
+import org.esfinge.virtuallab.services.ClassLoaderService;
 
 /**
  * Metodos utilitarios para trabalhar com reflexao.
@@ -190,19 +192,39 @@ public class ReflectionUtils
 	 */
 	public static Class<?> findClass(String classQualifiedName) throws ClassNotFoundException
 	{
-		if ( basicTypesMap.containsKey(classQualifiedName) )
-			return basicTypesMap.get(classQualifiedName);
+		Class<?> clazz = null;
 		
-		return Class.forName(classQualifiedName);
+		// verifica se eh uma classe basica
+		if ( basicTypesMap.containsKey(classQualifiedName) )
+			clazz = basicTypesMap.get(classQualifiedName);
+		
+		// verifica se eh uma classe de servico
+		else if ( ClassLoaderService.getInstance().isServiceLoaded(classQualifiedName) )
+			clazz = ClassLoaderService.getInstance().getService(classQualifiedName);
+		
+		//
+		else
+			clazz = Class.forName(classQualifiedName);
+		
+		return clazz;
 	}
 	
 	/**
 	 * Verifica se a classe eh do tipo primitivo ou seus wrappers 
-	 * (boolean, byte, char, short, int, long, float, double) ou do tipo String.
+	 * (boolean, byte, char, short, int, long, float, double), 
+	 * do tipo String ou do tipo Temporal (Calendar, Timestamp, Date..).
 	 */
 	public static boolean isBasicType(Class<?> clazz)
 	{
-		return ( ClassUtils.isPrimitiveOrWrapper(clazz) || (clazz == String.class) );
+		return ( ClassUtils.isPrimitiveOrWrapper(clazz) || (clazz == String.class) || isTemporalType(clazz));
+	}
+	
+	/**
+	 * Verifica se a classe eh um tipo temporal (Calendar, Timestamp, Date..)
+	 */
+	public static boolean isTemporalType(Class<?> clazz)
+	{
+		return ( clazz == Calendar.class );
 	}
 	
 	/**
@@ -233,7 +255,7 @@ public class ReflectionUtils
 	 * Verifica se a classe eh uma objeto basico valido.
 	 * Regras:
 	 * - ter um construtor padrao publico
-	 * - possuir somente atributos basicos (primitivos/wrappers, String)
+	 * - possuir somente atributos basicos (primitivos/wrappers, String, classes temporais (Calendar, Timestamp, Date..)
 	 * - ser serializavel pelo framework Jackson JSON
 	 */
 	public static boolean isFlatObject(Class<?> clazz)

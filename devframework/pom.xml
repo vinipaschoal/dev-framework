@@ -159,6 +159,12 @@
 		</dependency>
 		
 		<dependency>
+    		<groupId>org.webjars</groupId>
+    		<artifactId>momentjs</artifactId>
+    		<version>2.24.0</version>
+		</dependency>
+		
+		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
 			<version>1.8.3</version>
@@ -239,7 +245,7 @@
 		<dependency>
 			<groupId>net.sf.esfinge</groupId>
 			<artifactId>metadata</artifactId>
-			<version>1.5.8</version>
+			<version>1.5.10</version>
 		</dependency>
 		
 		<dependency>

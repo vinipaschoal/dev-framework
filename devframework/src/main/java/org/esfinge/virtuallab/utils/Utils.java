@@ -1,16 +1,25 @@
 package org.esfinge.virtuallab.utils;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 import java.util.function.Predicate;
+import java.util.jar.Attributes;
+import java.util.jar.JarEntry;
+import java.util.jar.JarOutputStream;
+import java.util.jar.Manifest;
 import java.util.stream.Collectors;
 
+import org.apache.bcel.classfile.ClassParser;
+import org.apache.bcel.classfile.JavaClass;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.util.ObjectUtils;
 
 /**
@@ -150,5 +159,63 @@ public class Utils
 				throw new RuntimeException(e);
 			}
 		}
+	}
+	
+	/**
+	 * Cria um arquivo jar no diretorio de destino com os arquivos das classes especificadas.
+	 */
+	public static boolean createJar(String jarName, String destinationPath, String... classesPaths) 
+	{
+		try
+		{
+			// cria o manifest do arquivo jar de teste
+			Manifest manifest = new Manifest();
+			manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
+			
+			// verifica se o nome do arquivo jar contem a extensao .jar
+			String jarPath = Paths.get(destinationPath, 
+					FilenameUtils.isExtension(jarName, new String[] {"jar", "JAR"}) ? 
+					jarName : jarName.concat(".jar")).toAbsolutePath().toString();
+
+			// arquivo jar
+			JarOutputStream jarFile = new JarOutputStream(new FileOutputStream(jarPath), manifest);
+
+			// adiciona as classes ao jar
+			for (String classPath : classesPaths)
+			{
+				// obtem o nome qualificado da classe
+				JavaClass jc = new ClassParser(classPath).parse();
+				jarFile.putNextEntry(new JarEntry(jc.getClassName()+ ".class"));
+				
+				// adiciona a classe ao jar
+				jarFile.write(FileUtils.readFileToByteArray(new File(classPath)));
+				jarFile.closeEntry();
+			}
+
+			// fecha o arquivo jar
+			jarFile.close();
+
+			return true;
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	/**
+	 * Salva o stream no diretorio temporario.
+	 */
+	public static File saveToTempDir(InputStream inputStream, String fileName) throws IOException
+	{
+		// o arquivo de destino
+		File tmpFile = Paths.get(FileUtils.getTempDirectoryPath(), fileName).toAbsolutePath().toFile();
+		
+		// copia o stream para o arquivo
+		FileUtils.copyInputStreamToFile(inputStream, tmpFile);
+		
+		//
+		return tmpFile;
 	}
 }

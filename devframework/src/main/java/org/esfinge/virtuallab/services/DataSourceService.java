@@ -22,7 +22,7 @@ public class DataSourceService extends AbstractRoutingDataSource
 	private static DataSourceService _instance;
 
 	// mapa Classe -> DataSource
-	private Map<Class<?>, DSKey> keyMap;
+	private Map<String, DSKey> keyMap;
 	
 	// mapa dos DataSource registrados
 	private Map<Object, Object> dsMap;
@@ -71,7 +71,7 @@ public class DataSourceService extends AbstractRoutingDataSource
 	 */
 	public static void setDataSourceFor(Class<?> clazz)
 	{
-		getInstance().context.set(_instance.keyMap.get(clazz));
+		getInstance().context.set(_instance.keyMap.get(clazz.getCanonicalName()));
 	}
 	
 	/**
@@ -107,8 +107,8 @@ public class DataSourceService extends AbstractRoutingDataSource
 	                .build();
 			
 			// cria a chave de identificacao do DataSource
-			Class<?> daoClass = dsMetadata.getClazz();
-			DSKey key = new DSKey(daoClass.getCanonicalName(), dsMetadata.getDialect());
+			String daoClass = dsMetadata.getClazz().getCanonicalName();
+			DSKey key = new DSKey(daoClass, dsMetadata.getDialect());
 			
 			// registra a chave
 			getInstance().keyMap.put(daoClass, key);
@@ -120,6 +120,25 @@ public class DataSourceService extends AbstractRoutingDataSource
 			_instance.afterPropertiesSet();
 		}
 	}
+	
+	/**
+	 * Remove o registro do DataSource.
+	 */
+	public static void unregisterDataSource(ServiceDAOMetadata dsMetadata)
+	{
+		// obtem a chave de identificacao do DataSource
+		String daoClass = dsMetadata.getClazz().getCanonicalName();
+		
+		// cancela o registro da chave
+		DSKey key = getInstance().keyMap.remove(daoClass);
+		
+		// cancela o registro do DataSource
+		_instance.dsMap.remove(key);
+
+		// atualiza as propriedades do AbstractRoutingDataSource
+		_instance.afterPropertiesSet();
+	}
+
 	
 	/**
 	 * Chave para identificar um DataSource.
@@ -151,7 +170,7 @@ public class DataSourceService extends AbstractRoutingDataSource
 		{
 			return dialect;
 		}
-
+		
 		@Override
 		public int hashCode()
 		{

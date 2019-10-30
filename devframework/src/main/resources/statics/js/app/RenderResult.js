@@ -75,10 +75,10 @@ function RenderResult() {
 		}
 	},
 	
-	this.CHART_BAR = function(data, place) {
+	this.CHART = function(data, place) {
 		
 		var $canvas = document.createElement("canvas");
-		$canvas.id = "chartBar";
+		$canvas.id = "chart";
 		$canvas.className = "col-md-12";
 		
 		var myChart = new Chart($canvas, data);

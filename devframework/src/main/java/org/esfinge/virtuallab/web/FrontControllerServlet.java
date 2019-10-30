@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.esfinge.virtuallab.web.op.InvokeMethodHandler;
 import org.esfinge.virtuallab.web.op.ListServiceClassesHandler;
 import org.esfinge.virtuallab.web.op.ListServiceMethodsHandler;
+import org.esfinge.virtuallab.web.op.RemoveServiceClassHandler;
 import org.esfinge.virtuallab.web.op.UploadFileHandler;
 
 /**
@@ -33,6 +34,7 @@ public class FrontControllerServlet extends HttpServlet
 		this.handlerMap.put("uploadFile.op", new UploadFileHandler());
 		this.handlerMap.put("listClasses.op", new ListServiceClassesHandler());
 		this.handlerMap.put("listMethods.op", new ListServiceMethodsHandler());
+		this.handlerMap.put("removeService.op", new RemoveServiceClassHandler());
 		this.handlerMap.put("invokeMethod.op", new InvokeMethodHandler());
 	}
 

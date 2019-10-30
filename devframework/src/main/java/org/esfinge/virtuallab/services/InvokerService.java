@@ -83,15 +83,12 @@ public class InvokerService implements InvokerProxy, InvocationHandler
 
 		try
 		{
-			// recupera a classe do metodo a ser invocado
-			Class<?> clazz = method.getDeclaringClass();
-			ClassMetadata classMetadata = MetadataHelper.getInstance().getClassMetadata(clazz);
-			
-			// verifica se a classe eh valida
-			ValidationService.getInstance().checkClass(clazz);
-			
 			// verifica se o metodo eh valido
-			ValidationService.getInstance().checkMethod(method);
+			ValidationService.getInstance().assertValidMethod(method);
+			
+			// recupera a classe do metodo a ser invocado
+			Class<?> clazz = ClassLoaderService.getInstance().getService(method.getDeclaringClass().getCanonicalName());
+			ClassMetadata classMetadata = MetadataHelper.getInstance().getClassMetadata(clazz);
 			
 			// cria um objeto da classe cujo metodo sera invocado
 			Object obj;
@@ -203,7 +200,8 @@ public class InvokerService implements InvokerProxy, InvocationHandler
 	{
 		// CGLIB
 		Enhancer proxy = new Enhancer();
-		proxy.setClassLoader(ClassLoaderService.class.getClassLoader());
+//		proxy.setClassLoader(ClassLoaderService.class.getClassLoader());
+		proxy.setClassLoader(ClassLoaderService.getInstance().getService(superclass.getCanonicalName()).getClassLoader());
 		proxy.setSuperclass(superclass);
 		proxy.setCallback(InvokerService.getInstance());
 		

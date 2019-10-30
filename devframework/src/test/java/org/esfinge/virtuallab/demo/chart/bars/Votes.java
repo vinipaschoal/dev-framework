@@ -1,4 +1,4 @@
-package org.esfinge.virtuallab.demo.chart;
+package org.esfinge.virtuallab.demo.chart.bars;
 
 public class Votes
 {

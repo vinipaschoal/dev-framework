@@ -9,11 +9,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * Classe de configuracao do Spring Framework.
  */
 @Configuration
+@EnableTransactionManagement
 public class JpaConfiguration
 {
 	@Bean
@@ -27,10 +29,13 @@ public class JpaConfiguration
 	{
 		LocalContainerEntityManagerFactoryBean emfh = EntityManagerFactoryHelper.getInstance();
 		emfh.setDataSource(this.getDataSource());
-		emfh.setPackagesToScan(new String[] { "org.esfinge.virtuallab" }); // precisa especificar um pacote para nao procurar o arquivo 'persistence.xml'
+		// precisa especificar um pacote pois senao ele
+		// procura automaticamente pelo arquivo 'persistence.xml'
+		emfh.setPackagesToScan(new String[] { "org.esfinge.virtuallab" }); 
 
+		// dialeto do BD default
 		HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-		vendorAdapter.setDatabasePlatform("org.hibernate.dialect.H2Dialect"); // dialeto do BD default
+		vendorAdapter.setDatabasePlatform("org.hibernate.dialect.H2Dialect"); 
 		emfh.setJpaVendorAdapter(vendorAdapter);
 		
 		return emfh;

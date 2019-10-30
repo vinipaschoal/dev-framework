@@ -20,12 +20,23 @@ import net.sf.esfinge.metadata.annotation.validator.method.MethodVisibilityRequi
 @MethodVisibilityRequired(itNeedsToHaveThisVisibility = "public")
 @InstanceMethodOnly
 @ValidServiceMethod
+@Documentation(
+	value="Deve ser utilizada nos métodos que serão disponibilizados como serviço",
+	usage="@ServiceMethod<br/>" + 
+		  "public List myServiceMethod()",
+	dependencies= {"@ServiceClass", "@ServiceDAO"},
+	notes={"O método de serviço deve estar contido dentro de uma classe anotada "
+			+ "com @ServiceClass ou @ServiceDAO",
+		   "O método de serviço deve ser público",
+		   "O método de serviço deve retornar algum valor (não pode ser void)",
+		   "Há restrições aos tipos de retornos e de parâmetros permitidos para métodos de serviço"})
 public @interface ServiceMethod
 {
-	// rotulo para o metodo
-	// por padrao usa o nome do metodo
+	@Documentation(
+		value="Nome do serviço",
+		defaultValue="O nome do método")
 	String label() default "";
 	
-	// texto informativo sobre o servico
+	@Documentation("Texto informativo sobre o serviço")
 	String description() default "";
 }

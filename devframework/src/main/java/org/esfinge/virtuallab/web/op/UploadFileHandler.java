@@ -73,10 +73,10 @@ public class UploadFileHandler implements IJsonRequestHandler
     			String fileName = FilenameUtils.getName(item.getName());
     			
     			// tenta salvar o arquivo
-    			boolean saved = PersistenceService.getInstance().saveUploadedFile(item.getInputStream(), fileName);
+    			PersistenceService.getInstance().saveUploadedFile(item.getInputStream(), fileName);
     			
-    			if (saved)
-    				return fileName;
+    			// retorna o nome do arquivo salvo
+    			return fileName;
     		}
     		
     		throw new Exception("Arquivo '" + item.getName() + "' não é uma classe/jar válido!" );

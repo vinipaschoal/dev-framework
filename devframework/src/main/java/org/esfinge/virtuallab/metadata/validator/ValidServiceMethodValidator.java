@@ -28,7 +28,7 @@ public class ValidServiceMethodValidator implements AnnotationValidator
 		try
 		{
 			// valida o metodo
-			ValidationService.getInstance().checkMethod(method);
+			ValidationService.getInstance().assertValidMethod(method);
 		}
 		catch ( Exception e )
 		{

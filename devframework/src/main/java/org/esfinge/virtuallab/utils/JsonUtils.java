@@ -1,5 +1,6 @@
 package org.esfinge.virtuallab.utils;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -314,6 +315,10 @@ public class JsonUtils
 		
 		// monta um mapa com as propriedades do schema gerado
 		Map<String,String> schemaMap = convertToMap(schemaString);
+		
+		// verifica se a classe eh do tipo Temporal (Calendar, Timestamp, Date..)
+//		if( ReflectionUtils.isTemporalType(typeClass) )
+//			schemaMap.put("type", "datetime-local");
 		
 		// monta os schemas dos tipos referenciados (definitions)
 		Map<String, JsonSchema> refsMap = new HashMap<>();

@@ -24,6 +24,7 @@ public class QueryBuilderEntityManagerProvider implements EntityManagerProvider,
 {
 	// Contexto do Spring
 	private static ApplicationContext _context;
+	private static ThreadLocal<EntityManager> _openEM = new ThreadLocal<>();
 	
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException
@@ -35,12 +36,33 @@ public class QueryBuilderEntityManagerProvider implements EntityManagerProvider,
 	@Override
 	public EntityManager getEntityManager()
 	{
-		// configura o dialeto do BD do DataSource selecionado
+		// configura as propriedades do DataSource selecionado
 		Map<String,String> props = new HashMap<>();
-		props.put( "org.hibernate.dialect", DataSourceService.getCurrentDataBase().getDialect());
+		props.put( "hibernate.dialect", DataSourceService.getCurrentDataBase().getDialect());
 		
-		// cria um EntityManager para o DataSource selecionado
-		return getEntityManagerFactory().createEntityManager(props);
+		
+		// recupera o ultimo EntityManager criado
+		EntityManager em = _openEM.get();
+		if ( em != null )
+		{
+			// fecha o EM para liberar a conexao
+			em.close();
+			_openEM.remove();
+		}
+		
+		// cria um novo EntityManager para o DataSource selecionado
+		em = getEntityManagerFactory().createEntityManager(props);
+		_openEM.set(em);
+		
+		return em; 
+		
+		/*
+		// DEBUG: lista as entidades carregadas no EntityManager
+		EntityManager em = getEntityManagerFactory().createEntityManager(props);
+		System.out.println("===> ENTITIES: \n");
+		em.getMetamodel().getEntities().forEach(System.out::println);
+		return em;
+		*/
 	}
 
 	@Override

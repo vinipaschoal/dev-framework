@@ -1,6 +1,8 @@
 app.Classes = {
 		validExts: new Array(".class",".jar"),
-		tableClass: $('#classTable').DataTable({"language": app.settings.languagePtBr }),
+		tableClass: $('#classTable').DataTable({"language": app.settings.languagePtBr,
+			// desabilita a ordenacao na coluna do icone de remover servico:
+			"columnDefs": [{"orderable": false, "targets": 3}]}), 
 		
 		// funcao de inicializacao 
 		init: function () {
@@ -31,10 +33,18 @@ app.Classes = {
 				app.Classes.save();
 	        });
 	    	
-	    	$(document).on('click', '.linkClazz', function(){
+	    	// lista os metodos da classe de servico selecionada
+	    	$(document).on('click', '.listMethods', function(){
 	    		event.preventDefault();
 	    		$index = $(this).data("index");
 	    		app.Classes.listMethods($index);
+	    	});
+	    	
+	    	// remove a classe de servico selecionada
+	    	$(document).on('click', '.removeService', function(){
+	    		event.preventDefault();
+	    		$index = $(this).data("index");
+	    		app.Classes.removeService($index);
 	    	});
 		},
 		
@@ -58,11 +68,13 @@ app.Classes = {
                         // armazena as classes recebidas no storage
                         app.storage.put("classList", classList);
                     	
-	                    $.each(classList, function( i, classDesc ) {
+	                    $.each(classList, function( i, classDesc ) {	                    	
 	                    	app.Classes.tableClass.row.add([
-	                    		classDesc.label, 
-								"<a href='#' class='linkClazz' data-index='" + i + "'>" + classDesc.qualifiedName + "</a>",
-								classDesc.description]).draw( false );
+	                    		classDesc.label,
+								"<a href='#' class='listMethods' data-index='" + i + "'>" + classDesc.qualifiedName + "</a>",
+								classDesc.description,
+								"<center><a href='#' class='removeService' data-index='" + i + "'><img src='resources/images/delete.png' height='25' width='25'></a></center>",
+								]).draw( false );
 	                   	});
                     }else{
                     	alertBt({
@@ -125,6 +137,71 @@ app.Classes = {
     		});
 		},
 		
+		// remove a classe de servico selecionada
+		removeService: function(index){
+			
+			// recupera o descritor da classe escolhida
+    		var classDesc = app.storage.get("classList")[index];
+
+			// JSON de request
+    		var jsonReq = new Object();
+    		jsonReq.clazz = classDesc.qualifiedName;
+    		
+    		// confirma apagar o servico
+    		var promise = alertBt({
+    		  type: "confirm",
+      	      messageText: "Deseja realmente apagar o m&oacute;dulo '" + classDesc.label + "'?",
+      	      headerText: "Alerta",
+      	      alertType: "warning"
+      	    });
+    		
+    		// processa a escolha do usuario
+    		promise.done(function (dlgResult) {
+    			
+    			// confirmou apagar o servico
+    			if ( dlgResult ){
+    				
+    	    		$.ajax({
+    	    			url: 'removeService.op',
+    	    			type: 'POST',
+    	    			dataType: 'json',
+    	    			data: JSON.stringify(jsonReq),
+    	    			contentType: 'application/json',
+    	    			mimeType: 'application/json',
+    	    			success: function (result) {
+    	    				console.log(result);
+    	    				
+    	                    if (result.success){
+    	                        alertBt({
+    	         	        	      messageText: result.message,
+    	         	        	      headerText: "Confirma&ccedil;&atilde;o",
+    	         	        	      alertType: "success"
+    	         	        	    });
+    	                        
+    	                          // lista as classes de servico
+    	                          app.Classes.list();
+    	                      }else{
+    	                      	alertBt({
+    	           	        	      messageText: result.message,
+    	           	        	      headerText: "Alerta",
+    	           	        	      alertType: "warning"
+    	           	        	    });
+    	                      }
+    	    	        },
+    	    			error:function(data,status,er) {
+    	                    var $msg = $(er.responseText).filter('title').text();
+    	                	if ($msg == '') $msg = "Ocorreu um erro.<br/><br/><b>Erro</b>: " + er + ".";
+    	                    alertBt({
+    	   	        	      messageText: $msg,
+    	   	        	      headerText: "Erro",
+    	   	        	      alertType: "danger"
+    	   	        	    });
+    	                }
+    	    		});
+    			}
+    		});
+		},
+		
 		// faz o upload do arquivo (classe/jar) selecionado 
 		save: function () {
 
@@ -177,6 +254,8 @@ app.Classes = {
        	        	      headerText: "Confirma&ccedil;&atilde;o",
        	        	      alertType: "success"
        	        	    });
+                        
+                        // lista as classes de servico
                         app.Classes.list();
                     }else{
                     	alertBt({

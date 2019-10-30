@@ -14,24 +14,43 @@ import org.esfinge.virtuallab.metadata.validator.ValidServiceDAO;
 @Retention(RUNTIME)
 @Target(ElementType.TYPE)
 @ValidServiceDAO
+@Documentation(
+	value="Deve ser utilizada nas interfaces que disponibilizarão métodos de consulta ao Banco de Dados como serviços",
+	usage="@ServiceDAO<br/>" + 
+		  "public interface MyServiceDAO {<br/>" + 
+		  "// métodos de serviços (@ServiceMethod)..",
+	notes={"A interface DAO deve ter pelo menos 1 método de serviço",
+		   "Os métodos da interface DAO devem ser compatíveis com o padrão de nomenclatura do Esfinge QueryBuilder",
+		   "Somente os métodos anotados com @ServiceMethod serão disponibilizados como serviços"})
 public @interface ServiceDAO
 {
-	// rotulo para a classe
-	// por padrao usa o nome da classe
+	@Documentation(
+		value="Nome do módulo de serviços",
+		defaultValue="O nome da interface")
 	String label() default "";
 	
-	// texto informativo sobre os tipos de servicos que a classe disponibiliza
+	@Documentation("Texto informativo sobre os tipos de serviços que a interface disponibiliza")
 	String description() default "";
 	
-	// URL de conexao com o BD
+	@Documentation(
+		value="URL de conexão com o Banco de Dados",
+		required=true)
 	String url();
 	
-	// usuario para conxeao com o BD
+	@Documentation(
+		value="Usuário para a conexão com o Banco de Dados",
+		required=true)
 	String user();
 	
-	// senha para conexao com o BD
+	@Documentation(
+		value="Senha para a conexão com o Banco de Dados",
+		required=true)
 	String password();
 	
-	// dialeto Hibernate do BD a ser acessado
+	@Documentation(
+		value="Dialeto Hibernate/JPA do Banco de Dados a ser acessado",
+		required=true,
+		notes="Lista de dialetos disponíveis em " +
+			  "https://docs.jboss.org/hibernate/orm/4.1/javadocs/org/hibernate/dialect/package-summary.html")
 	String dialect();
 }

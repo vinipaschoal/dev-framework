@@ -1,17 +1,8 @@
 package org.esfinge.virtuallab.services;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.esfinge.virtuallab.api.annotations.ServiceClass;
-import org.esfinge.virtuallab.api.annotations.ServiceDAO;
-import org.esfinge.virtuallab.exceptions.ClassLoaderException;
 import org.esfinge.virtuallab.exceptions.MetadataException;
 import org.esfinge.virtuallab.exceptions.ValidationException;
 import org.esfinge.virtuallab.metadata.ClassMetadata;
@@ -46,58 +37,31 @@ public final class ValidationService
 	}
 
 	/**
-	 * Retorna a classe se ela for valida.
+	 * Verifica se eh um arquivo de servico valido, retornando os metadados da classe de servico.
 	 */
-	public Class<?> checkClassFile(String classFilePath) throws ValidationException
+	public ClassMetadata validateUploadedFile(File file) throws ValidationException
 	{
 		try
 		{
-			return this.checkClassFile(FileUtils.openInputStream(new File(classFilePath)),
-					FilenameUtils.getName(classFilePath));
+			// tenta carregar o servico (class ou jar)
+			Class<?> serviceClass = ClassLoaderService.getInstance().loadService(file);
+			
+			// verifica se eh uma classe de servico valida
+			this.assertValidService(serviceClass);
+			
+			// retorna os metadados da classe de servico
+			return MetadataHelper.getInstance().getClassMetadata(serviceClass);
 		}
-		catch (IOException e) 
+		catch (Exception e) 
 		{
-			throw new ValidationException("Erro ao acessar a classe a ser validada!", e);
+			throw new ValidationException(String.format("Erro ao validar arquivo de upload: '%s'", file.getName()), e);
 		}
 	}
 
 	/**
-	 * Retorna a classe se ela for valida.
+	 * Assegura que a classe de servico seja valida.
 	 */
-	public Class<?> checkClassFile(InputStream classFileStream, String fileName) throws ValidationException
-	{
-		List<Class<?>> classList = this.validateInternal(classFileStream, fileName);
-
-		return (Utils.isNullOrEmpty(classList) ? null : classList.get(0));
-	}
-
-	/**
-	 * Retorna as classes validas do arquivo jar.
-	 */
-	public List<Class<?>> checkJarFile(String jarFilePath) throws ValidationException
-	{
-		try
-		{
-			return this.checkJarFile(FileUtils.openInputStream(new File(jarFilePath)), FilenameUtils.getName(jarFilePath));
-		}
-		catch (IOException e)
-		{
-			throw new ValidationException("Erro ao acessar o jar a ser validado!", e);
-		}
-	}
-
-	/**
-	 * Retorna as classes validas do arquivo jar.
-	 */
-	public List<Class<?>> checkJarFile(InputStream jarFileStream, String fileName) throws ValidationException
-	{
-		return this.validateInternal(jarFileStream, fileName);
-	}
-	
-	/**
-	 * Verifica se a classe eh valida.
-	 */
-	public void checkClass(Class<?> clazz) throws ValidationException
+	public void assertValidService(Class<?> clazz) throws ValidationException
 	{
 		//
 		Utils.throwIfNull(clazz, ValidationException.class,  "A classe nao pode ser nula!");
@@ -121,23 +85,13 @@ public final class ValidationService
 	}
 
 	/**
-	 * Verifica se o metodo eh valido.
+	 * Assegura que o metodo de servico seja valido.
 	 */
-	public void checkMethod(Method method) throws ValidationException
+	public void assertValidMethod(Method method) throws ValidationException
 	{
 		//
 		Utils.throwIfNull(method, ValidationException.class,  "O metodo nao pode ser nulo!");
 		
-		// obtem a classe do metodo
-		Class<?> methodClass = method.getDeclaringClass();
-		
-		// verifica se a classe esta anotada com @ServiceClass ou @ServiceDAO
-		boolean serviceClass = methodClass.getAnnotation(ServiceClass.class) != null;
-		serviceClass |= methodClass.getAnnotation(ServiceDAO.class) != null;
-		
-		if (! serviceClass )
-			throw new ValidationException(String.format("A classe '%s' nao possui a anotacao @ServiceClass ou @ServiceDAO!", methodClass.getCanonicalName()));
-
 		// verifica o tipo do retorno
 		Class<?> returnClass = method.getReturnType();
 		
@@ -161,45 +115,5 @@ public final class ValidationService
 				if (! ReflectionUtils.isFlatObject(paramClass) )
 					throw new ValidationException(String.format("O metodo '%s' possui um parametro nao suportado (%s)", 
 							method.getName(), paramClass.getCanonicalName()));
-	}
-
-	/**
-	 * Retorna as classes validas.
-	 */
-	private List<Class<?>> validateInternal(InputStream fileStream, String fileName) throws ValidationException
-	{
-		try
-		{
-			List<Class<?>> classList = new ArrayList<>();
-			List<Class<?>> validClasses = new ArrayList<>();
-			
-			// carrega as classes do jar
-			if (fileName.endsWith(".jar"))
-				classList.addAll(ClassLoaderService.getInstance().loadJar(fileStream));
-			else
-				classList.add(ClassLoaderService.getInstance().loadClass(fileStream, fileName));
-
-			// verifica se as classes sao validas
-			for (Class<?> clazz : classList)
-			{
-				try
-				{
-					this.checkClass(clazz);
-					validClasses.add(clazz);
-				}
-				catch ( ValidationException e )
-				{
-					// verifica se foi erro de validacao de metadados ou de uma classe que nao eh de servico / DAO
-					if ( e.getCause() instanceof MetadataException )
-						throw e;
-				}
-			}
-				
-			return (validClasses.size() == 0 ? null : validClasses);
-		}
-		catch ( ClassLoaderException e )
-		{
-			throw new ValidationException("Erro ao carregar classes para validacao!", e);
-		}
 	}
 }

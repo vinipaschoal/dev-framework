@@ -1,31 +1,37 @@
 package org.esfinge.virtuallab.services;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import javax.persistence.Entity;
+
+import org.apache.bcel.classfile.ClassFormatException;
 import org.apache.bcel.classfile.ClassParser;
 import org.apache.bcel.classfile.JavaClass;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.esfinge.virtuallab.api.annotations.ServiceClass;
+import org.esfinge.virtuallab.api.annotations.ServiceDAO;
 import org.esfinge.virtuallab.exceptions.ClassLoaderException;
 import org.esfinge.virtuallab.utils.Utils;
-import org.esfinge.virtuallab.web.FrontControllerServlet;
 
 /**
- * Carregador de classes.
+ * Carregador de classes de servicos.
  */
 public class ClassLoaderService
 {
-	// metodo para carregamento de classes do ClassLoader do sistema
-	private Method defineClassMethod;
+	// mapa dos classloaders associados as classes de servico
+	private Map<String, InternalClassLoader> classLoaderMap;
 
 	// instancia unica da classe
 	private static ClassLoaderService _instance;
@@ -43,255 +49,253 @@ public class ClassLoaderService
 	}
 
 	/**
-	 * Cria um novo carregador de classes.
+	 * Cria um novo carregador de classes de servicos.
 	 */
 	private ClassLoaderService()
 	{
-		try
-		{
-			// tenta acessar o metodo de carregar classes do ClassLoader do sistema
-			this.defineClassMethod = ClassLoader.class.getDeclaredMethod("defineClass", String.class, byte[].class,
-					int.class, int.class);
-			this.defineClassMethod.setAccessible(true);
-		}
-		catch (NoSuchMethodException | SecurityException e)
-		{
-			// TODO: debug..
-			System.err.println("CLASS LOADER >> Erro ao acessar metodos protegidos do ClassLoader do sistema, ABORTANDO...");
-			e.printStackTrace();
+		// mapa dos classloaders associados as classes de servico
+		this.classLoaderMap = new ConcurrentHashMap<>();
+	}
+	
+	/**
+	 * Carrega o arquivo de classe de servico.
+	 */
+	public Class<?> loadService(String serviceFilePath) throws ClassLoaderException
+	{
+		return this.loadService(new File(serviceFilePath));
+	}
+
+	/**
+	 * Carrega o arquivo de classe de servico.
+	 */
+	public Class<?> loadService(File serviceFile) throws ClassLoaderException
+	{
+		// nome do arquivo
+		String fileName = serviceFile.getName();
+		
+		// verifica se o arquivo eh valido e acessivel
+		if ( !serviceFile.isFile() || !serviceFile.canRead() )
+			throw new ClassLoaderException(String.format("Erro ao carregar servico, arquivo inacessivel: %s", fileName));
 			
-			// TERMINA O SISTEMA!
-			System.exit(-1);
-		}
-	}
-
-	/**
-	 * Carrega a classe.
-	 */
-	public Class<?> loadClass(String classFilePath) throws ClassLoaderException
-	{
-		try
-		{
-			return this.loadClass(FileUtils.openInputStream(new File(classFilePath)), classFilePath);
-		}
-		catch ( IOException e )
-		{
-			throw new ClassLoaderException("Erro ao carregar o arquivo da classe!", e);
-		}
-	}
-
-	/**
-	 * Carrega a classe.
-	 */
-	public Class<?> loadClass(InputStream classFileStream, String className) throws ClassLoaderException
-	{
-		try
-		{
-			return this.loadClassInternal(
-					new ClassParser(classFileStream, this.fixClassName(FilenameUtils.getName(className))).parse());
-		}
-		catch ( IOException e )
-		{
-			throw new ClassLoaderException("Erro ao carregar o arquivo da classe!", e);
-		}
-	}
-
-	/**
-	 * Carrega a classe de um arquivo Jar.
-	 */
-	public Class<?> loadClassFromJar(String jarFilePath, String classQualifiedName) throws ClassLoaderException
-	{
-		JarFile jarFile = null;
+		// verifica se eh um .class ou .jar		
+		if (! (FilenameUtils.isExtension(fileName, "class") ||  
+			   FilenameUtils.isExtension(fileName, "jar")) )
+			throw new ClassLoaderException(String.format("Erro ao carregar servico, arquivo invalido: %s", fileName));
 		
 		try
 		{
-			// abre o arquivo jar
-			jarFile = new JarFile(jarFilePath);
-
-			// corrige para o nome qualificado da classe
-			String className = this.fixClassName(classQualifiedName);
-
-			// obtem a entrada para a classe a ser carregada
-			JarEntry jarEntry = Utils.getFromCollection(Collections.list(jarFile.entries()),
-					je -> !je.isDirectory() && this.fixClassName(je.getName()).equals(className));
-
-			// encontrou a classe, carrega
-			if (jarEntry != null)
-				return this.loadClass(jarFile.getInputStream(jarEntry), className);
-
-			// nao encontrou a classe
-			return null;
-		}
-		catch ( IOException e )
-		{
-			throw new ClassLoaderException("Erro ao carregar arquivo jar!", e);
-		}
-		finally
-		{
-			// fecha o arquivo jar
-			if ( jarFile != null )
-			{
-				try
-				{
-					jarFile.close();
-				}
-				catch (IOException e)
-				{
-					// TODO: debug..
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-
-	/**
-	 * Carrega a classe de um arquivo Jar.
-	 */
-	public Class<?> loadClassFromJar(InputStream jarFileStream, String classQualifiedName) throws ClassLoaderException
-	{
-		File tempJarFile = null; 
-
-		try
-		{
-			// cria um arquivo temporario para carregar o jar
-			tempJarFile = File.createTempFile("tempJar", ".tmp");
-			FileUtils.copyToFile(jarFileStream, tempJarFile);
-
-			return this.loadClassFromJar(tempJarFile.getAbsolutePath(), classQualifiedName);
-		}
-		catch ( IOException e )
-		{
-			throw new ClassLoaderException("Erro ao carregar arquivo jar!", e);
-		}
-		finally
-		{
-			// apaga o arquivo temporario
-			if ( tempJarFile != null )
-				FileUtils.deleteQuietly(tempJarFile);
-		}
-	}
-
-	/**
-	 * Carrega as classes do arquivo Jar.
-	 */
-	public List<Class<?>> loadJar(String jarFilePath) throws ClassLoaderException
-	{
-		JarFile jarFile = null;
-		
-		try
-		{
-			// abre o arquivo jar
-			jarFile = new JarFile(jarFilePath);
-
-			// lista das classes contidas no jar
-			List<Class<?>> classList = new ArrayList<Class<?>>();
-
-			// obtem a entrada para a classe a ser carregada
-			Enumeration<JarEntry> jarEntries = jarFile.entries();
-			while (jarEntries.hasMoreElements())
-			{
-				JarEntry jarEntry = jarEntries.nextElement();
-
-				// verifica se eh uma classe
-				if (jarEntry.isDirectory() || !FilenameUtils.isExtension(jarEntry.getName(), "class"))
-					continue;
-
-				// encontrou uma classe
-				Class<?> clazz = this.loadClass(jarFile.getInputStream(jarEntry),
-						this.fixClassName(jarEntry.getName()));
-				classList.add(clazz);
-			}
-
-			// verifica se encontrou alguma classe
-			return classList.size() == 0 ? null : classList;
-		}
-		catch ( IOException e )
-		{
-			throw new ClassLoaderException("Erro ao carregar arquivo jar!", e);
-		}
-		finally
-		{
-			// fecha o arquivo jar
-			if ( jarFile != null )
-			{
-				try
-				{
-					jarFile.close();
-				}
-				catch (IOException e)
-				{
-					// TODO: debug..
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-
-	/**
-	 * Carrega as classes do arquivo Jar.
-	 */
-	public List<Class<?>> loadJar(InputStream jarFileStream) throws ClassLoaderException
-	{
-		File tempJarFile = null;
-
-		try
-		{
-			// cria um arquivo temporario para carregar o jar
-			tempJarFile = File.createTempFile("tempJar", ".tmp");
-			FileUtils.copyToFile(jarFileStream, tempJarFile);
+			// tenta carregar o arquivo (class/jar)
+			InternalClassLoader cl = new InternalClassLoader(serviceFile.toURI().toURL());
 			
-			return this.loadJar(tempJarFile.getAbsolutePath());
+			// obtem a classe de servico carregada
+			Class<?> serviceClass = cl.getServiceClass();
+			
+			// mapeia o classloader com a classe de servico
+			this.classLoaderMap.put(serviceClass.getCanonicalName(), cl);
+			
+			// fecha o classloader
+			cl.close();
+			
+			// retorna a classe de servico
+			return serviceClass;
 		}
-		catch ( IOException e )
+		catch ( Exception e)
 		{
-			throw new ClassLoaderException("Erro ao carregar arquivo jar!", e);
-		}
-		finally
-		{
-			// apaga o arquivo temporario
-			if ( tempJarFile != null )
-				FileUtils.deleteQuietly(tempJarFile);
+			throw new ClassLoaderException(String.format("Erro ao carregar servico: %s", fileName), e);
 		}
 	}
 	
 	/**
-	 * Carrega a classe.
+	 * Descarrega a classe de servico informada.
 	 */
-	private Class<?> loadClassInternal(JavaClass javaClass) throws ClassLoaderException
+	public boolean unloadService(String qualifiedClassName)
 	{
-		try
+		// remove o classloader associado a classe
+		return this.classLoaderMap.remove(qualifiedClassName) != null;
+	}
+	
+	/**
+	 * Retorna a classe de servico informada.
+	 */
+	public Class<?> getService(String qualifiedClassName) throws ClassLoaderException
+	{
+		// obtem o classloader associado ao servico
+		InternalClassLoader cl = this.classLoaderMap.get(qualifiedClassName);
+
+		// classe nao mapeada/carregada
+		Utils.throwIfNull(cl, ClassLoaderException.class, 
+				String.format("Classe de servico nao carregada: %s", qualifiedClassName));
+
+		return cl.getServiceClass();
+	}
+	
+	/**
+	 * Verifica se o servico esta carregado.
+	 */
+	public boolean isServiceLoaded(String qualifiedClassName)
+	{
+		return this.classLoaderMap.containsKey(qualifiedClassName);
+	}
+	 
+	/**
+	 * Retorna os ClassLoaders dos servicos que contem entidades JPA.
+	 */
+	public List<ClassLoader> getJPAClassLoaders()
+	{
+		return new ArrayList<ClassLoader>(
+				Utils.filterFromCollection(
+						this.classLoaderMap.values(), 
+						InternalClassLoader::hasEntities));
+	}
+	
+	/**
+	 * Procura pela classe entre as classes carregadas pelos ClassLoaders dos servicos. 
+	 */
+	private Class<?> findClass(String qualifiedClassName, InternalClassLoader caller) throws ClassNotFoundException
+	{
+		for ( InternalClassLoader cl : this.classLoaderMap.values() )
 		{
-			// verifica se a classe ja esta carregada
-			return Class.forName(javaClass.getClassName());
+			// nao procura no proprio ClassLoader que chamou este metodo
+			if ( cl == caller )
+				continue;
+			
+			// verifica se a classe foi carregada pelo ClassLoader
+			if ( cl.isClassLoaded(qualifiedClassName) )
+				return cl.loadClass(qualifiedClassName);
 		}
-		catch (ClassNotFoundException cnfe)
-		{
-			try
-			{
-				// tenta carregar a classe
-				byte[] classBytecodes = javaClass.getBytes();
-				return (Class<?>) this.defineClassMethod.invoke(FrontControllerServlet.class.getClassLoader(),
-						javaClass.getClassName(), classBytecodes, 0, classBytecodes.length);
-			}
-			catch ( Exception e )
-			{
-				throw new ClassLoaderException(String.format("Erro ao tentar carregar a classe '%s'!", javaClass.getClassName()), e);
-			}
-		}
+
+		// nao encontrou a classe em nenhum ClassLoader!
+		throw new ClassNotFoundException();
 	}
 
-	/**
-	 * Verifica o formato do nome da classe e corrige para o padrao se necessario.
-	 */
-	private String fixClassName(String className) throws ClassLoaderException
-	{
-		Utils.throwIfNull(className, ClassLoaderException.class, "Nome da classe nao pode ser null!");
-		
-		// troca os separadores por .
-		if (FilenameUtils.isExtension(className, "class"))
-			className = FilenameUtils.removeExtension(className);
 
-		// retorna o nome padronizado com a extensao .class
-		return className.replaceAll("[\\\\/]", ".") + ".class";
+	/**
+	 * Carregador de classes interno.
+	 */
+	private class InternalClassLoader extends URLClassLoader
+	{
+		// a classe de servico lida do arquivo
+		private Class<?> serviceClass;
+		
+		// indica se o servico (DAO) possui entidades JPA mapeadas
+		private boolean hasEntities;
+		
+		
+		public InternalClassLoader(URL fileURL) throws Exception
+		{
+			super(new URL[] {fileURL}, ClassLoaderService.class.getClassLoader());
+			
+			this.serviceClass = null;
+			this.hasEntities = false;
+
+			// arquivo (jar ou class) apontado pela URL
+			File file = new File(fileURL.toURI());
+			
+			if ( FilenameUtils.isExtension(file.getName(), "class") )
+				this.loadServiceClass(file);
+			else
+				this.loadServiceJar(file);
+		}
+		
+		public Class<?> getServiceClass()
+		{
+			return this.serviceClass;
+		}
+		
+		public boolean hasEntities()
+		{
+			return this.hasEntities;
+		}
+		
+		@Override
+		protected Class<?> findClass(String qualifiedClassName) throws ClassNotFoundException
+		{
+			// utilizado quando tenta carregar uma classe que eh referenciada pelo servico
+			// mas nao foi incluida no arquivo JAR ou .class (pois faz parte de outro servico ja existente).
+			// um exemplo sao classes de servico injetadas via @Inject.
+
+			// tenta encontrar a classe nos ClassLoaders dos servicos carregados pelo ClassLoaderService
+			return ClassLoaderService.this.findClass(qualifiedClassName, this);
+		}
+		
+		protected boolean isClassLoaded(String qualifiedClassName)
+		{
+			// verifica se a classe foi carregada por esse ClassLoader
+			return this.findLoadedClass(qualifiedClassName) != null;
+		}
+		
+		private void loadServiceClass(File file) throws Exception
+		{
+			// carrega a classe
+			this.serviceClass = this.loadClassInternal(new FileInputStream(file), file.getName());
+		}		
+		
+		private void loadServiceJar(File file) throws Exception
+		{
+			// arquivo jar
+			JarFile jarFile = null;
+
+			try
+			{
+				// abre o arquivo jar
+				jarFile = new JarFile(file);
+
+				// obtem a entrada para as classes do jar
+				Enumeration<JarEntry> jarEntries = jarFile.entries();
+				while (jarEntries.hasMoreElements())
+				{
+					JarEntry jarEntry = jarEntries.nextElement();
+
+					// verifica se eh uma classe
+					if (jarEntry.isDirectory() || !FilenameUtils.isExtension(jarEntry.getName(), "class"))
+						continue;
+
+					// le a entrada no arquivo JAR e carrega a classe
+					Class<?> clazz = this.loadClassInternal(jarFile.getInputStream(jarEntry), FilenameUtils.getName(jarEntry.getName()));
+					
+					// verifica se eh uma classe de servico
+					if ( clazz.isAnnotationPresent(ServiceClass.class) ||
+						 clazz.isAnnotationPresent(ServiceDAO.class) )
+					{
+						// verifica se jah existe uma classe de servico mapeada
+						if ( this.serviceClass != null )
+							throw new ClassLoaderException(String.format(
+									"Nao eh permitido mais de uma classe de servico por jar: %s | %s", 
+									this.serviceClass.getName(), clazz.getName()));
+							
+						this.serviceClass = clazz;
+					}
+					
+					// verifica se eh uma entidade JPA 
+					if ( clazz.isAnnotationPresent(Entity.class) )
+						this.hasEntities = true;
+				}
+			}
+			finally
+			{
+				// fecha o arquivo jar
+				if ( jarFile != null )
+				{
+					try
+					{
+						jarFile.close();
+					}
+					catch (IOException e)
+					{
+						// TODO: debug..
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+
+		private Class<?> loadClassInternal(InputStream inputStream, String fileName) throws ClassFormatException, IOException
+		{
+			// obtem as informacoes da classe
+			JavaClass jc = new ClassParser(inputStream, fileName).parse();
+			
+			// carrega a classe lendo o seu bytecode
+			return this.defineClass(jc.getClassName(), jc.getBytes(), 0, jc.getBytes().length);
+		}
 	}
 }
